@@ -19,4 +19,8 @@ public class AuthorService {
     public Author findByName(String name){
         return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
+
+    public Author findById(int id){
+        return authorRepository.findById(id).orElse(null);
+    }
 }
