@@ -1,10 +1,8 @@
 package ak.spring.controllers;
 
 import ak.spring.models.Accord;
-import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.services.SongService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +16,7 @@ public class SongController {
 
     private final SongService songService;
 
-    @Autowired
-    public SongController(SongService songService) {
-        this.songService = songService;
-    }
+    public SongController(SongService songService) {this.songService = songService;}
 
     @GetMapping("/songs")
     public List<Song> getSongs(){
