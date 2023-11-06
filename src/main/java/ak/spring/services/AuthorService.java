@@ -23,4 +23,21 @@ public class AuthorService {
     public Author findById(int id){
         return authorRepository.findById(id).orElse(null);
     }
+
+    public void updateAuthor(int id, Author authorForUpdate){
+        Author pastAuthor = findById(id);
+
+        authorForUpdate.setId(id);
+        authorForUpdate.setSongs(pastAuthor.getSongs());
+
+        authorRepository.save(authorForUpdate);
+    }
+
+    public void deleteAuthor(Author author) {
+        authorRepository.delete(author);
+    }
+
+    public Author uploadAuthor(Author author){
+        return authorRepository.save(author);
+    }
 }

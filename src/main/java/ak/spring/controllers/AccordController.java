@@ -30,11 +30,9 @@ public class AccordController {
                 .body(uploadAccord);
     }
 
-    @PatchMapping("/accord")
-    public ResponseEntity<?> updateImage(@RequestParam("image") MultipartFile file) throws IOException {
-        String uploadAccord = accordService.updateAccord(file);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(uploadAccord);
+    @PatchMapping("/accord/{id}")
+    public void updateImage(@PathVariable("id") String id, String name ,@RequestParam("image") MultipartFile file) throws IOException {
+        accordService.updateAccord(Integer.parseInt(id),name, file);
     }
 
     @PostMapping("/accords")

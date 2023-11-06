@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.services.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class SongController {
     }
 
     @PostMapping("/song")
-    public ResponseEntity<Song> uploadSong(@RequestBody Song song){
-        return ResponseEntity.status(HttpStatus.OK).body(songService.uploadSong(song));
+    public Song uploadSong(@RequestBody Song song){
+        return songService.uploadSong(song);
     }
 
     @GetMapping("/songId/{id}")
@@ -49,5 +50,16 @@ public class SongController {
         }else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Запрашиваемой песни не существует, повторите запрос.");
         }
+    }
+
+    @PatchMapping("/song/{id}")
+    public void updateSong(@PathVariable("id") String id, Song songForUpdate){
+        songService.updateSong(Integer.parseInt(id), songForUpdate);
+    }
+
+    @DeleteMapping("/song/{id}")
+    public void deleteSong(@PathVariable("id") String id){
+        Song song = songService.findById(Integer.parseInt(id));
+        if (song != null) songService.deleteSong(song);
     }
 }

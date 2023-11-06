@@ -39,4 +39,22 @@ public class SongService {
     public Song uploadSong(Song song){
         return songRepository.save(song);
     }
+
+    public Song findById(int id){
+        return songRepository.findById(id).orElse(null);
+    }
+
+    public void deleteSong(Song song){
+        songRepository.delete(song);
+    }
+
+    public void updateSong(int id, Song song){
+        Song pastSong = findById(id);
+
+        song.setId(id);
+        song.setAuthor(pastSong.getAuthor());
+        song.setAccords(pastSong.getAccords());
+
+        songRepository.save(song);
+    }
 }

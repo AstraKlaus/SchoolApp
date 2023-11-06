@@ -31,15 +31,17 @@ public class AccordService {
         return "file upload successfully: " + file.getOriginalFilename();
     }
 
-    public String updateAccord(MultipartFile file) throws IOException {
-        Accord accord = findByName(file.getOriginalFilename());
-        if (accord!=null){
+    public void updateAccord(int id,String name, MultipartFile file) throws IOException {
+        Accord accord = findById(id);
+        if (accord!=null) {
+            accord.setName(name);
             accord.setImage(file.getBytes());
             accordRepository.save(accord);
-            return "Аккорд успешно обновлен";
-        }else{
-            return "Файл с таким именем не найден";
         }
+    }
+
+    public Accord findById(int id){
+        return accordRepository.findById(id).orElse(null);
     }
 
     public byte[] downloadAccord(String name){
