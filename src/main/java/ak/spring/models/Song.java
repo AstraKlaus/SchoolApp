@@ -32,7 +32,7 @@ public class Song {
     private Author author;
 
     @JsonBackReference
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Song_Accord",
             joinColumns = @JoinColumn(name = "song_id"),

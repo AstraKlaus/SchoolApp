@@ -1,5 +1,6 @@
 package ak.spring.services;
 
+import ak.spring.models.Accord;
 import ak.spring.models.Song;
 import ak.spring.repositories.SongRepository;
 import jakarta.transaction.Transactional;
@@ -56,5 +57,9 @@ public class SongService {
         song.setAccords(pastSong.getAccords());
 
         songRepository.save(song);
+    }
+
+    public List<Accord> getAccords(int id) {
+        return findById(id).getAccords();
     }
 }

@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.models.Accord;
 import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.services.SongService;
@@ -62,5 +63,10 @@ public class SongController {
     public void deleteSong(@PathVariable("id") String id){
         Song song = songService.findById(Integer.parseInt(id));
         if (song != null) songService.deleteSong(song);
+    }
+
+    @GetMapping("/song/{id}/accords")
+    public List<Accord> getSongAccords(@PathVariable("id") String id){
+        return songService.getAccords(Integer.parseInt(id));
     }
 }

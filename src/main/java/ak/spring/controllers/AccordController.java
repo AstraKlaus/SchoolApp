@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.models.Accord;
 import ak.spring.services.AccordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,11 @@ public class AccordController {
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(accord);
+    }
+
+    @GetMapping("/accords")
+    public List<Accord> getAccords(){
+        return accordService.findAll();
     }
 
 }

@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class AuthorService {
@@ -39,5 +41,9 @@ public class AuthorService {
 
     public Author uploadAuthor(Author author){
         return authorRepository.save(author);
+    }
+
+    public List<Author> findAll() {
+        return authorRepository.findAll();
     }
 }

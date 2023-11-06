@@ -25,6 +25,7 @@ public class AuthorController {
         return authorService.findById(Integer.parseInt(id));
     }
 
+
     @GetMapping("/authorSongs/{id}")
     public List<Song> getAuthorSongs(@PathVariable("id") String id){
         Author author = authorService.findById(Integer.parseInt(id));
@@ -51,5 +52,10 @@ public class AuthorController {
     @PostMapping("/author/{id}")
     public Author uploadAuthor(Author author){
         return authorService.uploadAuthor(author);
+    }
+
+    @GetMapping("/authors")
+    public List<Author> getAuthors(){
+        return authorService.findAll();
     }
 }

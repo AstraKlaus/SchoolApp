@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,5 +58,9 @@ public class AccordService {
 
     public void save(Accord accord) {
         accordRepository.save(accord);
+    }
+
+    public List<Accord> findAll() {
+        return accordRepository.findAll();
     }
 }
