@@ -28,10 +28,6 @@ public class SongService {
         return foundSong.orElse(null);
     }
 
-    public void save(Song song){ songRepository.save(song);}
-
-    public void delete(int id) {songRepository.deleteById(id);}
-
     public Song findByName(String name){
         Optional<Song> song = songRepository.findByNameContainingIgnoreCase(name);
         return song.orElse(null);
