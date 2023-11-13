@@ -2,25 +2,29 @@ package ak.spring.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "person")
-public class Person {
+public class Person implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty(message = "Имя не должно быть пустым")
-    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
-    @Column(name = "full_name")
-    private String fullName;
 
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
@@ -30,11 +34,6 @@ public class Person {
     @Column(name = "email")
     @Email
     private String email;
-
-    @Min(value = 1900, message = "Год рождения должен быть больше, чем 1900")
-    @Max(value = 2020, message = "Год рождения должен быть меньше, чем 2020")
-    @Column(name = "year_of_birth")
-    private int yearOfBirth;
 
     @Column(name = "password")
     private String password;
@@ -51,12 +50,28 @@ public class Person {
     private List<Song> songs;
 
 
-    public Person() {}
-
-    public Person(String fullName, int yearOfBirth, String email) {
-        this.fullName = fullName;
-        this.yearOfBirth = yearOfBirth;
-        this.email = email;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
