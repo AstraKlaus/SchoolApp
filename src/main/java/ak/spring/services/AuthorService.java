@@ -1,6 +1,7 @@
 package ak.spring.services;
 
 import ak.spring.models.Author;
+import ak.spring.models.Song;
 import ak.spring.repositories.AuthorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,9 @@ public class AuthorService {
 
     public List<Author> findAll() {
         return authorRepository.findAll();
+    }
+
+    public List<Song> getSongs(Author author) {
+        return author.getSongs();
     }
 }

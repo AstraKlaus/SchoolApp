@@ -30,7 +30,7 @@ public class AuthorController {
     public List<Song> getAuthorSongs(@PathVariable("id") String id){
         Author author = authorService.findById(Integer.parseInt(id));
         if (author==null) return null;
-        return author.getSongs();
+        return authorService.getSongs(author);
     }
 
     @GetMapping("/authorByName/{name}")
