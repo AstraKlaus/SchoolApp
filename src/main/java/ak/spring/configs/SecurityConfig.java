@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -42,8 +43,9 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/webjars/**",
             "/api/admin/**",
-            "/swagger-ui.html"};
+            "/swagger-ui.html",};
     private final AuthenticationProvider authenticationProvider;
+    private final LogoutHandler logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -57,11 +59,14 @@ public class SecurityConfig {
                                 .authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
-                .formLogin(http -> http.loginPage("/api/auth/login"))
+                .formLogin(http -> http.loginPage("/api/login"))
                 .httpBasic(Customizer.withDefaults())
                 .logout(logout ->
-                        logout.logoutUrl("/api/auth/logout")
+                        logout.logoutUrl("/api/logout")
+                                .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
                 .build();
     }
+
+
 }

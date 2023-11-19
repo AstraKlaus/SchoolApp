@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.models.AuthenticationRequest;
 import ak.spring.models.Person;
 import ak.spring.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin(origins =  "http://localhost:8080")
 public class AuthenticationController {
@@ -21,5 +22,10 @@ public class AuthenticationController {
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody Person person) {
     return ResponseEntity.ok(service.register(person));
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+    return ResponseEntity.ok(service.authenticate(request));
   }
 }
