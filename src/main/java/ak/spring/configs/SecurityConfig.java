@@ -42,10 +42,11 @@ public class SecurityConfig {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
+            "/api/login",
+            "/api/register",
             "/api/admin/**",
             "/swagger-ui.html",};
     private final AuthenticationProvider authenticationProvider;
-    private final LogoutHandler logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -59,11 +60,10 @@ public class SecurityConfig {
                                 .authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
-                .formLogin(http -> http.loginPage("/api/login"))
+                .formLogin(http -> http.loginPage("/api/login").loginProcessingUrl("/api/login"))
                 .httpBasic(Customizer.withDefaults())
                 .logout(logout ->
                         logout.logoutUrl("/api/logout")
-                                .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
                 .build();
     }
