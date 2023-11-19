@@ -14,16 +14,18 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins =  "http://localhost:8080")
+@CrossOrigin(origins =  "http://localhost:8080", allowedHeaders = "*")
 public class AuthenticationController {
 
   private final AuthenticationService service;
 
+  @CrossOrigin(origins = "http://localhost:8080")
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody Person person) {
     return ResponseEntity.ok(service.register(person));
   }
 
+  @CrossOrigin(origins = "http://localhost:8080")
   @PostMapping("/login")
   public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
     return ResponseEntity.ok(service.authenticate(request));
