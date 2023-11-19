@@ -34,16 +34,16 @@ public class SongController {
     }
 
     @GetMapping("/songName/{name}")
-    public Song getSongByName(@PathVariable String name){
+    public List<Song> getSongByName(@PathVariable String name){
         return songService.findByName(name);
     }
 
     @GetMapping("/song/download/{name}")
     public ResponseEntity<?> downloadAccord (@PathVariable String name){
-        Song song = songService.findByName(name);
-        if (song!=null) {
+        List<Song> songs = songService.findByName(name);
+        if (songs!=null) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(song);
+                    .body(songs);
         }else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Запрашиваемой песни не существует, повторите запрос.");
         }

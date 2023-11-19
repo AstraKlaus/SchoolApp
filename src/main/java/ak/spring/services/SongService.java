@@ -28,9 +28,8 @@ public class SongService {
         return foundSong.orElse(null);
     }
 
-    public Song findByName(String name){
-        Optional<Song> song = songRepository.findByNameContainingIgnoreCase(name);
-        return song.orElse(null);
+    public List<Song> findByName(String name){
+        return songRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
 
     public Song uploadSong(Song song){

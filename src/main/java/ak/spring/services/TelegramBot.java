@@ -87,13 +87,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void findByText(long chatId, String message) {
-        Song song = songService.findByName(message);
-        Author author = authorService.findByName(message);
+        List<Song> song = songService.findByName(message);
+        List<Author> author = authorService.findByName(message);
 
         if (song != null){
-            sendSong(chatId, song);
+            sendSong(chatId, song.get(0));
         }else if (author != null) {
-            authorButtons(chatId, author);
+            authorButtons(chatId, author.get(0));
         }else {
             sendMessage(chatId,"Группы или песни с таким название не найдено.");
         }

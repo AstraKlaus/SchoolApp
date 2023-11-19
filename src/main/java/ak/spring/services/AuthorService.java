@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,8 +20,9 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public Author findByName(String name){
+    public List<Author> findByName(String name){
         return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
+
     }
 
     public Author findById(int id){

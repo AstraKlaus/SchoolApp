@@ -24,8 +24,7 @@ public class Person implements UserDetails {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-
+    
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
     @Column(name = "username")
@@ -48,7 +47,6 @@ public class Person implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private List<Song> songs;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
