@@ -33,7 +33,8 @@ import static org.springframework.http.HttpMethod.DELETE;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] ADMIN_LIST_URL = {
+            "/api/v1/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -43,10 +44,8 @@ public class SecurityConfig {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/api/login",
-            "/api/register",
             "/api/admin/**",
-            "/swagger-ui.html",};
+            "/swagger-ui.html"};
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
@@ -54,19 +53,17 @@ public class SecurityConfig {
         return httpSecurity
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URL)
+                .authorizeHttpRequests(req -> req
+                                .requestMatchers(ADMIN_LIST_URL).hasRole("ADMIN")
+                                .requestMatchers("/api/login", "/api/register", "/api/logout")
                                 .permitAll()
-                                .requestMatchers("").hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
-                .formLogin(http -> http.loginPage("/api/login").loginProcessingUrl("/api/login"))
+                .formLogin(http -> http.loginProcessingUrl("/api/login_processing").defaultSuccessUrl("/swagger-ui/index.html"))
                 .httpBasic(Customizer.withDefaults())
-                .logout(logout ->
-                        logout.logoutUrl("/api/logout")
-                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
+                .logout(logout -> logout.logoutUrl("/api/logout"))
                 .build();
     }
 
