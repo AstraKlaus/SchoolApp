@@ -1,11 +1,9 @@
 package ak.spring.models;
 
+import ak.spring.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "person")
@@ -40,6 +39,9 @@ public class Person implements UserDetails {
 
     @Column(name = "role")
     private String role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @ManyToMany
     @JoinTable(
