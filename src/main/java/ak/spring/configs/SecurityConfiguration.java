@@ -28,7 +28,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] ADMIN_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] ADMIN_LIST_URL = {
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -48,11 +48,12 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
-                                .requestMatchers("/api/auth/login","/api/auth/register").permitAll()
+                        req.requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -60,9 +61,7 @@ public class SecurityConfiguration {
                         logout.logoutUrl("/api/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                )
-        ;
-
+                );
         return http.build();
     }
 
