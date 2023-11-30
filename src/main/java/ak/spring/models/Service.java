@@ -14,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Service {
-    private List<Author> author;
-    private List<Song> song;
+    private List<Author> authors;
+    private List<Song> songs;
 }
