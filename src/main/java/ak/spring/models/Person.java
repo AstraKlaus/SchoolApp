@@ -1,6 +1,8 @@
 package ak.spring.models;
 
 import ak.spring.token.Token;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -40,16 +42,18 @@ public class Person implements UserDetails {
     @Column(name = "role")
     private String role;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
-
-    @ManyToMany
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "song_person",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private List<Song> songs;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

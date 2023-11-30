@@ -26,7 +26,7 @@ public class Token {
 
   public boolean expired;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "person_id")
   public Person user;
 }
