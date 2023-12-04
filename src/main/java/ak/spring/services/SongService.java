@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -23,10 +24,7 @@ public class SongService {
 
     public List<Song> findAll() { return songRepository.findAll(); }
 
-    public Song findOne(int id) {
-        Optional<Song> foundSong = songRepository.findById(id);
-        return foundSong.orElse(null);
-    }
+    public Song findByUuid(UUID uuid){ return songRepository.findByUuid(uuid).orElse(null);}
 
     public List<Song> findByName(String name){
         return songRepository.findByNameContainingIgnoreCase(name).orElse(null);

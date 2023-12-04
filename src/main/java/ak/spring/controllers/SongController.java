@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -28,9 +29,9 @@ public class SongController {
         return songService.uploadSong(song);
     }
 
-    @GetMapping("/songId/{id}")
-    public Song getSongById(@PathVariable("id") String id){
-        return songService.findOne(Integer.parseInt(id));
+    @GetMapping("/songId/{uuid}")
+    public Song getSongByUuid(@PathVariable("uuid") UUID uuid){
+        return songService.findByUuid(uuid);
     }
 
     @GetMapping("/songName/{name}")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -20,9 +21,9 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @GetMapping("/authorById/{id}")
-    public Author getAuthorById(@PathVariable("id") String id){
-        return authorService.findById(Integer.parseInt(id));
+    @GetMapping("/authorId/{uuid}")
+    public Author getSongByUuid(@PathVariable("uuid") UUID uuid){
+        return authorService.findByUuid(uuid);
     }
 
 

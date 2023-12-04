@@ -8,9 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @Transactional
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByUsername(String c);
+
+    Optional<Person> findByUuid(UUID uuid);
 }

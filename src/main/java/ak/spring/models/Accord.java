@@ -4,8 +4,10 @@ package ak.spring.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,6 +22,10 @@ public class Accord {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Id
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    private UUID uuid;
 
     @Column(name = "name")
     private String name;

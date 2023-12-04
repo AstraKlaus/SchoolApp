@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -28,6 +29,8 @@ public class AuthorService {
     public Author findById(int id){
         return authorRepository.findById(id).orElse(null);
     }
+
+    public Author findByUuid(UUID uuid){ return authorRepository.findByUuid(uuid).orElse(null);}
 
     public void updateAuthor(int id, Author authorForUpdate){
         Author pastAuthor = findById(id);

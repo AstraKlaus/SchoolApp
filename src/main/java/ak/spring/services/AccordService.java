@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -43,6 +44,10 @@ public class AccordService {
 
     public Accord findById(int id){
         return accordRepository.findById(id).orElse(null);
+    }
+
+    public Accord findByUuid(UUID uuid){
+        return accordRepository.findByUuid(uuid).orElse(null);
     }
 
     public byte[] downloadAccord(String name){
