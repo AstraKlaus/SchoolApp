@@ -52,7 +52,7 @@ public class SongService {
         songRepository.save(song);
     }
 
-    public List<Accord> getAccords(int id) {
-        return findById(id).getAccords();
+    public List<Accord> getAccords(UUID id) {
+        return findByUuid(id).getAccords();
     }
 }

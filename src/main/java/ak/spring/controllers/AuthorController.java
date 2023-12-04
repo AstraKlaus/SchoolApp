@@ -27,9 +27,9 @@ public class AuthorController {
     }
 
 
-    @GetMapping("/authorSongs/{id}")
-    public List<Song> getAuthorSongs(@PathVariable("id") String id){
-        Author author = authorService.findById(Integer.parseInt(id));
+    @GetMapping("/authorSongs/{uuid}")
+    public List<Song> getAuthorSongs(@PathVariable("uuid") UUID id){
+        Author author = authorService.findByUuid(id);
         if (author==null) return null;
         return authorService.getSongs(author);
     }
