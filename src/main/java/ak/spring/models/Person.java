@@ -29,7 +29,6 @@ public class Person implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private UUID uuid;
     
