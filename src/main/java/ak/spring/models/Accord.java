@@ -23,7 +23,6 @@ public class Accord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private UUID uuid;
 

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class AuthenticationService {
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
         .role("ROLE_USER")
+            .uuid(UUID.randomUUID())
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
@@ -41,6 +43,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
         .accessToken(jwtToken)
             .refreshToken(refreshToken)
+            .person(user)
         .build();
   }
 
