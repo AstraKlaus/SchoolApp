@@ -1,8 +1,10 @@
 package ak.spring.controllers;
 
 import ak.spring.models.Accord;
+import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.services.SongService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,13 @@ public class SongController {
     }
 
     @PostMapping("/song")
-    public Song uploadSong(@RequestBody Song song){
-        return songService.uploadSong(song);
+    public Song uploadSong(Song song, Author author, List<Accord> accords){
+        return songService.uploadSong(song, author, accords);
+    }
+
+    @GetMapping("/songs/{offset}/{pageSize}")
+    public Page<Song> getSongsWithPagination(@PathVariable int offset, @PathVariable int pageSize){
+        return songService.findWithPagination(offset, pageSize);
     }
 
     @GetMapping("/songId/{uuid}")
