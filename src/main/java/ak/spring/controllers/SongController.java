@@ -68,8 +68,8 @@ public class SongController {
         if (song != null) songService.deleteSong(song);
     }
 
-    @GetMapping("/song/{id}/accords")
-    public List<Accord> getSongAccords(@PathVariable("id") String id){
-        return songService.getAccords(Integer.parseInt(id));
+    @GetMapping("/song/{uuid}/accords")
+    public List<Accord> getSongAccords(@PathVariable("uuid") UUID id){
+        return songService.getAccords(id);
     }
 }
