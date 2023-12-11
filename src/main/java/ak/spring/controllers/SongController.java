@@ -27,7 +27,7 @@ public class SongController {
     }
 
     @PostMapping("/song")
-    public Song uploadSong(Song song, Author author, List<Accord> accords){
+    public Song uploadSong(@RequestBody SongRequest song,@RequestBody Author author,@RequestBody List<Accord> accords){
         return songService.uploadSong(song, author, accords);
     }
 

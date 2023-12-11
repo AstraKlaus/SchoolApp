@@ -48,10 +48,10 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/auth/**").permitAll()
+                        req.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
                                 .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
                                 .anyRequest()
-                                .authenticated()
+                                .permitAll()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

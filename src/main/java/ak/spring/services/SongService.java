@@ -1,7 +1,9 @@
 package ak.spring.services;
 
+import ak.spring.controllers.SongRequest;
 import ak.spring.models.Accord;
 import ak.spring.models.Author;
+import ak.spring.models.Person;
 import ak.spring.models.Song;
 import ak.spring.repositories.SongRepository;
 import jakarta.transaction.Transactional;
@@ -37,10 +39,15 @@ public class SongService {
         return songRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
 
-    public Song uploadSong(Song song, Author author, List<Accord> accords){
-        song.setAuthor(author);
-        song.setAccords(accords);
-        return songRepository.save(song);
+    public Song uploadSong(SongRequest song, Author author, List<Accord> accords){
+        Song newSong = Song.builder()
+                .text(song.getText())
+                .name(song.getName())
+                .uuid(UUID.randomUUID())
+                .accords(accords)
+                .author(author)
+                .build();
+        return songRepository.save(newSong);
     }
 
     public Song findById(int id){
