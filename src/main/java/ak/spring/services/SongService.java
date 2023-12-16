@@ -2,9 +2,8 @@ package ak.spring.services;
 
 import ak.spring.controllers.SongRequest;
 import ak.spring.models.Accord;
-import ak.spring.models.Author;
-import ak.spring.models.Person;
 import ak.spring.models.Song;
+import ak.spring.repositories.AuthorRepository;
 import ak.spring.repositories.SongRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,10 +19,12 @@ import java.util.UUID;
 public class SongService {
 
     private final SongRepository songRepository;
+    private final AuthorRepository authorRepository;
 
     @Autowired
-    public SongService(SongRepository songRepository) {
+    public SongService(SongRepository songRepository, AuthorRepository authorRepository) {
         this.songRepository = songRepository;
+        this.authorRepository = authorRepository;
     }
 
     public List<Song> findAll() { return songRepository.findAll(); }
@@ -39,14 +39,15 @@ public class SongService {
         return songRepository.findByNameContainingIgnoreCase(name).orElse(null);
     }
 
-    public Song uploadSong(SongRequest song, Author author, List<Accord> accords){
+    public Song uploadSong(SongRequest song){
         Song newSong = Song.builder()
                 .text(song.getText())
                 .name(song.getName())
                 .uuid(UUID.randomUUID())
-                .accords(accords)
-                .author(author)
+                .accords(song.getAccords())
+                .author(song.getAuthor())
                 .build();
+        authorRepository.save(song.getAuthor());
         return songRepository.save(newSong);
     }
 
