@@ -58,8 +58,8 @@ public class SongController {
     }
 
     @PatchMapping("/song/{id}")
-    public void updateSong(@PathVariable("id") String id, Song songForUpdate){
-        songService.updateSong(Integer.parseInt(id), songForUpdate);
+    public Song updateSong(@PathVariable("id") String id, @RequestBody SongRequest songForUpdate){
+        return songService.updateSong(Integer.parseInt(id), songForUpdate);
     }
 
     @DeleteMapping("/song/{id}")

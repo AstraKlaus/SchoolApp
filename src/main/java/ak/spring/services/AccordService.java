@@ -1,6 +1,7 @@
 package ak.spring.services;
 
 import ak.spring.models.Accord;
+import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.repositories.AccordRepository;
 import jakarta.transaction.Transactional;
@@ -25,21 +26,22 @@ public class AccordService {
         this.accordRepository = accordRepository;
     }
 
-    public String uploadAccord(MultipartFile file) throws IOException {
-        accordRepository.save(Accord.builder()
+    public Accord uploadAccord(MultipartFile file) throws IOException {
+        Accord newAccord = Accord.builder()
+                .uuid(UUID.randomUUID())
                 .name(file.getOriginalFilename())
-                .image(file.getBytes()).build()
-        );
-        return "file upload successfully: " + file.getOriginalFilename();
+                .image(file.getBytes()).build();
+        return accordRepository.save(newAccord);
     }
 
-    public void updateAccord(int id,String name, MultipartFile file) throws IOException {
+    public Accord updateAccord(int id,String name, MultipartFile file) throws IOException {
         Accord accord = findById(id);
-        if (accord!=null) {
+        if (accord != null) {
             accord.setName(name);
             accord.setImage(file.getBytes());
-            accordRepository.save(accord);
+            return accordRepository.save(accord);
         }
+        return null;
     }
 
     public Accord findById(int id){
@@ -67,5 +69,9 @@ public class AccordService {
 
     public List<Accord> findAll() {
         return accordRepository.findAll();
+    }
+
+    public void deleteAccord(Accord accord) {
+        accordRepository.delete(accord);
     }
 }

@@ -40,8 +40,8 @@ public class AuthorController {
     }
 
     @PatchMapping("/author/{id}")
-    public void updateAuthor(@PathVariable("id") String id, Author author){
-        authorService.updateAuthor(Integer.parseInt(id), author);
+    public Author updateAuthor(@PathVariable("id") String id, @RequestBody Author author){
+        return authorService.updateAuthor(Integer.parseInt(id), author);
     }
 
     @DeleteMapping("/author/{id}")
@@ -50,8 +50,8 @@ public class AuthorController {
         if (author != null) authorService.deleteAuthor(author);
     }
 
-    @PostMapping("/author/{id}")
-    public Author uploadAuthor(Author author){
+    @PostMapping("/author")
+    public Author uploadAuthor(@RequestBody Author author){
         return authorService.uploadAuthor(author);
     }
 

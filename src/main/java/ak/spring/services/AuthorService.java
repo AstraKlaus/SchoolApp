@@ -1,5 +1,6 @@
 package ak.spring.services;
 
+import ak.spring.controllers.SongRequest;
 import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.repositories.AuthorRepository;
@@ -32,21 +33,24 @@ public class AuthorService {
 
     public Author findByUuid(UUID uuid){ return authorRepository.findByUuid(uuid).orElse(null);}
 
-    public void updateAuthor(int id, Author authorForUpdate){
+    public Author updateAuthor(int id, Author authorForUpdate){
         Author pastAuthor = findById(id);
 
         authorForUpdate.setId(id);
         authorForUpdate.setSongs(pastAuthor.getSongs());
 
-        authorRepository.save(authorForUpdate);
+        return authorRepository.save(authorForUpdate);
     }
-
     public void deleteAuthor(Author author) {
         authorRepository.delete(author);
     }
 
     public Author uploadAuthor(Author author){
-        return authorRepository.save(author);
+        Author newAuthor = Author.builder()
+                .name(author.getName())
+                .uuid(UUID.randomUUID())
+                .build();
+        return authorRepository.save(newAuthor);
     }
 
     public List<Author> findAll() {

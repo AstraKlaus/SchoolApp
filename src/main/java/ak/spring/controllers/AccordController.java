@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.models.Accord;
+import ak.spring.models.Author;
 import ak.spring.services.AccordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -26,25 +29,31 @@ public class AccordController {
         this.accordService = accordService;
     }
 
-    @PostMapping("/accord")
-    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        String uploadAccord = accordService.uploadAccord(file);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(uploadAccord);
+    @GetMapping("/accordId/{uuid}")
+    public Accord getAccordByUuid(@PathVariable("uuid") UUID uuid){
+        return accordService.findByUuid(uuid);
     }
 
+    @PostMapping("/accord")
+    public Accord uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+        return accordService.uploadAccord(file);
+    }
+
+    //тут я отправляю имя и файл, не знаю как их обоих принять, пж протесть прежде чем мне отправлять
     @PatchMapping("/accord/{id}")
-    public void updateImage(@PathVariable("id") String id, String name ,@RequestParam("image") MultipartFile file) throws IOException {
-        accordService.updateAccord(Integer.parseInt(id),name, file);
+    public Accord updateImage(@PathVariable("id") String id, @RequestParam Map<String,String> requestParams) throws IOException {
+        String userName=requestParams.get("email");
+        String password=requestParams.get("password");
+        return accordService.updateAccord(Integer.parseInt(id), name, file);
     }
 
     @PostMapping("/accords")
-    public ResponseEntity<?> uploadImages(@RequestParam("images") List<MultipartFile> files) throws IOException {
+    public List<Accord> uploadImages(@RequestParam("images") MultipartFile[] files) throws IOException {
+        List<Accord> newAccords = new ArrayList<>();
         for (MultipartFile file:files){
-            accordService.uploadAccord(file);
+            newAccords.add(accordService.uploadAccord(file));
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Successfuly uploaded " + files.size() + " accords");
+        return newAccords;
     }
 
     @GetMapping("/accord/{name}")
@@ -60,4 +69,9 @@ public class AccordController {
         return accordService.findAll();
     }
 
+    @DeleteMapping("/accord/{id}")
+    public void deleteAuthor(@PathVariable("id") String id){
+        Accord accord = accordService.findById(Integer.parseInt(id));
+        if (accord != null) accordService.deleteAccord(accord);
+    }
 }

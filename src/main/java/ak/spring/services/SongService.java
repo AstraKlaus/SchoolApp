@@ -59,14 +59,19 @@ public class SongService {
         songRepository.delete(song);
     }
 
-    public void updateSong(int id, Song song){
+    public Song updateSong(int id, SongRequest song){
         Song pastSong = findById(id);
 
-        song.setId(id);
-        song.setAuthor(pastSong.getAuthor());
-        song.setAccords(pastSong.getAccords());
+        Song newSong = Song.builder()
+                .id(pastSong.getId())
+                .text(song.getText())
+                .name(song.getName())
+                .uuid(pastSong.getUuid())
+                .accords(song.getAccords())
+                .author(song.getAuthor())
+                .build();
 
-        songRepository.save(song);
+        return songRepository.save(newSong);
     }
 
     public List<Accord> getAccords(UUID id) {
