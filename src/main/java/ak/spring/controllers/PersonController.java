@@ -51,10 +51,22 @@ public class PersonController {
         return personService.findFavorites(token);
     }
 
+    @GetMapping("/personFavorite/{uuid}/{id}")
+    public boolean getPersonFavorite(@PathVariable("id") String id,
+                                     @PathVariable("uuid") UUID uuid){
+        return personService.findFavorite(Integer.parseInt(id), uuid);
+    }
+
     @PostMapping("/personFavorites/{token}/{id}")
     public void addPersonFavorites(@PathVariable("id") String id,
                                    @PathVariable("token") String token){
         personService.addFavorites(Integer.parseInt(id), token);
+    }
+
+    @DeleteMapping("/personFavorites/{token}/{id}")
+    public void deletePersonFavorites(@PathVariable("id") String id,
+                                   @PathVariable("token") String token){
+        personService.deleteFavorites(Integer.parseInt(id), token);
     }
 
     @GetMapping("/person")

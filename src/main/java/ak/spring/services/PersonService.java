@@ -58,10 +58,14 @@ public class PersonService {
             Person person = findByToken(token);
             List<Song> songs = person.getSongs();
 
-            songs.add(songService.findById(id));
-            person.setSongs(songs);
+            Song song = songService.findById(id);
 
-            personRepository.save(person);
+            if (!songs.contains(song)) {
+                songs.add(songService.findById(id));
+                person.setSongs(songs);
+
+                personRepository.save(person);
+            }
         }
     }
 
@@ -98,5 +102,25 @@ public class PersonService {
                 .build();
 
         return personRepository.save(newPerson);
+    }
+
+    public void deleteFavorites(int id, String token){
+        Optional<Token> optionalToken = tokenRepository.findByToken(token);
+        if (optionalToken.isPresent()){
+            Person person = findByToken(token);
+            List<Song> songs = person.getSongs();
+            Song song = songService.findById(id);
+
+            if (songs.contains(song)) {
+                System.out.println("nen");
+                songs.remove(songService.findById(id));
+                personRepository.save(person);
+            }
+        }
+    }
+
+    public boolean findFavorite(int id, UUID uuid) {
+        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
+        return optionalPerson.map(value -> value.getSongs().contains(songService.findById(id))).orElse(false);
     }
 }
