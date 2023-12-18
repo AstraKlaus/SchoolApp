@@ -7,6 +7,8 @@ import ak.spring.repositories.AccordRepository;
 import jakarta.transaction.Transactional;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,14 +36,18 @@ public class AccordService {
         return accordRepository.save(newAccord);
     }
 
-    public Accord updateAccord(int id,String name, MultipartFile file) throws IOException {
+    public Accord updateAccord(int id,String name, byte[] file) throws IOException {
         Accord accord = findById(id);
         if (accord != null) {
             accord.setName(name);
-            accord.setImage(file.getBytes());
+            accord.setImage(file);
             return accordRepository.save(accord);
         }
         return null;
+    }
+
+    public Page<Accord> findWithPagination(int offset, int pageSize){
+        return accordRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
     public Accord findById(int id){

@@ -6,6 +6,8 @@ import ak.spring.models.Song;
 import ak.spring.repositories.AuthorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,10 @@ public class AuthorService {
     public List<Author> findByName(String name){
         return authorRepository.findByNameContainingIgnoreCase(name).orElse(null);
 
+    }
+
+    public Page<Author> findWithPagination(int offset, int pageSize){
+        return authorRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
     public Author findById(int id){

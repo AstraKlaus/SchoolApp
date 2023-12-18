@@ -3,6 +3,7 @@ package ak.spring.controllers;
 import ak.spring.models.Author;
 import ak.spring.models.Song;
 import ak.spring.services.AuthorService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,11 @@ public class AuthorController {
     @GetMapping("/authorByName/{name}")
     public List<Author> getAuthorByName(@PathVariable("name") String name){
         return authorService.findByName(name);
+    }
+
+    @GetMapping("/authors/{offset}/{pageSize}")
+    public Page<Author> getAuthorsWithPagination(@PathVariable int offset, @PathVariable int pageSize){
+        return authorService.findWithPagination(offset, pageSize);
     }
 
     @PatchMapping("/author/{id}")

@@ -4,6 +4,7 @@ import ak.spring.models.Accord;
 import ak.spring.models.Author;
 import ak.spring.services.AccordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,11 @@ public class AccordController {
         this.accordService = accordService;
     }
 
+    @GetMapping("/accords/{offset}/{pageSize}")
+    public Page<Accord> getAuthorsWithPagination(@PathVariable int offset, @PathVariable int pageSize){
+        return accordService.findWithPagination(offset, pageSize);
+    }
+
     @GetMapping("/accordId/{uuid}")
     public Accord getAccordByUuid(@PathVariable("uuid") UUID uuid){
         return accordService.findByUuid(uuid);
@@ -41,10 +47,8 @@ public class AccordController {
 
     //тут я отправляю имя и файл, не знаю как их обоих принять, пж протесть прежде чем мне отправлять
     @PatchMapping("/accord/{id}")
-    public Accord updateImage(@PathVariable("id") String id, @RequestParam Map<String,String> requestParams) throws IOException {
-        String userName=requestParams.get("email");
-        String password=requestParams.get("password");
-        return accordService.updateAccord(Integer.parseInt(id), name, file);
+    public Accord updateImage(@PathVariable("id") String id, @RequestBody Accord futureAccord) throws IOException {
+        return accordService.updateAccord(Integer.parseInt(id), futureAccord.getName(), futureAccord.getImage());
     }
 
     @PostMapping("/accords")
