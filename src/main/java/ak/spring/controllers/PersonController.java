@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.models.Author;
 import ak.spring.models.Person;
 import ak.spring.models.Song;
 import ak.spring.services.AdminService;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -26,20 +28,24 @@ public class PersonController {
     }
 
     @PatchMapping("/person/{id}")
-    public void updatePerson(@PathVariable("id") String id, Person person){
-        personService.updatePerson(Integer.parseInt(id), person);
+    public Person updatePerson(@PathVariable("id") String id, @RequestBody Person person){
+        return personService.updatePerson(Integer.parseInt(id), person);
     }
 
     @DeleteMapping("/person/{id}")
-    public void deletePerson(Person person){
-        personService.deletePerson(person);
+    public void deletePerson(@PathVariable("id") String id){
+        Person person = personService.findById(Integer.parseInt(id));
+        if (person != null) personService.deletePerson(person);
     }
 
     @GetMapping("/person/{token}")
     public Person getPerson(@PathVariable("token") String token){
         return personService.findByToken(token);
     }
-
+    @GetMapping("/personId/{uuid}")
+    public Person getPersonByUuid(@PathVariable("uuid") UUID uuid){
+        return personService.findByUuid(uuid);
+    }
     @GetMapping("/personFavorites/{token}")
     public List<Song> getPersonFavorites(@PathVariable("token") String token){
         return personService.findFavorites(token);
