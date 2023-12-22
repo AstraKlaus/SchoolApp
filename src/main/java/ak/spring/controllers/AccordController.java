@@ -45,10 +45,9 @@ public class AccordController {
         return accordService.uploadAccord(file);
     }
 
-    //тут я отправляю имя и файл, не знаю как их обоих принять, пж протесть прежде чем мне отправлять
     @PatchMapping("/accord/{id}")
-    public Accord updateImage(@PathVariable("id") String id, @RequestBody Accord futureAccord) throws IOException {
-        return accordService.updateAccord(Integer.parseInt(id), futureAccord.getName(), futureAccord.getImage());
+    public Accord updateImage(@PathVariable("id") String id, @RequestParam("name") String name, @RequestParam("image") MultipartFile file) throws IOException {
+        return accordService.updateAccord(Integer.parseInt(id), name, file.getBytes());
     }
 
     @PostMapping("/accords")
@@ -76,6 +75,6 @@ public class AccordController {
     @DeleteMapping("/accord/{id}")
     public void deleteAuthor(@PathVariable("id") String id){
         Accord accord = accordService.findById(Integer.parseInt(id));
-        if (accord != null) accordService.deleteAccord(accord);
+        if (accord != null && accord.getSongs().isEmpty()) accordService.deleteAccord(accord);
     }
 }
