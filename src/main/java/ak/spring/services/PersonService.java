@@ -1,5 +1,7 @@
 package ak.spring.services;
 
+import ak.spring.controllers.SongRequest;
+import ak.spring.models.Author;
 import ak.spring.models.Person;
 import ak.spring.models.Song;
 import ak.spring.repositories.PersonRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -55,10 +58,14 @@ public class PersonService {
             Person person = findByToken(token);
             List<Song> songs = person.getSongs();
 
-            songs.add(songService.findById(id));
-            person.setSongs(songs);
+            Song song = songService.findById(id);
 
-            personRepository.save(person);
+            if (!songs.contains(song)) {
+                songs.add(songService.findById(id));
+                person.setSongs(songs);
+
+                personRepository.save(person);
+            }
         }
     }
 
@@ -71,6 +78,7 @@ public class PersonService {
         return personRepository.findById(id).orElse(null);
     }
 
+    public Person findByUuid(UUID uuid){ return personRepository.findByUuid(uuid).orElse(null);}
 
     public Person uploadPerson(Person person){
         person.setPassword(passwordEncoder.encode(person.getPassword()));
@@ -81,18 +89,38 @@ public class PersonService {
         personRepository.delete(person);
     }
 
-    public void updatePerson(int id, Person person){
-        Optional<Person> optionalPerson = personRepository.findById(id);
-        if (optionalPerson.isPresent()) {
-            Person pastPerson = optionalPerson.get();
+    public Person updatePerson(int id, Person person){
+        Person pastPerson = findById(id);
 
-            person.setId(id);
-            person.setUsername(pastPerson.getUsername());
-            person.setRole(pastPerson.getRole());
-            person.setEmail(pastPerson.getEmail());
-            person.setSongs(pastPerson.getSongs());
+        Person newPerson = Person.builder()
+                .id(pastPerson.getId())
+                .username(person.getUsername())
+                .uuid(pastPerson.getUuid())
+                .email(person.getEmail())
+                .password(pastPerson.getPassword())
+                .role(person.getRole())
+                .build();
 
-            personRepository.save(person);
+        return personRepository.save(newPerson);
+    }
+
+    public void deleteFavorites(int id, String token){
+        Optional<Token> optionalToken = tokenRepository.findByToken(token);
+        if (optionalToken.isPresent()){
+            Person person = findByToken(token);
+            List<Song> songs = person.getSongs();
+            Song song = songService.findById(id);
+
+            if (songs.contains(song)) {
+                System.out.println("nen");
+                songs.remove(songService.findById(id));
+                personRepository.save(person);
+            }
         }
+    }
+
+    public boolean findFavorite(int id, UUID uuid) {
+        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
+        return optionalPerson.map(value -> value.getSongs().contains(songService.findById(id))).orElse(false);
     }
 }
