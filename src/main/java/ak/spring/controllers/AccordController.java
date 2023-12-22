@@ -73,7 +73,7 @@ public class AccordController {
     }
 
     @DeleteMapping("/accord/{id}")
-    public void deleteAuthor(@PathVariable("id") String id){
+    public void deleteAccord(@PathVariable("id") String id){
         Accord accord = accordService.findById(Integer.parseInt(id));
         if (accord != null && accord.getSongs().isEmpty()) accordService.deleteAccord(accord);
     }

@@ -10,6 +10,10 @@ import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,10 +56,10 @@ public class PersonService {
         return optionalToken.map(Token::getUser).orElse(null);
     }
 
-    public void addFavorites(int id, String token){
-        Optional<Token> optionalToken = tokenRepository.findByToken(token);
-        if (optionalToken.isPresent()){
-            Person person = findByToken(token);
+    public void addFavorites(int id, UUID uuid){
+        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
+        if (optionalPerson.isPresent()){
+            Person person = optionalPerson.get();
             List<Song> songs = person.getSongs();
 
             Song song = songService.findById(id);
@@ -69,9 +73,10 @@ public class PersonService {
         }
     }
 
-    public List<Song> findFavorites(String token){
-        Optional<Token> optionalToken = tokenRepository.findByToken(token);
-        return optionalToken.map(value -> value.getUser().getSongs()).orElse(null);
+    public Page<Song> findFavorites(UUID uuid, int offset, int pageSize){
+        List<Song> optionalSongs = personRepository.findByUuid(uuid).map(Person::getSongs).orElse(null);
+        if (optionalSongs == null) return null;
+        return new PageImpl<>(optionalSongs, Pageable.ofSize(pageSize), offset);
     }
 
     public Person findById(int id){
@@ -104,10 +109,10 @@ public class PersonService {
         return personRepository.save(newPerson);
     }
 
-    public void deleteFavorites(int id, String token){
-        Optional<Token> optionalToken = tokenRepository.findByToken(token);
-        if (optionalToken.isPresent()){
-            Person person = findByToken(token);
+    public void deleteFavorites(int id, UUID uuid){
+        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
+        if (optionalPerson.isPresent()){
+            Person person = optionalPerson.get();
             List<Song> songs = person.getSongs();
             Song song = songService.findById(id);
 

@@ -5,6 +5,7 @@ import ak.spring.models.Person;
 import ak.spring.models.Song;
 import ak.spring.services.AdminService;
 import ak.spring.services.PersonService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,17 +39,21 @@ public class PersonController {
         if (person != null) personService.deletePerson(person);
     }
 
-    @GetMapping("/person/{token}")
-    public Person getPerson(@PathVariable("token") String token){
-        return personService.findByToken(token);
+    @GetMapping("/person/{uuid}")
+    public Person getPerson(@PathVariable("uuid") UUID uuid){
+        return personService.findByUuid(uuid);
     }
+
     @GetMapping("/personId/{uuid}")
     public Person getPersonByUuid(@PathVariable("uuid") UUID uuid){
         return personService.findByUuid(uuid);
     }
-    @GetMapping("/personFavorites/{token}")
-    public List<Song> getPersonFavorites(@PathVariable("token") String token){
-        return personService.findFavorites(token);
+
+    @GetMapping("/personFavorites/{uuid}/{offset}/{pageSize}")
+    public Page<Song> getPersonFavorites(@PathVariable("uuid") UUID uuid,
+                                         @PathVariable int offset,
+                                         @PathVariable int pageSize){
+        return personService.findFavorites(uuid, offset, pageSize);
     }
 
     @GetMapping("/personFavorite/{uuid}/{id}")
@@ -57,16 +62,16 @@ public class PersonController {
         return personService.findFavorite(Integer.parseInt(id), uuid);
     }
 
-    @PostMapping("/personFavorites/{token}/{id}")
+    @PostMapping("/personFavorites/{uuid}/{id}")
     public void addPersonFavorites(@PathVariable("id") String id,
-                                   @PathVariable("token") String token){
-        personService.addFavorites(Integer.parseInt(id), token);
+                                   @PathVariable("uuid") UUID uuid){
+        personService.addFavorites(Integer.parseInt(id), uuid);
     }
 
-    @DeleteMapping("/personFavorites/{token}/{id}")
+    @DeleteMapping("/personFavorites/{uuid}/{id}")
     public void deletePersonFavorites(@PathVariable("id") String id,
-                                   @PathVariable("token") String token){
-        personService.deleteFavorites(Integer.parseInt(id), token);
+                                      @PathVariable("uuid") UUID uuid){
+        personService.deleteFavorites(Integer.parseInt(id), uuid);
     }
 
     @GetMapping("/person")
