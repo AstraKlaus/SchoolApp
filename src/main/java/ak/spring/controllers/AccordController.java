@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,6 +74,6 @@ public class AccordController {
     @DeleteMapping("/accord/{id}")
     public void deleteAccord(@PathVariable("id") String id){
         Accord accord = accordService.findById(Integer.parseInt(id));
-        if (accord != null && accord.getSongs().isEmpty()) accordService.deleteAccord(accord);
+        if (accord != null) accordService.deleteAccord(accord);
     }
 }

@@ -74,9 +74,7 @@ public class PersonService {
     }
 
     public Page<Song> findFavorites(UUID uuid, int offset, int pageSize){
-        List<Song> optionalSongs = personRepository.findByUuid(uuid).map(Person::getSongs).orElse(null);
-        if (optionalSongs == null) return null;
-        return new PageImpl<>(optionalSongs, Pageable.ofSize(pageSize), offset);
+        return personRepository.findSongsByPersonUuid(uuid, PageRequest.of(offset, pageSize));
     }
 
     public Person findById(int id){

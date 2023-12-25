@@ -5,6 +5,7 @@ import ak.spring.models.Song;
 import ak.spring.services.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,9 +52,12 @@ public class AuthorController {
     }
 
     @DeleteMapping("/author/{id}")
-    public void deleteAuthor(@PathVariable("id") String id){
+    public ResponseEntity<String> deleteAuthor(@PathVariable("id") String id){
         Author author = authorService.findById(Integer.parseInt(id));
-        if (author != null) authorService.deleteAuthor(author);
+        if (author != null && author.getSongs().isEmpty()) {
+            authorService.deleteAuthor(author);
+            return new ResponseEntity<>("Автор успешно удален", HttpStatus.OK);
+        } else return new ResponseEntity<>("Нельзя удалить автора, который имеет песню", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/author")
