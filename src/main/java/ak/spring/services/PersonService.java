@@ -1,22 +1,24 @@
 package ak.spring.services;
 
-import ak.spring.controllers.SongRequest;
-import ak.spring.models.Author;
+import ak.spring.exceptions.ResourceNotFoundException;
+import ak.spring.models.Enrollment;
 import ak.spring.models.Person;
-import ak.spring.models.Song;
+import ak.spring.models.Course;
+import ak.spring.models.Role;
 import ak.spring.repositories.PersonRepository;
-import ak.spring.repositories.SongRepository;
+import ak.spring.repositories.CourseRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,102 +30,90 @@ public class PersonService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final PersonRepository personRepository;
-    private final SongService songService;
+    private final CourseService courseService;
 
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
-                         TokenRepository tokenRepository, PersonRepository personRepository, SongRepository songRepository, SongService songService) {
+                         TokenRepository tokenRepository, PersonRepository personRepository, CourseRepository courseRepository, CourseService courseService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.personRepository = personRepository;
-        this.songService = songService;
+        this.courseService = courseService;
     }
 
-    public List<Person> findAll() { return personRepository.findAll(); }
-
-    public Person findOne(int id) {
-        Optional<Person> foundPerson = personRepository.findById(id);
-        return foundPerson.orElse(null);
+    public List<Person> findAll() {
+        return personRepository.findAll();
     }
 
-    public Person findByUsername(String name){
-        Optional<Person> person = personRepository.findByUsername(name);
-        return person.orElse(null);
+    public Optional<Person> findByUsername(String name) {
+        return personRepository.findByUsername(name);
     }
 
-    public Person findByToken(String token){
-        Optional<Token> optionalToken = tokenRepository.findByToken(token);
-        return optionalToken.map(Token::getUser).orElse(null);
+    public Person findByToken(String token) {
+        return tokenRepository.findByToken(token)
+                .map(Token::getUser)
+                .orElse(null);
     }
 
-    public void addFavorites(int id, UUID uuid){
-        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
-        if (optionalPerson.isPresent()){
-            Person person = optionalPerson.get();
-            List<Song> songs = person.getSongs();
-
-            Song song = songService.findById(id);
-
-            if (!songs.contains(song)) {
-                songs.add(songService.findById(id));
-                person.setSongs(songs);
-
-                personRepository.save(person);
-            }
-        }
+    public Person findById(int id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
     }
 
-    public Page<Song> findFavorites(UUID uuid, int offset, int pageSize){
-        return personRepository.findSongsByPersonUuid(uuid, PageRequest.of(offset, pageSize));
-    }
-
-    public Person findById(int id){
-        return personRepository.findById(id).orElse(null);
-    }
-
-    public Person findByUuid(UUID uuid){ return personRepository.findByUuid(uuid).orElse(null);}
-
-    public Person uploadPerson(Person person){
+    public Person uploadPerson(Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
         return personRepository.save(person);
     }
 
-    public void deletePerson(Person person){
+    public void deletePerson(Person person) {
         personRepository.delete(person);
     }
 
-    public Person updatePerson(int id, Person person){
-        Person pastPerson = findById(id);
-
-        Person newPerson = Person.builder()
-                .id(pastPerson.getId())
-                .username(person.getUsername())
-                .uuid(pastPerson.getUuid())
-                .email(person.getEmail())
-                .password(pastPerson.getPassword())
-                .role(person.getRole())
-                .build();
-
-        return personRepository.save(newPerson);
+    public Person update(int id, Person updatedPerson) {
+        Person existingPerson = findById(id);
+        existingPerson.setFirstName(updatedPerson.getFirstName());
+        existingPerson.setLastName(updatedPerson.getLastName());
+        return personRepository.save(existingPerson);
     }
 
-    public void deleteFavorites(int id, UUID uuid){
-        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
-        if (optionalPerson.isPresent()){
-            Person person = optionalPerson.get();
-            List<Song> songs = person.getSongs();
-            Song song = songService.findById(id);
+    public List<Course> findCoursesForPerson(int personId) {
+        return findById(personId).getCourses(); }
 
-            if (songs.contains(song)) {
-                System.out.println("nen");
-                songs.remove(songService.findById(id));
-                personRepository.save(person);
-            }
+    public void enrollPersonInCourse(int personId, int courseId) {
+        Person person = findById(personId);
+        Course course = courseService.findById(courseId);
+
+        Enrollment enrollment = Enrollment.builder().person(person).course(course).build();
+        person.getEnrollments().add(enrollment);
+        personRepository.save(person);
+    }
+
+    public void removePersonFromCourse(int personId, int courseId) {
+        Person person = findById(personId);
+        Course course = courseService.findById(courseId);
+
+        Enrollment enrollment = person.getEnrollments().stream()
+                .filter(e -> e.getCourse().equals(course))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment", "personId, courseId", personId + ", " + courseId));
+
+        person.getEnrollments().remove(enrollment);
+        personRepository.save(person);
+    }
+
+    public void assignRoleToUser(int userId, Role role) {
+        Person person = findById(userId);
+        person.setRole(role);
+        personRepository.save(person);
+    }
+
+    public void removeRoleFromUser(int userId, Role role) {
+        Person person = findById(userId);
+        if (person.getRole() == role) {
+            person.setRole(Role.USER);
+            personRepository.save(person);
+        } else {
+            throw new IllegalArgumentException("Пользователь не может иметь эту роль");
         }
-    }
-
-    public boolean findFavorite(int id, UUID uuid) {
-        Optional<Person> optionalPerson = personRepository.findByUuid(uuid);
-        return optionalPerson.map(value -> value.getSongs().contains(songService.findById(id))).orElse(false);
     }
 }

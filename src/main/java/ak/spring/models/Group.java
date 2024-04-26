@@ -1,41 +1,36 @@
 package ak.spring.models;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 import java.util.UUID;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 @Getter
 @Setter
-@Entity
 @Builder
-@Table(name = "Accord")
-@NoArgsConstructor
+@Entity
+@Table(name = "Group")
 @AllArgsConstructor
-public class Accord {
+@NoArgsConstructor
+public class Group {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private UUID uuid;
-
     @Column(name = "name")
     private String name;
 
-    @Lob
-    @Column(name = "image", length = 1000)
-    private byte[] image;
+    @ManyToOne
+    @JoinColumn(name = "id_teacher", referencedColumnName = "id")
+    private Person teacher;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "accords")
-    private List<Song> songs;
-
+    @OneToMany(mappedBy = "group")
+    private List<Person> persons;
 }

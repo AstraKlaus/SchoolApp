@@ -1,6 +1,6 @@
 package ak.spring.repositories;
 
-import ak.spring.models.Song;
+import ak.spring.models.Course;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Repository
 @Transactional
-public interface SongRepository extends JpaRepository<Song, Integer> {
+public interface CourseRepository extends JpaRepository<Course, Integer> {
 
-    Optional<List<Song>> findByNameContainingIgnoreCase(String name);
+    Optional<List<Course>> findByNameContainingIgnoreCase(String name);
 
-    Optional<Song> findByUuid(UUID uuid);
+    Optional<Course> findByUuid(UUID uuid);
 }

@@ -1,7 +1,7 @@
 package ak.spring.repositories;
 
 import ak.spring.models.Person;
-import ak.spring.models.Song;
+import ak.spring.models.Course;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +18,7 @@ import java.util.UUID;
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByUsername(String c);
 
-    Optional<Person> findByUuid(UUID uuid);
-
-    @Query("SELECT s FROM Person p JOIN p.songs s WHERE p.uuid = :personUuid")
-    Page<Song> findSongsByPersonUuid(@Param("personUuid") UUID personUuid, Pageable pageable);
+    //@Query("SELECT s FROM Person p JOIN p.songs s WHERE p.uuid = :personUuid")
+    //Page<Course> findSongsByPersonUuid(@Param("personUuid") UUID personUuid, Pageable pageable);
 
 }

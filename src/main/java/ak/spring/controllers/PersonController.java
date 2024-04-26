@@ -1,82 +1,87 @@
 package ak.spring.controllers;
 
-import ak.spring.models.Author;
+import ak.spring.models.Course;
 import ak.spring.models.Person;
-import ak.spring.models.Song;
-import ak.spring.services.AdminService;
 import ak.spring.services.PersonService;
-import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/persons")
 @CrossOrigin(origins =  "http://localhost:8080")
 public class PersonController {
 
     private final PersonService personService;
 
+    @Autowired
     public PersonController(PersonService personService) {
         this.personService = personService;
     }
 
-    @PostMapping("/person")
-    public Person createPerson(Person person){
-        return personService.uploadPerson(person);
+    @GetMapping
+    public ResponseEntity<List<Person>> findAll() {
+        List<Person> persons = personService.findAll();
+        return ResponseEntity.ok(persons);
     }
 
-    @PatchMapping("/person/{id}")
-    public Person updatePerson(@PathVariable("id") String id, @RequestBody Person person){
-        return personService.updatePerson(Integer.parseInt(id), person);
+    @GetMapping("/search/{username}")
+    public ResponseEntity<Person> findByUsername(@PathVariable String username) {
+        Person person = personService.findByUsername(username)
+                .orElse(null);
+        return ResponseEntity.ok(person);
     }
 
-    @DeleteMapping("/person/{id}")
-    public void deletePerson(@PathVariable("id") String id){
-        Person person = personService.findById(Integer.parseInt(id));
-        if (person != null) personService.deletePerson(person);
+    @GetMapping("/token/{token}")
+    public ResponseEntity<Person> findByToken(@PathVariable String token) {
+        Person person = personService.findByToken(token);
+        return ResponseEntity.ok(person);
     }
 
-    @GetMapping("/person/{uuid}")
-    public Person getPerson(@PathVariable("uuid") UUID uuid){
-        return personService.findByUuid(uuid);
+    @GetMapping("/{id}")
+    public ResponseEntity<Person> findById(@PathVariable int id) {
+        Person person = personService.findById(id);
+        return ResponseEntity.ok(person);
     }
 
-    @GetMapping("/personId/{uuid}")
-    public Person getPersonByUuid(@PathVariable("uuid") UUID uuid){
-        return personService.findByUuid(uuid);
+    @PostMapping
+    public ResponseEntity<Person> uploadPerson(@Valid @RequestBody Person person) {
+        Person savedPerson = personService.uploadPerson(person);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
     }
 
-    @GetMapping("/personFavorites/{uuid}/{offset}/{pageSize}")
-    public Page<Song> getPersonFavorites(@PathVariable("uuid") UUID uuid,
-                                         @PathVariable int offset,
-                                         @PathVariable int pageSize){
-        return personService.findFavorites(uuid, offset, pageSize);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable int id) {
+        Person person = personService.findById(id);
+        personService.deletePerson(person);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/personFavorite/{uuid}/{id}")
-    public boolean getPersonFavorite(@PathVariable("id") String id,
-                                     @PathVariable("uuid") UUID uuid){
-        return personService.findFavorite(Integer.parseInt(id), uuid);
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> update(@PathVariable int id, @Valid @RequestBody Person updatedPerson) {
+        Person person = personService.update(id, updatedPerson);
+        return ResponseEntity.ok(person);
     }
 
-    @PostMapping("/personFavorites/{uuid}/{id}")
-    public void addPersonFavorites(@PathVariable("id") String id,
-                                   @PathVariable("uuid") UUID uuid){
-        personService.addFavorites(Integer.parseInt(id), uuid);
+    @GetMapping("/{personId}/courses")
+    public ResponseEntity<List<Course>> findCoursesForPerson(@PathVariable int personId) {
+        List<Course> courses = personService.findCoursesForPerson(personId);
+        return ResponseEntity.ok(courses);
     }
 
-    @DeleteMapping("/personFavorites/{uuid}/{id}")
-    public void deletePersonFavorites(@PathVariable("id") String id,
-                                      @PathVariable("uuid") UUID uuid){
-        personService.deleteFavorites(Integer.parseInt(id), uuid);
+    @PostMapping("/{personId}/enroll/{courseId}")
+    public ResponseEntity<Void> enrollPersonInCourse(@PathVariable int personId, @PathVariable int courseId) {
+        personService.enrollPersonInCourse(personId, courseId);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/person")
-    public List<Person> getPeople(){
-        return personService.findAll();
+    @DeleteMapping("/{personId}/unenroll/{courseId}")
+    public ResponseEntity<Void> removePersonFromCourse(@PathVariable int personId, @PathVariable int courseId) {
+        personService.removePersonFromCourse(personId, courseId);
+        return ResponseEntity.noContent().build();
     }
 }
-

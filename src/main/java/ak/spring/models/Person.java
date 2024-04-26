@@ -29,40 +29,50 @@ public class Person implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private UUID uuid;
-    
     @NotEmpty(message = "Имя не должно быть пустым")
-    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
-    @Column(name = "username")
-    private String username;
+    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column(name = "email")
-    @Email
-    private String email;
+    @NotEmpty(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "role")
-    private String role;
+    private Role role;
 
-    @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "song_person",
-            joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "song_id")
-    )
-    private List<Song> songs;
+    @OneToMany(mappedBy = "student")
+    private List<Submission> submissions;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<Group> groups;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<Enrollment> enrollments;
+
+    @ManyToOne
+    @JoinColumn(name = "id_group", referencedColumnName = "id")
+    private Group group;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
+    @ManyToMany(mappedBy = "students")
+    private List<Course> courses;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
     }
 
     @Override
