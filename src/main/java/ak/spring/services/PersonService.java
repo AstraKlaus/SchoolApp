@@ -1,27 +1,22 @@
 package ak.spring.services;
 
+import ak.spring.dto.CourseDTO;
+import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
-import ak.spring.models.Enrollment;
+import ak.spring.mappers.CourseDTOMapper;
+import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Person;
-import ak.spring.models.Course;
 import ak.spring.models.Role;
 import ak.spring.repositories.PersonRepository;
-import ak.spring.repositories.CourseRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -30,23 +25,32 @@ public class PersonService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final PersonRepository personRepository;
-    private final CourseService courseService;
+    private final PersonDTOMapper personDTOMapper;
+    private final CourseDTOMapper courseDTOMapper;
 
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
-                         TokenRepository tokenRepository, PersonRepository personRepository, CourseRepository courseRepository, CourseService courseService) {
+                         TokenRepository tokenRepository,
+                         PersonRepository personRepository,
+                         PersonDTOMapper personDTOMapper,
+                         CourseDTOMapper courseDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.personRepository = personRepository;
-        this.courseService = courseService;
+        this.personDTOMapper = personDTOMapper;
+        this.courseDTOMapper = courseDTOMapper;
     }
 
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<PersonDTO> findAll() {
+        return personRepository.findAll()
+                .stream()
+                .map(personDTOMapper)
+                .toList();
     }
 
-    public Optional<Person> findByUsername(String name) {
-        return personRepository.findByUsername(name);
+    public PersonDTO findByUsername(String name) {
+        return personRepository.findByUsername(name).map(personDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", name));
     }
 
     public Person findByToken(String token) {
@@ -55,8 +59,8 @@ public class PersonService {
                 .orElse(null);
     }
 
-    public Person findById(int id) {
-        return personRepository.findById(id)
+    public PersonDTO findById(int id) {
+        return personRepository.findById(id).map(personDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
     }
 
@@ -65,55 +69,31 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public void deletePerson(Person person) {
-        personRepository.delete(person);
+    public void deletePerson(int id) {
+        personRepository.delete(personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id)));
     }
 
     public Person update(int id, Person updatedPerson) {
-        Person existingPerson = findById(id);
+        Person existingPerson = personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
         existingPerson.setFirstName(updatedPerson.getFirstName());
         existingPerson.setLastName(updatedPerson.getLastName());
         return personRepository.save(existingPerson);
     }
 
-    public List<Course> findCoursesForPerson(int personId) {
-        return findById(personId).getCourses(); }
-
-    public void enrollPersonInCourse(int personId, int courseId) {
-        Person person = findById(personId);
-        Course course = courseService.findById(courseId);
-
-        Enrollment enrollment = Enrollment.builder().person(person).course(course).build();
-        person.getEnrollments().add(enrollment);
-        personRepository.save(person);
+    public List<CourseDTO> findCoursesForPerson(int personId) {
+        return personRepository.findById(personId)
+                .map(person -> person.getCourses().stream()
+                        .map(courseDTOMapper)
+                        .toList())
+                .orElse(Collections.emptyList());
     }
 
-    public void removePersonFromCourse(int personId, int courseId) {
-        Person person = findById(personId);
-        Course course = courseService.findById(courseId);
-
-        Enrollment enrollment = person.getEnrollments().stream()
-                .filter(e -> e.getCourse().equals(course))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment", "personId, courseId", personId + ", " + courseId));
-
-        person.getEnrollments().remove(enrollment);
-        personRepository.save(person);
-    }
-
-    public void assignRoleToUser(int userId, Role role) {
-        Person person = findById(userId);
+    public void assignRoleToUser(int personId, Role role) {
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
         person.setRole(role);
         personRepository.save(person);
-    }
-
-    public void removeRoleFromUser(int userId, Role role) {
-        Person person = findById(userId);
-        if (person.getRole() == role) {
-            person.setRole(Role.USER);
-            personRepository.save(person);
-        } else {
-            throw new IllegalArgumentException("Пользователь не может иметь эту роль");
-        }
     }
 }

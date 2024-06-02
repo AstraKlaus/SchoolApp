@@ -1,5 +1,4 @@
 package ak.spring.repositories;
-import ak.spring.models.Group;
 import ak.spring.models.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
 

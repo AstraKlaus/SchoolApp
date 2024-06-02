@@ -1,20 +1,18 @@
 package ak.spring.models;
 
 import ak.spring.token.Token;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -28,6 +26,11 @@ public class Person implements UserDetails {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotEmpty(message = "Имя пользователя не должно быть пустым")
+    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
+    @Column(name = "username")
+    private String username;
 
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
@@ -43,27 +46,28 @@ public class Person implements UserDetails {
     private String password;
 
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "student")
-    private List<Submission> submissions;
+    private List<Submission> submissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")
-    private List<Group> groups;
+    private List<Classroom> classrooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<Enrollment> enrollments;
+    @OneToMany(mappedBy = "user")
+    private List<Settings> settings;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "id_group", referencedColumnName = "id")
-    private Group group;
+    private Classroom classroom;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    private List<Token> tokens = new ArrayList<>();
 
     @ManyToMany(mappedBy = "students")
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -72,7 +76,7 @@ public class Person implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override

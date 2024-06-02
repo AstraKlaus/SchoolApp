@@ -10,7 +10,6 @@ import java.util.UUID;
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, Integer> {
 
-    Optional<Submission> findByNameContainingIgnoreCase(String name);
+    Optional<Submission> findByFeedbackContainingIgnoreCase(String name);
 
-    Optional<Submission> findByUuid(UUID uuid);
 }

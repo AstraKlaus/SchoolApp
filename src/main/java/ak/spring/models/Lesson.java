@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,9 +21,6 @@ public class Lesson {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//
-//    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-//    private UUID uuid;
 
     @Column(name = "name")
     private String name;
@@ -32,6 +31,9 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    private List<Homework> homeworks = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;

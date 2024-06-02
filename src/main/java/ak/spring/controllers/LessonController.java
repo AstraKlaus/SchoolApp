@@ -1,6 +1,8 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.LessonDTO;
 import ak.spring.models.Lesson;
+import ak.spring.requests.LessonRequest;
 import ak.spring.services.LessonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +26,26 @@ public class LessonController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<Lesson>> findByName(@PathVariable String name) {
-        List<Lesson> lessons = lessonService.findByName(name);
+    public ResponseEntity<List<LessonDTO>> findByName(@PathVariable String name) {
+        List<LessonDTO> lessons = lessonService.findByName(name);
         return ResponseEntity.ok(lessons);
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<Lesson>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        Page<Lesson> lessons = lessonService.findWithPagination(offset, pageSize);
+    public ResponseEntity<Page<LessonDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        Page<LessonDTO> lessons = lessonService.findWithPagination(offset, pageSize);
         return ResponseEntity.ok(lessons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lesson> findById(@PathVariable int id) {
-        Lesson lesson = lessonService.findById(id);
+    public ResponseEntity<LessonDTO> findById(@PathVariable int id) {
+        LessonDTO lesson = lessonService.findById(id);
         return ResponseEntity.ok(lesson);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLesson(@PathVariable int id) {
-        Lesson lesson = lessonService.findById(id);
-        lessonService.deleteLesson(lesson);
+        lessonService.deleteLesson(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -61,8 +62,8 @@ public class LessonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Lesson>> findAll() {
-        List<Lesson> lessons = lessonService.findAll();
+    public ResponseEntity<List<LessonDTO>> findAll() {
+        List<LessonDTO> lessons = lessonService.findAll();
         return ResponseEntity.ok(lessons);
     }
 }

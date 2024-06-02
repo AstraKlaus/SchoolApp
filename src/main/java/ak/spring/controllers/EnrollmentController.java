@@ -1,6 +1,9 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.EnrollmentDTO;
+import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.models.Enrollment;
+import ak.spring.models.Lesson;
 import ak.spring.services.EnrollmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +26,14 @@ public class EnrollmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Enrollment>> findAll() {
-        List<Enrollment> enrollments = enrollmentService.findAll();
+    public ResponseEntity<List<EnrollmentDTO>> findAll() {
+        List<EnrollmentDTO> enrollments = enrollmentService.findAll();
         return ResponseEntity.ok(enrollments);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Enrollment> findById(@PathVariable int id) {
-        Enrollment enrollment = enrollmentService.findById(id);
+    public ResponseEntity<EnrollmentDTO> findById(@PathVariable int id) {
+        EnrollmentDTO enrollment = enrollmentService.findById(id);
         return ResponseEntity.ok(enrollment);
     }
 
@@ -42,8 +45,7 @@ public class EnrollmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        Enrollment enrollment = enrollmentService.findById(id);
-        enrollmentService.delete(enrollment);
+        enrollmentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

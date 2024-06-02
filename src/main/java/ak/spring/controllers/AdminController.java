@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
 import ak.spring.services.PersonService;
@@ -25,8 +26,8 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<Person>> getAllUsers() {
-        List<Person> users = personService.findAll();
+    public ResponseEntity<List<PersonDTO>> getAllUsers() {
+        List<PersonDTO> users = personService.findAll();
         return ResponseEntity.ok(users);
     }
 
@@ -44,8 +45,7 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        Person person = personService.findById(id);
-        personService.deletePerson(person);
+        personService.deletePerson(id);
         return ResponseEntity.noContent().build();
     }
 

@@ -1,9 +1,9 @@
 package ak.spring.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,10 +27,7 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course")
-    private List<Lesson> lessons;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Enrollment> enrollments;
+    private List<Lesson> lessons = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

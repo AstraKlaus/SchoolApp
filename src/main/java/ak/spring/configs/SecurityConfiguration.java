@@ -47,12 +47,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
-                                .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
-                                .anyRequest()
-                                .permitAll()
-                )
+                .authorizeHttpRequests(req -> req.requestMatchers("/api").permitAll().anyRequest().permitAll())
+//                .authorizeHttpRequests(req ->
+//                        req.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
+//                                .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
+//                                .anyRequest()
+//                                .permitAll()
+//                )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)

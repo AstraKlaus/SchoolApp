@@ -1,23 +1,19 @@
 package ak.spring.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import static jakarta.persistence.FetchType.EAGER;
 
 @Getter
 @Setter
 @Builder
 @Entity
-@Table(name = "Group")
+@Table(name = "classroom")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group {
+public class Classroom {
 
     @Id
     @Column(name = "id")
@@ -31,6 +27,6 @@ public class Group {
     @JoinColumn(name = "id_teacher", referencedColumnName = "id")
     private Person teacher;
 
-    @OneToMany(mappedBy = "group")
-    private List<Person> persons;
+    @OneToMany(mappedBy = "classroom")
+    private List<Person> persons = new ArrayList<>();
 }

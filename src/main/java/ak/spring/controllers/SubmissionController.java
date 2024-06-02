@@ -1,6 +1,8 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.SubmissionDTO;
 import ak.spring.models.Submission;
+import ak.spring.requests.SubmissionRequest;
 import ak.spring.services.SubmissionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +42,14 @@ public class SubmissionController {
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<Submission>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        Page<Submission> submissions = submissionService.findWithPagination(offset, pageSize);
+    public ResponseEntity<Page<SubmissionDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        Page<SubmissionDTO> submissions = submissionService.findWithPagination(offset, pageSize);
         return ResponseEntity.ok(submissions);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Submission> findById(@PathVariable int id) {
-        Submission submission = submissionService.findById(id);
+    public ResponseEntity<SubmissionDTO> findById(@PathVariable int id) {
+        SubmissionDTO submission = submissionService.findById(id);
         return ResponseEntity.ok(submission);
     }
 
@@ -60,8 +62,8 @@ public class SubmissionController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<Submission> findByName(@PathVariable String name) {
-        Submission submission = submissionService.findByName(name);
+    public ResponseEntity<SubmissionDTO> findByName(@PathVariable String name) {
+        SubmissionDTO submission = submissionService.findByName(name);
         return ResponseEntity.ok(submission);
     }
 
@@ -72,20 +74,19 @@ public class SubmissionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Submission>> findAll() {
-        List<Submission> submissions = submissionService.findAll();
+    public ResponseEntity<List<SubmissionDTO>> findAll() {
+        List<SubmissionDTO> submissions = submissionService.findAll();
         return ResponseEntity.ok(submissions);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        Submission submission = submissionService.findById(id);
-        submissionService.delete(submission);
+        submissionService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Submission> update(@PathVariable int id, @Valid @RequestBody Submission updatedSubmission) {
+    public ResponseEntity<Submission> update(@PathVariable int id, @Valid @RequestBody SubmissionRequest updatedSubmission) {
         Submission submission = submissionService.update(id, updatedSubmission);
         return ResponseEntity.ok(submission);
     }

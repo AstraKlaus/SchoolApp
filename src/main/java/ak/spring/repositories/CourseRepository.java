@@ -15,5 +15,4 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     Optional<List<Course>> findByNameContainingIgnoreCase(String name);
 
-    Optional<Course> findByUuid(UUID uuid);
 }

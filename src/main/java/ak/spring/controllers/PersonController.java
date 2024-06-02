@@ -1,5 +1,7 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.CourseDTO;
+import ak.spring.dto.PersonDTO;
 import ak.spring.models.Course;
 import ak.spring.models.Person;
 import ak.spring.services.PersonService;
@@ -24,15 +26,14 @@ public class PersonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Person>> findAll() {
-        List<Person> persons = personService.findAll();
+    public ResponseEntity<List<PersonDTO>> findAll() {
+        List<PersonDTO> persons = personService.findAll();
         return ResponseEntity.ok(persons);
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<Person> findByUsername(@PathVariable String username) {
-        Person person = personService.findByUsername(username)
-                .orElse(null);
+    public ResponseEntity<PersonDTO> findByUsername(@PathVariable String username) {
+        PersonDTO person = personService.findByUsername(username);
         return ResponseEntity.ok(person);
     }
 
@@ -43,8 +44,8 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable int id) {
-        Person person = personService.findById(id);
+    public ResponseEntity<PersonDTO> findById(@PathVariable int id) {
+        PersonDTO person = personService.findById(id);
         return ResponseEntity.ok(person);
     }
 
@@ -56,8 +57,7 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable int id) {
-        Person person = personService.findById(id);
-        personService.deletePerson(person);
+        personService.deletePerson(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -68,20 +68,8 @@ public class PersonController {
     }
 
     @GetMapping("/{personId}/courses")
-    public ResponseEntity<List<Course>> findCoursesForPerson(@PathVariable int personId) {
-        List<Course> courses = personService.findCoursesForPerson(personId);
+    public ResponseEntity<List<CourseDTO>> findCoursesForPerson(@PathVariable int personId) {
+        List<CourseDTO> courses = personService.findCoursesForPerson(personId);
         return ResponseEntity.ok(courses);
-    }
-
-    @PostMapping("/{personId}/enroll/{courseId}")
-    public ResponseEntity<Void> enrollPersonInCourse(@PathVariable int personId, @PathVariable int courseId) {
-        personService.enrollPersonInCourse(personId, courseId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{personId}/unenroll/{courseId}")
-    public ResponseEntity<Void> removePersonFromCourse(@PathVariable int personId, @PathVariable int courseId) {
-        personService.removePersonFromCourse(personId, courseId);
-        return ResponseEntity.noContent().build();
     }
 }

@@ -1,5 +1,5 @@
 @rem
-@rem Copyright 2015 the original group or groups.
+@rem Copyright 2015 the original classroom or classrooms.
 @rem
 @rem Licensed under the Apache License, Version 2.0 (the "License");
 @rem you may not use this file except in compliance with the License.

@@ -3,6 +3,7 @@ package ak.spring.auth;
 
 import ak.spring.configs.JwtService;
 import ak.spring.models.Person;
+import ak.spring.models.Role;
 import ak.spring.repositories.PersonRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
@@ -31,10 +32,10 @@ public class AuthenticationService {
   public AuthenticationResponse register(RegisterRequest request) {
     var user = Person.builder()
         .username(request.getUsername())
-        .email(request.getEmail())
+        .firstName(request.getUsername())
+        .lastName(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
-        .role("ROLE_USER")
-            .uuid(UUID.randomUUID())
+        .role(Role.STUDENT)
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
@@ -94,14 +95,14 @@ public class AuthenticationService {
   ) throws IOException {
     final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
     final String refreshToken;
-    final String userEmail;
+    final String userUsername;
     if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
       return;
     }
     refreshToken = authHeader.substring(7);
-    userEmail = jwtService.extractUsername(refreshToken);
-    if (userEmail != null) {
-      var user = this.repository.findByUsername(userEmail)
+    userUsername = jwtService.extractUsername(refreshToken);
+    if (userUsername != null) {
+      var user = this.repository.findByUsername(userUsername)
               .orElseThrow();
       if (jwtService.isTokenValid(refreshToken, user)) {
         var accessToken = jwtService.generateToken(user);
