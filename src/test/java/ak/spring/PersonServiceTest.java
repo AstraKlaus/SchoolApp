@@ -59,7 +59,7 @@ class PersonServiceTest {
                 .lastName("Doe")
                 .password("password1")
                 .courses(new ArrayList<Course>())
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .build();
 
         person2 = Person.builder()
@@ -175,7 +175,7 @@ class PersonServiceTest {
                 .firstName("UpdatedFirstName")
                 .lastName("UpdatedLastName")
                 .password("password1")
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .build();
 
         when(personRepository.findById(1)).thenReturn(Optional.of(person1));
@@ -209,9 +209,9 @@ class PersonServiceTest {
         when(personRepository.findById(1)).thenReturn(Optional.of(person1));
         when(personRepository.save(person1)).thenReturn(person1);
 
-        personService.assignRoleToUser(1, Role.USER);
+        personService.assignRoleToUser(1, Role.STUDENT);
 
-        assertEquals(Role.USER, person1.getRole());
+        assertEquals(Role.STUDENT, person1.getRole());
         verify(personRepository, times(1)).findById(1);
         verify(personRepository, times(1)).save(person1);
     }

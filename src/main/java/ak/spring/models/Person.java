@@ -55,7 +55,7 @@ public class Person implements UserDetails {
     @OneToMany(mappedBy = "teacher")
     private List<Classroom> classrooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "person")
     private List<Settings> settings;
 
     @ManyToOne()

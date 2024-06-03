@@ -4,6 +4,7 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.models.Person;
 import ak.spring.models.Submission;
 import ak.spring.repositories.SubmissionRepository;
+import ak.spring.requests.SubmissionRequest;
 import ak.spring.services.SubmissionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -159,10 +160,9 @@ class SubmissionServiceTest {
     @Test
     void update_ShouldUpdateSubmission() {
         Person updatedStudent = Person.builder().id(2).firstName("Jane").lastName("Doe").build();
-        Submission updatedSubmission = Submission.builder()
+        SubmissionRequest updatedSubmission = SubmissionRequest.builder()
                 .feedback("Updated feedback")
                 .file("Updated file".getBytes())
-                .student(updatedStudent)
                 .build();
 
         when(submissionRepository.findById(1)).thenReturn(Optional.of(submission));
