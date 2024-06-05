@@ -27,21 +27,18 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> findAll() {
-        List<CourseDTO> courses = courseService.findAll();
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<List<Course>> findAll() {
+        return ResponseEntity.ok(courseService.findAll());
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<CourseDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        Page<CourseDTO> courses = courseService.findWithPagination(offset, pageSize);
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<Page<Course>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        return ResponseEntity.ok(courseService.findWithPagination(offset, pageSize));
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<CourseDTO>> findByName(@PathVariable String name) {
-        List<CourseDTO> courses = courseService.findByName(name);
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<List<Course>> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(courseService.findByName(name));
     }
 
     @PostMapping
@@ -51,9 +48,8 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> findById(@PathVariable int id) {
-        CourseDTO course = courseService.findById(id);
-        return ResponseEntity.ok(course);
+    public ResponseEntity<Course> findById(@PathVariable int id) {
+        return ResponseEntity.ok(courseService.findById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -69,9 +65,8 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<PersonDTO>> getStudents(@PathVariable int id) {
-        List<PersonDTO> students = courseService.getStudents(id);
-        return ResponseEntity.ok(students);
+    public ResponseEntity<List<Person>> getStudents(@PathVariable int id) {
+        return ResponseEntity.ok(courseService.getStudents(id));
     }
 
     @PostMapping("/{courseId}/{personId}")

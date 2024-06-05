@@ -27,21 +27,20 @@ public class ClassroomController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<ClassroomDTO>> findByName(@PathVariable String name) {
-        List<ClassroomDTO> classrooms = classroomService.findByName(name);
+    public ResponseEntity<List<Classroom>> findByName(@PathVariable String name) {
+        List<Classroom> classrooms = classroomService.findByName(name);
         return ResponseEntity.ok(classrooms);
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<ClassroomDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        Page<ClassroomDTO> groups = classroomService.findWithPagination(offset, pageSize);
+    public ResponseEntity<Page<Classroom>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        Page<Classroom> groups = classroomService.findWithPagination(offset, pageSize);
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClassroomDTO> findById(@PathVariable int id) {
-        ClassroomDTO classroom = classroomService.findById(id);
-        return ResponseEntity.ok(classroom);
+    public ResponseEntity<Classroom> findById(@PathVariable int id) {
+        return ResponseEntity.ok(classroomService.findById(id));
     }
 
     @PutMapping("/{id}")
@@ -63,8 +62,8 @@ public class ClassroomController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClassroomDTO>> findAll() {
-        List<ClassroomDTO> classrooms = classroomService.findAll();
+    public ResponseEntity<List<Classroom>> findAll() {
+        List<Classroom> classrooms = classroomService.findAll();
         return ResponseEntity.ok(classrooms);
     }
 

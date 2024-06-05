@@ -26,8 +26,15 @@ public class Course {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "access")
+    private boolean access;
+
     @OneToMany(mappedBy = "course")
     private List<Lesson> lessons = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
+    private Curriculum curriculum;
 
     @ManyToMany
     @JoinTable(

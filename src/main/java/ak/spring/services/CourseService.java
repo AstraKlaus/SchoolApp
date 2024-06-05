@@ -35,24 +35,18 @@ public class CourseService {
         this.courseDTOMapper = courseDTOMapper;
     }
 
-    public List<CourseDTO> findAll() {
-        return courseRepository.findAll()
-                .stream()
-                .map(courseDTOMapper)
-                .toList();
+    public List<Course> findAll() {
+        return courseRepository.findAll();
     }
 
-    public Page<CourseDTO> findWithPagination(int offset, int pageSize) {
-        Page<Course> courses = courseRepository.findAll(PageRequest.of(offset, pageSize));
-        return courses.map(courseDTOMapper);
+    public Page<Course> findWithPagination(int offset, int pageSize) {
+        return courseRepository.findAll(PageRequest.of(offset, pageSize));
+
     }
 
-    public List<CourseDTO> findByName(String name) {
+    public List<Course> findByName(String name) {
         return courseRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "name", name))
-                .stream()
-                .map(courseDTOMapper)
-                .toList();
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "name", name));
     }
 
     public Course uploadCourse(Course course){
@@ -66,8 +60,8 @@ public class CourseService {
         return courseRepository.save(newCourse);
     }
 
-    public CourseDTO findById(int id){
-        return courseRepository.findById(id).map(courseDTOMapper).orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    public Course findById(int id){
+        return courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 
     public void deleteCourse(int id){
@@ -85,7 +79,7 @@ public class CourseService {
 
     }
 
-    public List<PersonDTO> getStudents(int id) {
+    public List<Person> getStudents(int id) {
         return findById(id).getStudents();
     }
 

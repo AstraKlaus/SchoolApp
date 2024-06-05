@@ -31,22 +31,18 @@ public class ClassroomService {
         this.classroomDTOMapper = classroomDTOMapper;
     }
 
-    public List<ClassroomDTO> findByName(String name) {
+    public List<Classroom> findByName(String name) {
         return classroomRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "name", name))
-                .stream()
-                .map(classroomDTOMapper)
-                .toList();
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "name", name));
     }
 
-    public Page<ClassroomDTO> findWithPagination(int offset, int pageSize) {
-        Page<Classroom> classrooms = classroomRepository.findAll(PageRequest.of(offset, pageSize));
-        return classrooms.map(classroomDTOMapper);
+    public Page<Classroom> findWithPagination(int offset, int pageSize) {
+        return classroomRepository.findAll(PageRequest.of(offset, pageSize));
+
     }
 
-    public ClassroomDTO findById(int id) {
+    public Classroom findById(int id) {
         return classroomRepository.findById(id)
-                .map(classroomDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
     }
 
@@ -72,11 +68,10 @@ public class ClassroomService {
         return classroomRepository.save(newClassroom);
     }
 
-    public List<ClassroomDTO> findAll() {
-        return classroomRepository.findAll().stream()
-                .map(classroomDTOMapper)
-                .toList();
+    public List<Classroom> findAll() {
+        return classroomRepository.findAll();
     }
+
 
 //    public PersonDTO getTeacher(int id) {
 //        return findById(id).getTeacher();

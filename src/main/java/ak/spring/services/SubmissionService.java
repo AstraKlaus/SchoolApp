@@ -44,12 +44,12 @@ public class SubmissionService {
         return submissionRepository.save(submission);
     }
 
-    public Page<SubmissionDTO> findWithPagination(int offset, int pageSize) {
-        return submissionRepository.findAll(PageRequest.of(offset, pageSize)).map(submissionDTOMapper);
+    public Page<Submission> findWithPagination(int offset, int pageSize) {
+        return submissionRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
-    public SubmissionDTO findById(int id) {
-        return submissionRepository.findById(id).map(submissionDTOMapper)
+    public Submission findById(int id) {
+        return submissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission", "id", id));
     }
 
@@ -57,8 +57,8 @@ public class SubmissionService {
         return findByName(name).getFile();
     }
 
-    public SubmissionDTO findByName(String name) {
-        return submissionRepository.findByFeedbackContainingIgnoreCase(name).map(submissionDTOMapper)
+    public Submission findByName(String name) {
+        return submissionRepository.findByFeedbackContainingIgnoreCase(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission", "name", name));
     }
 
@@ -66,11 +66,8 @@ public class SubmissionService {
         return submissionRepository.save(submission);
     }
 
-    public List<SubmissionDTO> findAll() {
-        return submissionRepository.findAll()
-                .stream()
-                .map(submissionDTOMapper)
-                .toList();
+    public List<Submission> findAll() {
+        return submissionRepository.findAll();
     }
 
     public void delete(int id) {

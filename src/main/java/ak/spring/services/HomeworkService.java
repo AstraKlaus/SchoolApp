@@ -30,21 +30,17 @@ public class HomeworkService {
         this.homeworkDTOMapper = homeworkDTOMapper;
     }
 
-    public List<HomeworkDTO> findByName(String name) {
+    public List<Homework> findByName(String name) {
         return homeworkRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Homework", "name", name))
-                .stream()
-                .map(homeworkDTOMapper)
-                .toList();
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "name", name));
     }
 
-    public Page<HomeworkDTO> findWithPagination(int offset, int pageSize) {
-        Page<Homework> homeworks = homeworkRepository.findAll(PageRequest.of(offset, pageSize));
-        return homeworks.map(homeworkDTOMapper);
+    public Page<Homework> findWithPagination(int offset, int pageSize) {
+        return homeworkRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
-    public HomeworkDTO findById(int id) {
-        return homeworkRepository.findById(id).map(homeworkDTOMapper)
+    public Homework findById(int id) {
+        return homeworkRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
     }
 
@@ -74,11 +70,8 @@ public class HomeworkService {
         return homeworkRepository.save(existingHomework);
     }
 
-    public List<HomeworkDTO> findAll() {
-        return homeworkRepository.findAll()
-                .stream()
-                .map(homeworkDTOMapper)
-                .toList();
+    public List<Homework> findAll() {
+        return homeworkRepository.findAll();
     }
 }
 

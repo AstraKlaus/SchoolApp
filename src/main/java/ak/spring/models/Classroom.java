@@ -24,6 +24,10 @@ public class Classroom {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
+    private Curriculum curriculum;
+
+    @ManyToOne
     @JoinColumn(name = "id_teacher", referencedColumnName = "id")
     private Person teacher;
 

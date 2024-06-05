@@ -28,6 +28,9 @@ public class Lesson {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "access")
+    private boolean access;
+
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;

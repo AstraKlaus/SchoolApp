@@ -37,20 +37,17 @@ public class SubmissionController {
 
     @PutMapping("/{id}/update")
     public ResponseEntity<Submission> updateAccord(@PathVariable int id, @RequestBody byte[] file) {
-        Submission updatedSubmission = submissionService.updateAccord(id, file);
-        return ResponseEntity.ok(updatedSubmission);
+        return ResponseEntity.ok(submissionService.updateAccord(id, file));
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<SubmissionDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        Page<SubmissionDTO> submissions = submissionService.findWithPagination(offset, pageSize);
-        return ResponseEntity.ok(submissions);
+    public ResponseEntity<Page<Submission>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        return ResponseEntity.ok(submissionService.findWithPagination(offset, pageSize));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubmissionDTO> findById(@PathVariable int id) {
-        SubmissionDTO submission = submissionService.findById(id);
-        return ResponseEntity.ok(submission);
+    public ResponseEntity<Submission> findById(@PathVariable int id) {
+        return ResponseEntity.ok(submissionService.findById(id));
     }
 
     @GetMapping("/download/{name}")
@@ -62,9 +59,8 @@ public class SubmissionController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<SubmissionDTO> findByName(@PathVariable String name) {
-        SubmissionDTO submission = submissionService.findByName(name);
-        return ResponseEntity.ok(submission);
+    public ResponseEntity<Submission> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(submissionService.findByName(name));
     }
 
     @PostMapping
@@ -74,9 +70,8 @@ public class SubmissionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SubmissionDTO>> findAll() {
-        List<SubmissionDTO> submissions = submissionService.findAll();
-        return ResponseEntity.ok(submissions);
+    public ResponseEntity<List<Submission>> findAll() {
+        return ResponseEntity.ok(submissionService.findAll());
     }
 
     @DeleteMapping("/{id}")
