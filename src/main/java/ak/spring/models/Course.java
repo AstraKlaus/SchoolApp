@@ -32,6 +32,7 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Lesson> lessons = new ArrayList<>();
 
+
     @ManyToOne
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;

@@ -12,7 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDTO {
+    private int id;
     private String name;
     private String description;
+    private boolean access;
     private List<PersonDTO> students;
 }

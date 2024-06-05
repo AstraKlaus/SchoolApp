@@ -19,8 +19,10 @@ public class CourseDTOMapper implements Function<Course, CourseDTO> {
 
     @Override
     public CourseDTO apply(Course course) {
-        return new CourseDTO(course.getName(),
+        return new CourseDTO(course.getId(),
+                course.getName(),
                 course.getDescription(),
+                course.isAccess(),
                 course.getStudents()
                         .stream()
                         .map(personMapper)
