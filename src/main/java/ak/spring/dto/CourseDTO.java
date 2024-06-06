@@ -16,5 +16,4 @@ public class CourseDTO {
     private String name;
     private String description;
     private boolean access;
-    private List<PersonDTO> students;
 }

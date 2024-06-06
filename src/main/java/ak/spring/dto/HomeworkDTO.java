@@ -11,9 +11,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeworkDTO {
+    private int id;
     private String name;
     private String description;
-    private byte[] attachment;
+    private String attachment;
     private Lesson lesson;
     private Timestamp createdAt;
     private Timestamp updatedAt;

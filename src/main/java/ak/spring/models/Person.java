@@ -50,7 +50,7 @@ public class Person implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "student")
-    private List<Submission> submissions = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")
     private List<Classroom> classrooms = new ArrayList<>();
@@ -65,9 +65,6 @@ public class Person implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Token> tokens = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "students")
-    private List<Course> courses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

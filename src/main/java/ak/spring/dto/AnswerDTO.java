@@ -9,8 +9,8 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubmissionDTO {
-    private PersonDTO student;
+public class AnswerDTO {
+    private int id;
     private String feedback;
     private byte[] file;
     private Timestamp createdAt;

@@ -11,7 +11,8 @@ import java.util.function.Function;
 public class HomeworkDTOMapper implements Function<Homework, HomeworkDTO> {
     @Override
     public HomeworkDTO apply(Homework homework) {
-        return new HomeworkDTO(homework.getName(),
+        return new HomeworkDTO(homework.getId(),
+                homework.getName(),
                 homework.getDescription(),
                 homework.getAttachment(),
                 homework.getLesson(),

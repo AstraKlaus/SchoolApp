@@ -11,7 +11,8 @@ import java.util.function.Function;
 public class LessonDTOMapper implements Function<Lesson, LessonDTO> {
     @Override
     public LessonDTO apply(Lesson lesson) {
-        return new LessonDTO(lesson.getName(),
+        return new LessonDTO(lesson.getId(),
+                lesson.getName(),
                 lesson.getContent(),
                 lesson.getCreatedAt(),
                 new Timestamp(System.currentTimeMillis()));

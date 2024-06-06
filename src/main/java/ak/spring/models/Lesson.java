@@ -31,7 +31,6 @@ public class Lesson {
     @Column(name = "access")
     private boolean access;
 
-
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;

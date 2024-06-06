@@ -32,17 +32,21 @@ public class LessonService {
         this.lessonDTOMapper = lessonDTOMapper;
     }
 
-    public List<Lesson> findByName(String name) {
+    public List<LessonDTO> findByName(String name) {
         return lessonRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Lesson", "name", name));
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson", "name", name))
+                .stream()
+                .map(lessonDTOMapper)
+                .toList();
     }
 
-    public Page<Lesson> findWithPagination(int offset, int pageSize) {
-        return lessonRepository.findAll(PageRequest.of(offset, pageSize));
+    public Page<LessonDTO> findWithPagination(int offset, int pageSize) {
+        Page<Lesson> lessons = lessonRepository.findAll(PageRequest.of(offset, pageSize));
+        return lessons.map(lessonDTOMapper);
     }
 
-    public Lesson findById(int id) {
-        return lessonRepository.findById(id)
+    public LessonDTO findById(int id) {
+        return lessonRepository.findById(id).map(lessonDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
     }
 
@@ -71,7 +75,10 @@ public class LessonService {
         return lessonRepository.save(existingLesson);
     }
 
-    public List<Lesson> findAll() {
-        return lessonRepository.findAll();
+    public List<LessonDTO> findAll() {
+        return lessonRepository.findAll()
+                .stream()
+                .map(lessonDTOMapper)
+                .toList();
     }
 }

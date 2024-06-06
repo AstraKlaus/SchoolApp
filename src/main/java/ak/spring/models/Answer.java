@@ -10,10 +10,10 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Builder
-@Table(name = "submission")
+@Table(name = "answer")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Submission {
+public class Answer {
 
     @Id
     @Column(name = "id")

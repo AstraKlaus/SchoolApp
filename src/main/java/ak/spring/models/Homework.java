@@ -25,10 +25,11 @@ public class Homework {
 
     private String description;
 
-    @Lob
-    private byte[] attachment;
+    private String attachment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private boolean access;
+
+    @ManyToOne()
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
 

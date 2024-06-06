@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonDTO {
+    private int id;
     private String name;
     private String content;
     private Timestamp createdAt;

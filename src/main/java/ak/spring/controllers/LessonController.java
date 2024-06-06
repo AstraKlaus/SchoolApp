@@ -26,18 +26,21 @@ public class LessonController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<Lesson>> findByName(@PathVariable String name) {
-        return ResponseEntity.ok(lessonService.findByName(name));
+    public ResponseEntity<List<LessonDTO>> findByName(@PathVariable String name) {
+        List<LessonDTO> lessons = lessonService.findByName(name);
+        return ResponseEntity.ok(lessons);
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<Lesson>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        return ResponseEntity.ok(lessonService.findWithPagination(offset, pageSize));
+    public ResponseEntity<Page<LessonDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        Page<LessonDTO> lessons = lessonService.findWithPagination(offset, pageSize);
+        return ResponseEntity.ok(lessons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lesson> findById(@PathVariable int id) {
-        return ResponseEntity.ok(lessonService.findById(id));
+    public ResponseEntity<LessonDTO> findById(@PathVariable int id) {
+        LessonDTO lesson = lessonService.findById(id);
+        return ResponseEntity.ok(lesson);
     }
 
     @DeleteMapping("/{id}")
@@ -59,7 +62,8 @@ public class LessonController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Lesson>> findAll() {
-        return ResponseEntity.ok(lessonService.findAll());
+    public ResponseEntity<List<LessonDTO>> findAll() {
+        List<LessonDTO> lessons = lessonService.findAll();
+        return ResponseEntity.ok(lessons);
     }
 }

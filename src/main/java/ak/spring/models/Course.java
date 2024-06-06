@@ -32,16 +32,8 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Lesson> lessons = new ArrayList<>();
 
-
     @ManyToOne
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
-
-    @ManyToMany
-    @JoinTable(
-            name = "person_course",
-            joinColumns = @JoinColumn(name = "id_person"),
-            inverseJoinColumns = @JoinColumn(name = "id_course"))
-    private List<Person> students;
 
 }

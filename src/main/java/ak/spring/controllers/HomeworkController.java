@@ -25,18 +25,21 @@ public class HomeworkController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<Homework>> findByName(@PathVariable String name) {
-        return ResponseEntity.ok(homeworkService.findByName(name));
+    public ResponseEntity<List<HomeworkDTO>> findByName(@PathVariable String name) {
+        List<HomeworkDTO> homeworks = homeworkService.findByName(name);
+        return ResponseEntity.ok(homeworks);
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<Homework>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
-        return ResponseEntity.ok(homeworkService.findWithPagination(offset, pageSize));
+    public ResponseEntity<Page<HomeworkDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+        Page<HomeworkDTO> homeworks = homeworkService.findWithPagination(offset, pageSize);
+        return ResponseEntity.ok(homeworks);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Homework> findById(@PathVariable int id) {
-        return ResponseEntity.ok(homeworkService.findById(id));
+    public ResponseEntity<HomeworkDTO> findById(@PathVariable int id) {
+        HomeworkDTO homework = homeworkService.findById(id);
+        return ResponseEntity.ok(homework);
     }
 
     @DeleteMapping("/{id}")
@@ -58,8 +61,9 @@ public class HomeworkController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Homework>> findAll() {
-        return ResponseEntity.ok(homeworkService.findAll());
+    public ResponseEntity<List<HomeworkDTO>> findAll() {
+        List<HomeworkDTO> homeworks = homeworkService.findAll();
+        return ResponseEntity.ok(homeworks);
     }
 }
 

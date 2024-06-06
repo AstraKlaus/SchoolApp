@@ -13,13 +13,11 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
 
     @Override
     public PersonDTO apply(Person person) {
-        return new PersonDTO(person.getUsername(),
+        return new PersonDTO(person.getId(),
+                person.getUsername(),
                 person.getFirstName(),
                 person.getLastName(),
                 person.getRole(),
-                person.getCourses().stream()
-                        .map(Course::getName)
-                        .toList(),
                 person.getClassroom().getName());
     }
 }

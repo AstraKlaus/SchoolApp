@@ -22,10 +22,6 @@ public class CourseDTOMapper implements Function<Course, CourseDTO> {
         return new CourseDTO(course.getId(),
                 course.getName(),
                 course.getDescription(),
-                course.isAccess(),
-                course.getStudents()
-                        .stream()
-                        .map(personMapper)
-                        .toList());
+                course.isAccess());
     }
 }

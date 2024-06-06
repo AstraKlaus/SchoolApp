@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubmissionRequest {
+public class AnswerRequest {
     private String feedback;
     private byte[] file;
 }

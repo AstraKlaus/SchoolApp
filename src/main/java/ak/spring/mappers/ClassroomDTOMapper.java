@@ -19,7 +19,7 @@ public class ClassroomDTOMapper implements Function<Classroom, ClassroomDTO> {
 
     @Override
     public ClassroomDTO apply(Classroom classroom) {
-        return new ClassroomDTO(classroom.getName(),
+        return new ClassroomDTO(classroom.getId() ,classroom.getName(),
                 personMapper.apply(classroom.getTeacher()),
                 classroom.getPersons()
                         .stream()
