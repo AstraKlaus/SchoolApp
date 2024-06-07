@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.ClassroomDTO;
+import ak.spring.dto.CurriculumDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Classroom;
 import ak.spring.services.ClassroomService;
@@ -77,5 +78,11 @@ public class ClassroomController {
     public ResponseEntity<List<PersonDTO>> getStudents(@PathVariable int id) {
         List<PersonDTO> students = classroomService.getStudents(id);
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/{id}/curriculum")
+    public ResponseEntity<CurriculumDTO> getCurriculumById(@PathVariable int id) {
+        CurriculumDTO curriculum = classroomService.getCurriculum(id);
+        return ResponseEntity.ok(curriculum);
     }
 }

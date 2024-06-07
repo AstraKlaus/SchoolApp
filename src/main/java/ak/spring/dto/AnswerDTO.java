@@ -11,7 +11,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class AnswerDTO {
     private int id;
-    private String feedback;
+    private String comment;
+    private String attachment;
+    private String description;
     private byte[] file;
     private Timestamp createdAt;
     private Timestamp updatedAt;

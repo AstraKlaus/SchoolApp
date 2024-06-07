@@ -85,7 +85,7 @@ class AnswerServiceTest {
         Page<AnswerDTO> result = answerService.findWithPagination(0, 10);
 
         assertEquals(1, result.getTotalElements());
-        assertEquals(answer.getFeedback(), result.getContent().get(0).getFeedback());
+        assertEquals(answer.getComment(), result.getContent().get(0).getComment());
     }
 
     @Test
@@ -119,7 +119,7 @@ class AnswerServiceTest {
 
         AnswerDTO result = answerService.findByName("Great work!");
 
-        assertEquals(answer.getFeedback(), result.getFeedback());
+        assertEquals(answer.getComment(), result.getComment());
     }
 
     @Test
@@ -147,7 +147,7 @@ class AnswerServiceTest {
         List<AnswerDTO> result = answerService.findAll();
 
         assertEquals(1, result.size());
-        assertEquals(answer.getFeedback(), result.get(0).getFeedback());
+        assertEquals(answer.getComment(), result.get(0).getComment());
     }
 
     @Test
@@ -171,7 +171,7 @@ class AnswerServiceTest {
         Answer result = answerService.update(1, updatedSubmission);
 
         assertEquals(updatedStudent, result.getStudent());
-        assertEquals("Updated feedback", result.getFeedback());
+        assertEquals("Updated feedback", result.getComment());
         assertArrayEquals("Updated file".getBytes(), result.getFile());
     }
 }

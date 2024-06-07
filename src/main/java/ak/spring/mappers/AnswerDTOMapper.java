@@ -9,20 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-@Lazy
 public class AnswerDTOMapper implements Function<Answer, AnswerDTO> {
-
-    private final PersonDTOMapper personDTOMapper;
-
-    @Autowired
-    public AnswerDTOMapper(PersonDTOMapper personDTOMapper) {
-        this.personDTOMapper = personDTOMapper;
-    }
 
     @Override
     public AnswerDTO apply(Answer answer) {
         return new AnswerDTO(answer.getId(),
-                answer.getFeedback(),
+                answer.getComment(),
+                answer.getAttachment(),
+                answer.getDescription(),
                 answer.getFile(),
                 answer.getCreatedAt(),
                 answer.getUpdatedAt());

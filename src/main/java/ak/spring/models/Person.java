@@ -42,6 +42,10 @@ public class Person implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
+    @Size(min = 2, max = 50, message = "Отчество должно быть от 2 до 50 символов длиной")
+    @Column(name = "patronymic")
+    private String patronymic;
+
     @Column(name = "password")
     private String password;
 

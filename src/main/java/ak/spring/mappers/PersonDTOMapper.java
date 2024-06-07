@@ -24,6 +24,7 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
                 .username(person.getUsername())
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())
+                .patronymic(person.getPatronymic())
                 .role(person.getRole())
                 .settings(settingsDTOMapper.apply(person.getSettings()))
                 .classroomName(person.getClassroom().getName())

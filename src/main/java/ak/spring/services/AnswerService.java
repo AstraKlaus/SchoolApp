@@ -88,7 +88,7 @@ public class AnswerService {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         existingAnswer.setFile(updatedSubmission.getFile());
-        existingAnswer.setFeedback(updatedSubmission.getFeedback());
+        existingAnswer.setComment(updatedSubmission.getFeedback());
         existingAnswer.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         answerRepository.save(existingAnswer);
         return answerDTOMapper.apply(existingAnswer);

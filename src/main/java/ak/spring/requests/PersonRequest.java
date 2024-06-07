@@ -1,21 +1,21 @@
-package ak.spring.dto;
+package ak.spring.requests;
 
 import ak.spring.models.Role;
-import ak.spring.models.Settings;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonDTO {
-    private int id;
+public class PersonRequest {
     private String username;
     private String firstName;
     private String lastName;
+    private String password;
     private String patronymic;
     private Role role;
-    private SettingsDTO settings;
-    private String classroomName;
 }

@@ -4,6 +4,7 @@ import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.dto.SettingsDTO;
 import ak.spring.models.Person;
+import ak.spring.requests.PersonRequest;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

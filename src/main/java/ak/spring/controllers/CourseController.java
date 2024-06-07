@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.CourseDTO;
+import ak.spring.dto.CurriculumDTO;
 import ak.spring.models.Course;
 import ak.spring.services.CourseService;
 import jakarta.validation.Valid;
@@ -64,6 +65,12 @@ public class CourseController {
     public ResponseEntity<CourseDTO> updateCourse(@PathVariable int id, @Valid @RequestBody Course updatedCourse) {
         CourseDTO course = courseService.updateCourse(id, updatedCourse);
         return ResponseEntity.ok(course);
+    }
+
+    @GetMapping("/{id}/curriculum")
+    public ResponseEntity<CurriculumDTO> getCurriculumById(@PathVariable int id) {
+        CurriculumDTO curriculum = courseService.getCurriculum(id);
+        return ResponseEntity.ok(curriculum);
     }
 
 }

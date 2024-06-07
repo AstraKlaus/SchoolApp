@@ -10,6 +10,7 @@ import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
 import ak.spring.repositories.PersonRepository;
+import ak.spring.requests.PersonRequest;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
@@ -81,8 +82,15 @@ public class PersonService {
     public PersonDTO update(int id, Person updatedPerson) {
         Person existingPerson = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
+        existingPerson.setUsername(updatedPerson.getUsername());
         existingPerson.setFirstName(updatedPerson.getFirstName());
         existingPerson.setLastName(updatedPerson.getLastName());
+        existingPerson.setPatronymic(updatedPerson.getPatronymic());
+        existingPerson.setRole(updatedPerson.getRole());
+        existingPerson.setClassroom(updatedPerson.getClassroom());
+        existingPerson.setSettings(updatedPerson.getSettings());
+        existingPerson.setPassword(passwordEncoder.encode(updatedPerson.getPassword()));
+
         personRepository.save(existingPerson);
         return personDTOMapper.apply(existingPerson);
     }

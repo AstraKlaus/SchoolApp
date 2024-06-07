@@ -1,8 +1,10 @@
 package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
+import ak.spring.dto.CurriculumDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
+import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.models.Course;
 import ak.spring.repositories.CourseRepository;
 import jakarta.transaction.Transactional;
@@ -19,12 +21,14 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseDTOMapper courseDTOMapper;
+    private final CurriculumDTOMapper curriculumDTOMapper;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         CourseDTOMapper courseDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
         this.courseRepository = courseRepository;
         this.courseDTOMapper = courseDTOMapper;
+        this.curriculumDTOMapper = curriculumDTOMapper;
     }
 
     public List<CourseDTO> findAll() {
@@ -76,5 +80,12 @@ public class CourseService {
         courseRepository.save(existingCourse);
 
         return courseDTOMapper.apply(existingCourse);
+    }
+
+    public CurriculumDTO getCurriculum(int id) {
+        return courseRepository.findById(id)
+                .map(Course::getCurriculum)
+                .map(curriculumDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 }

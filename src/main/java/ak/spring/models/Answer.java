@@ -20,9 +20,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String comment;
 
-    @Column(name = "feedback")
-    private String feedback;
+    private String description;
+
+    private String attachment;
 
     @Lob
     @Column(name = "file", length = 1000)
