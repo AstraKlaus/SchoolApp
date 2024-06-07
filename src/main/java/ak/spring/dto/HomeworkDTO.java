@@ -15,7 +15,6 @@ public class HomeworkDTO {
     private String name;
     private String description;
     private String attachment;
-    private Lesson lesson;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

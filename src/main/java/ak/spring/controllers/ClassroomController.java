@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping("v1/api/groups")
 @CrossOrigin(origins =  "http://localhost:8080")
 public class ClassroomController {
 
@@ -74,9 +74,9 @@ public class ClassroomController {
 //        return ResponseEntity.ok(teacher);
 //    }
 //
-//    @GetMapping("/{id}/students")
-//    public ResponseEntity<List<PersonDTO>> getStudents(@PathVariable int id) {
-//        List<PersonDTO> students = classroomService.getStudents(id);
-//        return ResponseEntity.ok(students);
-//    }
+    @GetMapping("/{id}/students")
+    public ResponseEntity<List<PersonDTO>> getStudents(@PathVariable int id) {
+        List<PersonDTO> students = classroomService.getStudents(id);
+        return ResponseEntity.ok(students);
+    }
 }

@@ -55,8 +55,9 @@ public class Person implements UserDetails {
     @OneToMany(mappedBy = "teacher")
     private List<Classroom> classrooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<Settings> settings;
+    @ManyToOne
+    @JoinColumn(name = "settings_id", nullable = false)
+    private Settings settings;
 
     @ManyToOne()
     @JoinColumn(name = "id_group", referencedColumnName = "id")

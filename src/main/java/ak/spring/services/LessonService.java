@@ -1,12 +1,13 @@
 package ak.spring.services;
 
+import ak.spring.dto.CourseDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
+import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
+import ak.spring.models.Homework;
 import ak.spring.models.Lesson;
 import ak.spring.repositories.LessonRepository;
-import ak.spring.repositories.PersonRepository;
-import ak.spring.requests.LessonRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,15 +21,14 @@ import java.util.List;
 @Transactional
 public class LessonService {
     private final LessonRepository lessonRepository;
-    private final PersonRepository personRepository;
+    private final CourseDTOMapper courseDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
 
     @Autowired
     public LessonService(LessonRepository lessonRepository,
-                         PersonRepository personRepository,
-                         LessonDTOMapper lessonDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper) {
         this.lessonRepository = lessonRepository;
-        this.personRepository = personRepository;
+        this.courseDTOMapper = courseDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
     }
 
@@ -80,5 +80,18 @@ public class LessonService {
                 .stream()
                 .map(lessonDTOMapper)
                 .toList();
+    }
+
+    public CourseDTO getCourse(int id) {
+        return lessonRepository.findById(id)
+                .map(Lesson::getCourse)
+                .map(courseDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public List<Homework> getHomeworks(int id) {
+        return lessonRepository.findById(id)
+                .map(Lesson::getHomeworks)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 }

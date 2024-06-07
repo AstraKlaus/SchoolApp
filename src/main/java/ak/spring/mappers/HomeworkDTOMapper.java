@@ -15,7 +15,6 @@ public class HomeworkDTOMapper implements Function<Homework, HomeworkDTO> {
                 homework.getName(),
                 homework.getDescription(),
                 homework.getAttachment(),
-                homework.getLesson(),
                 homework.getCreatedAt(),
                 new Timestamp(System.currentTimeMillis()));
     }

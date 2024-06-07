@@ -1,12 +1,16 @@
 package ak.spring.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "settings")
 public class Settings {
@@ -26,8 +30,7 @@ public class Settings {
     @Column(nullable = false)
     private Boolean isSerif;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Person person;
+    @OneToMany(mappedBy = "settings")
+    private List<Person> person;
 }
 

@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/homeworks")
+@RequestMapping("v1/api/homeworks")
 @CrossOrigin(origins = "http://localhost:8080")
 public class HomeworkController {
 

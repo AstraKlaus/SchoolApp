@@ -1,5 +1,9 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.ClassroomDTO;
+import ak.spring.dto.CourseDTO;
+import ak.spring.dto.CurriculumDTO;
+import ak.spring.models.Course;
 import ak.spring.models.Curriculum;
 import ak.spring.services.CurriculumService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/curricula")
+@RequestMapping("v1/api/curricula")
 public class CurriculumController {
 
     private final CurriculumService curriculumService;
@@ -20,12 +24,12 @@ public class CurriculumController {
     }
 
     @GetMapping
-    public List<Curriculum> getAllCurricula() {
+    public List<CurriculumDTO> getAllCurricula() {
         return curriculumService.getAllCurricula();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curriculum> getCurriculumById(@PathVariable int id) {
+    public ResponseEntity<CurriculumDTO> getCurriculumById(@PathVariable int id) {
         return ResponseEntity.ok(curriculumService.getCurriculumById(id));
     }
 
@@ -35,18 +39,28 @@ public class CurriculumController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Curriculum> updateCurriculum(@PathVariable int id, @RequestBody Curriculum curriculumDetails) {
-        Curriculum curriculum = curriculumService.getCurriculumById(id);
-        curriculum.setName(curriculumDetails.getName());
-        curriculum.setDescription(curriculumDetails.getDescription());
-        curriculum.setAccess(curriculumDetails.getAccess());
-
-        return ResponseEntity.ok(curriculumService.saveCurriculum(curriculum));
+    public ResponseEntity<CurriculumDTO> updateCurriculum(@PathVariable int id, @RequestBody Curriculum curriculumDetails) {
+        return ResponseEntity.ok(curriculumService.updateCurriculum(id, curriculumDetails));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCurriculum(@PathVariable int id) {
         curriculumService.deleteCurriculum(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<List<CourseDTO>> getCourseById(@PathVariable int id) {
+        return ResponseEntity.ok(curriculumService.getCourseById(id));
+    }
+
+    @GetMapping("/{curriculumId}/classrooms")
+    public ResponseEntity<List<ClassroomDTO>> getClassroomById(@PathVariable int curriculumId) {
+        return ResponseEntity.ok(curriculumService.getClassroomById(curriculumId));
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<CurriculumDTO>> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(curriculumService.findByName(name));
     }
 }

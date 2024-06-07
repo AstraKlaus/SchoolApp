@@ -23,15 +23,12 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final PersonRepository personRepository;
     private final CourseDTOMapper courseDTOMapper;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         PersonRepository personRepository,
                          CourseDTOMapper courseDTOMapper) {
         this.courseRepository = courseRepository;
-        this.personRepository = personRepository;
         this.courseDTOMapper = courseDTOMapper;
     }
 
@@ -59,10 +56,8 @@ public class CourseService {
         Course newCourse = Course.builder()
                 .description(course.getDescription())
                 .name(course.getName())
-                .students(course.getStudents())
                 .build();
 
-        personRepository.saveAll(course.getStudents());
         return courseRepository.save(newCourse);
     }
 
@@ -83,35 +78,5 @@ public class CourseService {
         existingCourse.setDescription(updatedCourse.getDescription());
         return courseRepository.save(existingCourse);
 
-    }
-
-    public List<PersonDTO> getStudents(int id) {
-        return findById(id).getStudents();
-    }
-
-    public void addPersonInCourse(int personId, int courseId) {
-        Person person = personRepository.findById(personId)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
-
-        if (person.getCourses() == null){
-            person.setCourses(new ArrayList<>(Collections.singletonList(course)));
-        }else {
-            person.getCourses().add(course);
-        }
-
-        personRepository.save(person);
-    }
-
-    public void removePersonFromCourse(int personId, int courseId) {
-        Person person = personRepository.findById(personId)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
-
-        person.getCourses().remove(course);
-
-        personRepository.save(person);
     }
 }

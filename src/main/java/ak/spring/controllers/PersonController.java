@@ -1,9 +1,11 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Course;
 import ak.spring.models.Person;
+import ak.spring.models.Settings;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/persons")
+@RequestMapping("v1/api/people")
 @CrossOrigin(origins =  "http://localhost:8080")
 public class PersonController {
 
@@ -62,14 +64,21 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> update(@PathVariable int id, @Valid @RequestBody Person updatedPerson) {
+    public ResponseEntity<Person> update(@PathVariable int id,
+                                         @Valid @RequestBody Person updatedPerson) {
         Person person = personService.update(id, updatedPerson);
         return ResponseEntity.ok(person);
     }
 
-    @GetMapping("/{personId}/courses")
-    public ResponseEntity<List<CourseDTO>> findCoursesForPerson(@PathVariable int personId) {
-        List<CourseDTO> courses = personService.findCoursesForPerson(personId);
-        return ResponseEntity.ok(courses);
+    @GetMapping("/{personId}/classroom")
+    public ResponseEntity<ClassroomDTO> findClassroomForPerson(@PathVariable int personId) {
+        ClassroomDTO classroom = personService.findClassroomForPerson(personId);
+        return ResponseEntity.ok(classroom);
+    }
+
+    @GetMapping("/{personId}/settings")
+    public ResponseEntity<Settings> findSettingsForPerson(@PathVariable int personId) {
+        Settings settings = personService.findSettingsForPerson(personId);
+        return ResponseEntity.ok(settings);
     }
 }

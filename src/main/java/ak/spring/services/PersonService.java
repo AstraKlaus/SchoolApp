@@ -1,12 +1,14 @@
 package ak.spring.services;
 
+import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
-import ak.spring.mappers.CourseDTOMapper;
+import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
+import ak.spring.models.Settings;
 import ak.spring.repositories.PersonRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
@@ -26,19 +28,19 @@ public class PersonService {
     private final TokenRepository tokenRepository;
     private final PersonRepository personRepository;
     private final PersonDTOMapper personDTOMapper;
-    private final CourseDTOMapper courseDTOMapper;
+    private final ClassroomDTOMapper classroomDTOMapper;
 
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
                          TokenRepository tokenRepository,
                          PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
-                         CourseDTOMapper courseDTOMapper) {
+                         ClassroomDTOMapper classroomDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
-        this.courseDTOMapper = courseDTOMapper;
+        this.classroomDTOMapper = classroomDTOMapper;
     }
 
     public List<PersonDTO> findAll() {
@@ -82,12 +84,9 @@ public class PersonService {
         return personRepository.save(existingPerson);
     }
 
-    public List<CourseDTO> findCoursesForPerson(int personId) {
+    public ClassroomDTO findClassroomForPerson(int personId) {
         return personRepository.findById(personId)
-                .map(person -> person.getCourses().stream()
-                        .map(courseDTOMapper)
-                        .toList())
-                .orElse(Collections.emptyList());
+                .map(Person::getClassroom).map(classroomDTOMapper).orElse(null);
     }
 
     public void assignRoleToUser(int personId, Role role) {
@@ -95,5 +94,10 @@ public class PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
         person.setRole(role);
         personRepository.save(person);
+    }
+
+    public Settings findSettingsForPerson(int personId) {
+        return personRepository.findById(personId)
+                .map(Person::getSettings).orElse(null);
     }
 }

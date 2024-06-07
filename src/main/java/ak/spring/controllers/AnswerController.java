@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/answers")
+@RequestMapping("v1/api/answers")
 @CrossOrigin(origins =  "http://localhost:8080")
 public class AnswerController {
 

@@ -30,6 +30,6 @@ public class Curriculum {
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "curriculum")
-    private List<Classroom> Classroom = new ArrayList<>();
+    private List<Classroom> Classrooms = new ArrayList<>();
 
 }

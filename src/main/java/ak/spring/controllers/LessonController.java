@@ -1,6 +1,9 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.CourseDTO;
 import ak.spring.dto.LessonDTO;
+import ak.spring.dto.PersonDTO;
+import ak.spring.models.Homework;
 import ak.spring.models.Lesson;
 import ak.spring.requests.LessonRequest;
 import ak.spring.services.LessonService;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/lessons")
+@RequestMapping("v1/api/lessons")
 @CrossOrigin(origins =  "http://localhost:8080")
 public class LessonController {
 
@@ -32,7 +35,8 @@ public class LessonController {
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<LessonDTO>> findWithPagination(@RequestParam int offset, @RequestParam int pageSize) {
+    public ResponseEntity<Page<LessonDTO>> findWithPagination(@RequestParam int offset,
+                                                              @RequestParam int pageSize) {
         Page<LessonDTO> lessons = lessonService.findWithPagination(offset, pageSize);
         return ResponseEntity.ok(lessons);
     }
@@ -56,7 +60,8 @@ public class LessonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lesson> updateLesson(@PathVariable int id, @Valid @RequestBody Lesson updatedLesson) {
+    public ResponseEntity<Lesson> updateLesson(@PathVariable int id,
+                                               @Valid @RequestBody Lesson updatedLesson) {
         Lesson lesson = lessonService.updateLesson(id, updatedLesson);
         return ResponseEntity.ok(lesson);
     }
@@ -66,4 +71,17 @@ public class LessonController {
         List<LessonDTO> lessons = lessonService.findAll();
         return ResponseEntity.ok(lessons);
     }
+
+    @GetMapping("/{id}/course")
+    public ResponseEntity<CourseDTO> getCourses(@PathVariable int id) {
+        return ResponseEntity.ok(lessonService.getCourse(id));
+    }
+
+    @GetMapping("/{id}/homeworks")
+    public ResponseEntity<List<Homework>> getHomeworks(@PathVariable int id) {
+        List<Homework> homeworks = lessonService.getHomeworks(id);
+        return ResponseEntity.ok(homeworks);
+    }
+
+
 }

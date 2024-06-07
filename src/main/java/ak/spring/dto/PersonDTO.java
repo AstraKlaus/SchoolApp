@@ -1,6 +1,7 @@
 package ak.spring.dto;
 
 import ak.spring.models.Role;
+import ak.spring.models.Settings;
 import lombok.*;
 
 @Getter
@@ -14,5 +15,6 @@ public class PersonDTO {
     private String firstName;
     private String lastName;
     private Role role;
+    private SettingsDTO settings;
     private String classroomName;
 }
