@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/answers")
-@CrossOrigin(origins =  "http://localhost:8080")
+@CrossOrigin(origins =  "http://localhost:5173", allowCredentials = "true")
 public class AnswerController {
 
     private final AnswerService answerService;
