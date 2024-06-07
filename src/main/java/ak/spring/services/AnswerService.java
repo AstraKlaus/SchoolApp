@@ -1,8 +1,10 @@
 package ak.spring.services;
 
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.AnswerDTOMapper;
+import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Answer;
 import ak.spring.repositories.AnswerRepository;
 import ak.spring.requests.AnswerRequest;
@@ -22,12 +24,14 @@ import java.util.List;
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final PersonDTOMapper personDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
 
     @Autowired
     public AnswerService(AnswerRepository answerRepository,
-                         AnswerDTOMapper answerDTOMapper) {
+                         PersonDTOMapper personDTOMapper, AnswerDTOMapper answerDTOMapper) {
         this.answerRepository = answerRepository;
+        this.personDTOMapper = personDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
     }
 
@@ -37,11 +41,12 @@ public class AnswerService {
                 .build());
     }
 
-    public Answer updateAccord(int id, byte[] file) {
+    public AnswerDTO updateAccord(int id, byte[] file) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         answer.setFile(file);
-        return answerRepository.save(answer);
+        answerRepository.save(answer);
+        return answerDTOMapper.apply(answer);
     }
 
     public Page<AnswerDTO> findWithPagination(int offset, int pageSize) {
@@ -62,8 +67,9 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "name", name));
     }
 
-    public Answer save(Answer answer) {
-        return answerRepository.save(answer);
+    public AnswerDTO save(Answer answer) {
+        answerRepository.save(answer);
+        return answerDTOMapper.apply(answer);
     }
 
     public List<AnswerDTO> findAll() {
@@ -78,12 +84,20 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         answerRepository.delete(existingAnswer);
     }
-    public Answer update(int id, AnswerRequest updatedSubmission) {
+    public AnswerDTO update(int id, AnswerRequest updatedSubmission) {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         existingAnswer.setFile(updatedSubmission.getFile());
         existingAnswer.setFeedback(updatedSubmission.getFeedback());
         existingAnswer.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        return answerRepository.save(existingAnswer);
+        answerRepository.save(existingAnswer);
+        return answerDTOMapper.apply(existingAnswer);
+    }
+
+    public PersonDTO getStudent(int id) {
+        return answerRepository.findById(id)
+                .map(Answer::getStudent)
+                .map(personDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
 }

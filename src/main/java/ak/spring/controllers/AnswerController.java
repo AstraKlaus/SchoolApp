@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.PersonDTO;
 import ak.spring.models.Answer;
 import ak.spring.requests.AnswerRequest;
 import ak.spring.services.AnswerService;
@@ -36,8 +37,8 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<Answer> updateAccord(@PathVariable int id, @RequestBody byte[] file) {
-        Answer updatedAnswer = answerService.updateAccord(id, file);
+    public ResponseEntity<AnswerDTO> updateAccord(@PathVariable int id, @RequestBody byte[] file) {
+        AnswerDTO updatedAnswer = answerService.updateAccord(id, file);
         return ResponseEntity.ok(updatedAnswer);
     }
 
@@ -63,20 +64,20 @@ public class AnswerController {
 
     @GetMapping("/search/{name}")
     public ResponseEntity<AnswerDTO> findByName(@PathVariable String name) {
-        AnswerDTO submission = answerService.findByName(name);
-        return ResponseEntity.ok(submission);
+        AnswerDTO answer = answerService.findByName(name);
+        return ResponseEntity.ok(answer);
     }
 
     @PostMapping
-    public ResponseEntity<Answer> save(@Valid @RequestBody Answer answer) {
-        Answer savedAnswer = answerService.save(answer);
+    public ResponseEntity<AnswerDTO> save(@Valid @RequestBody Answer answer) {
+        AnswerDTO savedAnswer = answerService.save(answer);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAnswer);
     }
 
     @GetMapping
     public ResponseEntity<List<AnswerDTO>> findAll() {
-        List<AnswerDTO> submissions = answerService.findAll();
-        return ResponseEntity.ok(submissions);
+        List<AnswerDTO> answers = answerService.findAll();
+        return ResponseEntity.ok(answers);
     }
 
     @DeleteMapping("/{id}")
@@ -86,8 +87,14 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Answer> update(@PathVariable int id, @Valid @RequestBody AnswerRequest updatedSubmission) {
-        Answer answer = answerService.update(id, updatedSubmission);
+    public ResponseEntity<AnswerDTO> update(@PathVariable int id, @Valid @RequestBody AnswerRequest updatedSubmission) {
+        AnswerDTO answer = answerService.update(id, updatedSubmission);
         return ResponseEntity.ok(answer);
+    }
+
+    @GetMapping("/{id}/person")
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable int id) {
+        PersonDTO person = answerService.getStudent(id);
+        return ResponseEntity.ok(person);
     }
 }

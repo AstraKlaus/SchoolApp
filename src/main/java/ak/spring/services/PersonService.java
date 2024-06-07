@@ -1,14 +1,14 @@
 package ak.spring.services;
 
 import ak.spring.dto.ClassroomDTO;
-import ak.spring.dto.CourseDTO;
 import ak.spring.dto.PersonDTO;
+import ak.spring.dto.SettingsDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
+import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
-import ak.spring.models.Settings;
 import ak.spring.repositories.PersonRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,6 +27,7 @@ public class PersonService {
     private final TokenRepository tokenRepository;
     private final PersonRepository personRepository;
     private final PersonDTOMapper personDTOMapper;
+    private final SettingsDTOMapper settingsDTOMapper;
     private final ClassroomDTOMapper classroomDTOMapper;
 
     @Autowired
@@ -35,11 +35,12 @@ public class PersonService {
                          TokenRepository tokenRepository,
                          PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
-                         ClassroomDTOMapper classroomDTOMapper) {
+                         SettingsDTOMapper settingsDTOMapper, ClassroomDTOMapper classroomDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
+        this.settingsDTOMapper = settingsDTOMapper;
         this.classroomDTOMapper = classroomDTOMapper;
     }
 
@@ -66,9 +67,10 @@ public class PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
     }
 
-    public Person uploadPerson(Person person) {
+    public PersonDTO uploadPerson(Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-        return personRepository.save(person);
+        personRepository.save(person);
+        return personDTOMapper.apply(person);
     }
 
     public void deletePerson(int id) {
@@ -76,12 +78,13 @@ public class PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id)));
     }
 
-    public Person update(int id, Person updatedPerson) {
+    public PersonDTO update(int id, Person updatedPerson) {
         Person existingPerson = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
         existingPerson.setFirstName(updatedPerson.getFirstName());
         existingPerson.setLastName(updatedPerson.getLastName());
-        return personRepository.save(existingPerson);
+        personRepository.save(existingPerson);
+        return personDTOMapper.apply(existingPerson);
     }
 
     public ClassroomDTO findClassroomForPerson(int personId) {
@@ -96,8 +99,10 @@ public class PersonService {
         personRepository.save(person);
     }
 
-    public Settings findSettingsForPerson(int personId) {
+    public SettingsDTO findSettingsForPerson(int personId) {
         return personRepository.findById(personId)
-                .map(Person::getSettings).orElse(null);
+                .map(Person::getSettings)
+                .map(settingsDTOMapper)
+                .orElse(null);
     }
 }

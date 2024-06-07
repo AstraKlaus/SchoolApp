@@ -1,21 +1,16 @@
 package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
-import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.models.Course;
-import ak.spring.models.Person;
 import ak.spring.repositories.CourseRepository;
-import ak.spring.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -52,13 +47,15 @@ public class CourseService {
                 .toList();
     }
 
-    public Course uploadCourse(Course course){
+    public CourseDTO uploadCourse(Course course){
         Course newCourse = Course.builder()
                 .description(course.getDescription())
                 .name(course.getName())
                 .build();
 
-        return courseRepository.save(newCourse);
+        courseRepository.save(newCourse);
+
+        return courseDTOMapper.apply(newCourse);
     }
 
     public CourseDTO findById(int id){
@@ -71,12 +68,13 @@ public class CourseService {
         courseRepository.delete(existingCourse);
     }
 
-    public Course updateCourse(int id, Course updatedCourse) {
+    public CourseDTO updateCourse(int id, Course updatedCourse) {
         Course existingCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
         existingCourse.setName(updatedCourse.getName());
         existingCourse.setDescription(updatedCourse.getDescription());
-        return courseRepository.save(existingCourse);
+        courseRepository.save(existingCourse);
 
+        return courseDTOMapper.apply(existingCourse);
     }
 }

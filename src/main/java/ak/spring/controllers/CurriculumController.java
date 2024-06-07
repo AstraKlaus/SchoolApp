@@ -3,7 +3,6 @@ package ak.spring.controllers;
 import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.CurriculumDTO;
-import ak.spring.models.Course;
 import ak.spring.models.Curriculum;
 import ak.spring.services.CurriculumService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class CurriculumController {
     }
 
     @PostMapping
-    public Curriculum createCurriculum(@RequestBody Curriculum curriculum) {
+    public CurriculumDTO createCurriculum(@RequestBody Curriculum curriculum) {
         return curriculumService.saveCurriculum(curriculum);
     }
 

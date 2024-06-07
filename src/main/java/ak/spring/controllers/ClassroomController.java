@@ -3,7 +3,6 @@ package ak.spring.controllers;
 import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Classroom;
-import ak.spring.models.Person;
 import ak.spring.services.ClassroomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +44,8 @@ public class ClassroomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Classroom> updateGroup(@PathVariable int id, @Valid @RequestBody Classroom updatedClassroom) {
-        Classroom classroom = classroomService.updateGroup(id, updatedClassroom);
+    public ResponseEntity<ClassroomDTO> updateGroup(@PathVariable int id, @Valid @RequestBody Classroom updatedClassroom) {
+        ClassroomDTO classroom = classroomService.updateGroup(id, updatedClassroom);
         return ResponseEntity.ok(classroom);
     }
 
@@ -57,8 +56,8 @@ public class ClassroomController {
     }
 
     @PostMapping
-    public ResponseEntity<Classroom> uploadGroup(@Valid @RequestBody Classroom classroom) {
-        Classroom savedClassroom = classroomService.uploadGroup(classroom);
+    public ResponseEntity<ClassroomDTO> uploadGroup(@Valid @RequestBody Classroom classroom) {
+        ClassroomDTO savedClassroom = classroomService.uploadGroup(classroom);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedClassroom);
     }
 

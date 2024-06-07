@@ -32,14 +32,14 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Person> createUser(@Valid @RequestBody Person person) {
-        Person savedPerson = personService.uploadPerson(person);
+    public ResponseEntity<PersonDTO> createUser(@Valid @RequestBody Person person) {
+        PersonDTO savedPerson = personService.uploadPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<Person> updateUser(@PathVariable int id, @Valid @RequestBody Person updatedPerson) {
-        Person person = personService.update(id, updatedPerson);
+    public ResponseEntity<PersonDTO> updateUser(@PathVariable int id, @Valid @RequestBody Person updatedPerson) {
+        PersonDTO person = personService.update(id, updatedPerson);
         return ResponseEntity.ok(person);
     }
 

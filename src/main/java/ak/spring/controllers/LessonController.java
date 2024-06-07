@@ -1,11 +1,9 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.CourseDTO;
+import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
-import ak.spring.dto.PersonDTO;
-import ak.spring.models.Homework;
 import ak.spring.models.Lesson;
-import ak.spring.requests.LessonRequest;
 import ak.spring.services.LessonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,15 +52,15 @@ public class LessonController {
     }
 
     @PostMapping
-    public ResponseEntity<Lesson> saveLesson(@Valid @RequestBody Lesson lesson) {
-        Lesson savedLesson = lessonService.saveLesson(lesson);
+    public ResponseEntity<LessonDTO> saveLesson(@Valid @RequestBody Lesson lesson) {
+        LessonDTO savedLesson = lessonService.saveLesson(lesson);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedLesson);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lesson> updateLesson(@PathVariable int id,
+    public ResponseEntity<LessonDTO> updateLesson(@PathVariable int id,
                                                @Valid @RequestBody Lesson updatedLesson) {
-        Lesson lesson = lessonService.updateLesson(id, updatedLesson);
+        LessonDTO lesson = lessonService.updateLesson(id, updatedLesson);
         return ResponseEntity.ok(lesson);
     }
 
@@ -78,8 +76,8 @@ public class LessonController {
     }
 
     @GetMapping("/{id}/homeworks")
-    public ResponseEntity<List<Homework>> getHomeworks(@PathVariable int id) {
-        List<Homework> homeworks = lessonService.getHomeworks(id);
+    public ResponseEntity<List<HomeworkDTO>> getHomeworks(@PathVariable int id) {
+        List<HomeworkDTO> homeworks = lessonService.getHomeworks(id);
         return ResponseEntity.ok(homeworks);
     }
 

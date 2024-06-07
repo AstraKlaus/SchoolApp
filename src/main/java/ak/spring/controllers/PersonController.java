@@ -1,11 +1,9 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.ClassroomDTO;
-import ak.spring.dto.CourseDTO;
 import ak.spring.dto.PersonDTO;
-import ak.spring.models.Course;
+import ak.spring.dto.SettingsDTO;
 import ak.spring.models.Person;
-import ak.spring.models.Settings;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +50,8 @@ public class PersonController {
     }
 
     @PostMapping
-    public ResponseEntity<Person> uploadPerson(@Valid @RequestBody Person person) {
-        Person savedPerson = personService.uploadPerson(person);
+    public ResponseEntity<PersonDTO> uploadPerson(@Valid @RequestBody Person person) {
+        PersonDTO savedPerson = personService.uploadPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
     }
 
@@ -64,9 +62,9 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> update(@PathVariable int id,
+    public ResponseEntity<PersonDTO> update(@PathVariable int id,
                                          @Valid @RequestBody Person updatedPerson) {
-        Person person = personService.update(id, updatedPerson);
+        PersonDTO person = personService.update(id, updatedPerson);
         return ResponseEntity.ok(person);
     }
 
@@ -77,8 +75,8 @@ public class PersonController {
     }
 
     @GetMapping("/{personId}/settings")
-    public ResponseEntity<Settings> findSettingsForPerson(@PathVariable int personId) {
-        Settings settings = personService.findSettingsForPerson(personId);
+    public ResponseEntity<SettingsDTO> findSettingsForPerson(@PathVariable int personId) {
+        SettingsDTO settings = personService.findSettingsForPerson(personId);
         return ResponseEntity.ok(settings);
     }
 }

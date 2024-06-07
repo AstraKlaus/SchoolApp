@@ -1,11 +1,12 @@
 package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
+import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
+import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
-import ak.spring.models.Homework;
 import ak.spring.models.Lesson;
 import ak.spring.repositories.LessonRepository;
 import jakarta.transaction.Transactional;
@@ -22,13 +23,15 @@ import java.util.List;
 public class LessonService {
     private final LessonRepository lessonRepository;
     private final CourseDTOMapper courseDTOMapper;
+    private final HomeworkDTOMapper homeworkDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
 
     @Autowired
     public LessonService(LessonRepository lessonRepository,
-                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, HomeworkDTOMapper homeworkDTOMapper, LessonDTOMapper lessonDTOMapper) {
         this.lessonRepository = lessonRepository;
         this.courseDTOMapper = courseDTOMapper;
+        this.homeworkDTOMapper = homeworkDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
     }
 
@@ -56,23 +59,27 @@ public class LessonService {
         lessonRepository.delete(existingLesson);
     }
 
-    public Lesson saveLesson(Lesson lesson) {
+    public LessonDTO saveLesson(Lesson lesson) {
         Lesson newLesson = Lesson.builder()
                 .name(lesson.getName())
                 .course(lesson.getCourse())
                 .content(lesson.getContent())
                 .build();
-        return lessonRepository.save(newLesson);
+        lessonRepository.save(newLesson);
+
+        return lessonDTOMapper.apply(newLesson);
     }
 
-    public Lesson updateLesson(int id, Lesson updatedLesson) {
+    public LessonDTO updateLesson(int id, Lesson updatedLesson) {
         Lesson existingLesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
         existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         existingLesson.setCourse(updatedLesson.getCourse());
-        return lessonRepository.save(existingLesson);
+        lessonRepository.save(existingLesson);
+
+        return lessonDTOMapper.apply(existingLesson);
     }
 
     public List<LessonDTO> findAll() {
@@ -89,9 +96,12 @@ public class LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 
-    public List<Homework> getHomeworks(int id) {
+    public List<HomeworkDTO> getHomeworks(int id){
         return lessonRepository.findById(id)
-                .map(Lesson::getHomeworks)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+                .map(lesson -> lesson.getHomeworks()
+                        .stream()
+                        .map(homeworkDTOMapper)
+                        .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
     }
 }

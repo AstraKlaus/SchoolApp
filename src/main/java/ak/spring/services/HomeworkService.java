@@ -1,7 +1,9 @@
 package ak.spring.services;
 import ak.spring.dto.HomeworkDTO;
+import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.HomeworkDTOMapper;
+import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Homework;
 import ak.spring.repositories.HomeworkRepository;
 import ak.spring.repositories.LessonRepository;
@@ -18,14 +20,16 @@ import java.util.List;
 public class HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
+    private final LessonDTOMapper lessonDTOMapper;
     private final LessonRepository lessonRepository;
     private final HomeworkDTOMapper homeworkDTOMapper;
 
     @Autowired
     public HomeworkService(HomeworkRepository homeworkRepository,
-                           LessonRepository lessonRepository,
+                           LessonDTOMapper lessonDTOMapper, LessonRepository lessonRepository,
                            HomeworkDTOMapper homeworkDTOMapper) {
         this.homeworkRepository = homeworkRepository;
+        this.lessonDTOMapper = lessonDTOMapper;
         this.lessonRepository = lessonRepository;
         this.homeworkDTOMapper = homeworkDTOMapper;
     }
@@ -54,24 +58,26 @@ public class HomeworkService {
         homeworkRepository.delete(existingHomework);
     }
 
-    public Homework saveHomework(Homework homework) {
+    public HomeworkDTO saveHomework(Homework homework) {
         Homework newHomework = Homework.builder()
                 .name(homework.getName())
                 .description(homework.getDescription())
                 .attachment(homework.getAttachment())
                 .lesson(homework.getLesson())
                 .build();
-        return homeworkRepository.save(newHomework);
+        homeworkRepository.save(newHomework);
+        return homeworkDTOMapper.apply(newHomework);
     }
 
-    public Homework updateHomework(int id, Homework updatedHomework) {
+    public HomeworkDTO updateHomework(int id, Homework updatedHomework) {
         Homework existingHomework = homeworkRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
         existingHomework.setName(updatedHomework.getName());
         existingHomework.setDescription(updatedHomework.getDescription());
         existingHomework.setAttachment(updatedHomework.getAttachment());
         existingHomework.setLesson(updatedHomework.getLesson());
-        return homeworkRepository.save(existingHomework);
+        homeworkRepository.save(existingHomework);
+        return homeworkDTOMapper.apply(existingHomework);
     }
 
     public List<HomeworkDTO> findAll() {
@@ -79,6 +85,12 @@ public class HomeworkService {
                 .stream()
                 .map(homeworkDTOMapper)
                 .toList();
+    }
+
+    public LessonDTO getLesson(int id) {
+        return lessonRepository.findById(id)
+                .map(lessonDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
     }
 }
 

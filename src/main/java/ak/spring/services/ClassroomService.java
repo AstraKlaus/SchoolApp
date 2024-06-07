@@ -4,7 +4,6 @@ import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
-import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Classroom;
 import ak.spring.repositories.ClassroomRepository;
 import jakarta.transaction.Transactional;
@@ -47,12 +46,14 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
     }
 
-    public Classroom updateGroup(int id, Classroom updatedClassroom) {
+    public ClassroomDTO updateGroup(int id, Classroom updatedClassroom) {
         Classroom existingClassroom = classroomRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));;
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         existingClassroom.setName(updatedClassroom.getName());
         existingClassroom.setTeacher(updatedClassroom.getTeacher());
-        return classroomRepository.save(existingClassroom);
+        classroomRepository.save(existingClassroom);
+
+        return classroomDTOMapper.apply(existingClassroom);
     }
 
 
@@ -61,12 +62,14 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         classroomRepository.delete(existingClassroom);
     }
-    public Classroom uploadGroup(Classroom classroom){
+    public ClassroomDTO uploadGroup(Classroom classroom){
         Classroom newClassroom = Classroom.builder()
                 .name(classroom.getName())
                 .teacher(classroom.getTeacher())
                 .build();
-        return classroomRepository.save(newClassroom);
+        classroomRepository.save(newClassroom);
+
+        return classroomDTOMapper.apply(newClassroom);
     }
 
     public List<ClassroomDTO> findAll() {

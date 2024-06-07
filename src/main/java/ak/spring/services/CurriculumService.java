@@ -7,7 +7,6 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
-import ak.spring.models.Classroom;
 import ak.spring.models.Curriculum;
 import ak.spring.repositories.CurriculumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,9 @@ public class CurriculumService {
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
     }
 
-    public Curriculum saveCurriculum(Curriculum curriculum) {
-        return curriculumRepository.save(curriculum);
+    public CurriculumDTO saveCurriculum(Curriculum curriculum) {
+        curriculumRepository.save(curriculum);
+        return curriculumDTOMapper.apply(curriculum);
     }
 
     public void deleteCurriculum(int id) {
@@ -72,7 +72,7 @@ public class CurriculumService {
 
     public CurriculumDTO updateCurriculum(int id, Curriculum curriculumDetails) {
         Curriculum curriculum = curriculumRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));;
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
 
         curriculum.setName(curriculumDetails.getName());
         curriculum.setDescription(curriculumDetails.getDescription());

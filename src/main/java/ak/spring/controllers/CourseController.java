@@ -1,9 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.CourseDTO;
-import ak.spring.dto.PersonDTO;
 import ak.spring.models.Course;
-import ak.spring.models.Person;
 import ak.spring.services.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +43,8 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Course> uploadCourse(@Valid @RequestBody Course course) {
-        Course savedCourse = courseService.uploadCourse(course);
+    public ResponseEntity<CourseDTO> uploadCourse(@Valid @RequestBody Course course) {
+        CourseDTO savedCourse = courseService.uploadCourse(course);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCourse);
     }
 
@@ -63,8 +61,8 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable int id, @Valid @RequestBody Course updatedCourse) {
-        Course course = courseService.updateCourse(id, updatedCourse);
+    public ResponseEntity<CourseDTO> updateCourse(@PathVariable int id, @Valid @RequestBody Course updatedCourse) {
+        CourseDTO course = courseService.updateCourse(id, updatedCourse);
         return ResponseEntity.ok(course);
     }
 

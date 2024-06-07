@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.HomeworkDTO;
+import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
 import ak.spring.services.HomeworkService;
 import jakarta.validation.Valid;
@@ -49,14 +50,14 @@ public class HomeworkController {
     }
 
     @PostMapping
-    public ResponseEntity<Homework> saveHomework(@Valid @RequestBody Homework homework) {
-        Homework savedHomework = homeworkService.saveHomework(homework);
+    public ResponseEntity<HomeworkDTO> saveHomework(@Valid @RequestBody Homework homework) {
+        HomeworkDTO savedHomework = homeworkService.saveHomework(homework);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHomework);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Homework> updateHomework(@PathVariable int id, @Valid @RequestBody Homework updatedHomework) {
-        Homework homework = homeworkService.updateHomework(id, updatedHomework);
+    public ResponseEntity<HomeworkDTO> updateHomework(@PathVariable int id, @Valid @RequestBody Homework updatedHomework) {
+        HomeworkDTO homework = homeworkService.updateHomework(id, updatedHomework);
         return ResponseEntity.ok(homework);
     }
 
@@ -64,6 +65,11 @@ public class HomeworkController {
     public ResponseEntity<List<HomeworkDTO>> findAll() {
         List<HomeworkDTO> homeworks = homeworkService.findAll();
         return ResponseEntity.ok(homeworks);
+    }
+
+    @GetMapping("/{id}/lesson")
+    public ResponseEntity<LessonDTO> getLesson(@PathVariable int id) {
+        return ResponseEntity.ok(homeworkService.getLesson(id));
     }
 }
 
