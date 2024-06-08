@@ -1,7 +1,9 @@
 package ak.spring.services;
+import ak.spring.dto.AnswerDTO;
 import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
+import ak.spring.mappers.AnswerDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Homework;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -22,15 +25,17 @@ public class HomeworkService {
     private final HomeworkRepository homeworkRepository;
     private final LessonDTOMapper lessonDTOMapper;
     private final LessonRepository lessonRepository;
+    private final AnswerDTOMapper answerDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
 
     @Autowired
     public HomeworkService(HomeworkRepository homeworkRepository,
                            LessonDTOMapper lessonDTOMapper, LessonRepository lessonRepository,
-                           HomeworkDTOMapper homeworkDTOMapper) {
+                           AnswerDTOMapper answerDTOMapper, HomeworkDTOMapper homeworkDTOMapper) {
         this.homeworkRepository = homeworkRepository;
         this.lessonDTOMapper = lessonDTOMapper;
         this.lessonRepository = lessonRepository;
+        this.answerDTOMapper = answerDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
     }
 
@@ -63,7 +68,10 @@ public class HomeworkService {
                 .name(homework.getName())
                 .description(homework.getDescription())
                 .attachment(homework.getAttachment())
-                .lesson(homework.getLesson())
+                .access(homework.isAccess())
+                .course(homework.getCourse())
+                .answers(homework.getAnswers())
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
         homeworkRepository.save(newHomework);
         return homeworkDTOMapper.apply(newHomework);
@@ -75,7 +83,10 @@ public class HomeworkService {
         existingHomework.setName(updatedHomework.getName());
         existingHomework.setDescription(updatedHomework.getDescription());
         existingHomework.setAttachment(updatedHomework.getAttachment());
-        existingHomework.setLesson(updatedHomework.getLesson());
+        existingHomework.setAnswers(updatedHomework.getAnswers());
+        existingHomework.setCourse(updatedHomework.getCourse());
+        existingHomework.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
         homeworkRepository.save(existingHomework);
         return homeworkDTOMapper.apply(existingHomework);
     }
@@ -91,6 +102,15 @@ public class HomeworkService {
         return lessonRepository.findById(id)
                 .map(lessonDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
+    }
+
+    public List<AnswerDTO> getAnswers(int id) {
+        return homeworkRepository.findById(id)
+                .map(homework -> homework.getAnswers()
+                        .stream()
+                        .map(answerDTOMapper)
+                        .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
     }
 }
 

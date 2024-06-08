@@ -55,8 +55,10 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         existingClassroom.setName(updatedClassroom.getName());
         existingClassroom.setTeacher(updatedClassroom.getTeacher());
-        classroomRepository.save(existingClassroom);
+        existingClassroom.setPersons(updatedClassroom.getPersons());
+        existingClassroom.setCurriculum(updatedClassroom.getCurriculum());
 
+        classroomRepository.save(existingClassroom);
         return classroomDTOMapper.apply(existingClassroom);
     }
 
@@ -70,6 +72,8 @@ public class ClassroomService {
         Classroom newClassroom = Classroom.builder()
                 .name(classroom.getName())
                 .teacher(classroom.getTeacher())
+                .curriculum(classroom.getCurriculum())
+                .persons(classroom.getPersons())
                 .build();
         classroomRepository.save(newClassroom);
 

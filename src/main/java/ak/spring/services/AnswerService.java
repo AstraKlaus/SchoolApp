@@ -1,9 +1,11 @@
 package ak.spring.services;
 
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.AnswerDTOMapper;
+import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Answer;
 import ak.spring.repositories.AnswerRepository;
@@ -25,13 +27,15 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final PersonDTOMapper personDTOMapper;
+    private final HomeworkDTOMapper homeworkDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
 
     @Autowired
     public AnswerService(AnswerRepository answerRepository,
-                         PersonDTOMapper personDTOMapper, AnswerDTOMapper answerDTOMapper) {
+                         PersonDTOMapper personDTOMapper, HomeworkDTOMapper homeworkDTOMapper, AnswerDTOMapper answerDTOMapper) {
         this.answerRepository = answerRepository;
         this.personDTOMapper = personDTOMapper;
+        this.homeworkDTOMapper = homeworkDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
     }
 
@@ -68,6 +72,7 @@ public class AnswerService {
     }
 
     public AnswerDTO save(Answer answer) {
+        answer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         answerRepository.save(answer);
         return answerDTOMapper.apply(answer);
     }
@@ -84,12 +89,15 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         answerRepository.delete(existingAnswer);
     }
-    public AnswerDTO update(int id, AnswerRequest updatedSubmission) {
+    public AnswerDTO update(int id, AnswerDTO updatedAnswer) {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
-        existingAnswer.setFile(updatedSubmission.getFile());
-        existingAnswer.setComment(updatedSubmission.getFeedback());
+        existingAnswer.setFile(updatedAnswer.getFile());
+        existingAnswer.setComment(updatedAnswer.getComment());
+        existingAnswer.setAttachment(updatedAnswer.getAttachment());
+        existingAnswer.setDescription(updatedAnswer.getDescription());
         existingAnswer.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
         answerRepository.save(existingAnswer);
         return answerDTOMapper.apply(existingAnswer);
     }
@@ -98,6 +106,13 @@ public class AnswerService {
         return answerRepository.findById(id)
                 .map(Answer::getStudent)
                 .map(personDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
+    }
+
+    public HomeworkDTO getHomework(int id) {
+        return answerRepository.findById(id)
+                .map(Answer::getHomework)
+                .map(homeworkDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
 }

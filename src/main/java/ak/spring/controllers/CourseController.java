@@ -2,6 +2,7 @@ package ak.spring.controllers;
 
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.CurriculumDTO;
+import ak.spring.dto.LessonDTO;
 import ak.spring.models.Course;
 import ak.spring.services.CourseService;
 import jakarta.validation.Valid;
@@ -73,4 +74,9 @@ public class CourseController {
         return ResponseEntity.ok(curriculum);
     }
 
+    @GetMapping("/{id}/lessons")
+    public ResponseEntity<List<LessonDTO>> getLessonsById(@PathVariable int id) {
+        List<LessonDTO> lessons = courseService.getLessons(id);
+        return ResponseEntity.ok(lessons);
+    }
 }

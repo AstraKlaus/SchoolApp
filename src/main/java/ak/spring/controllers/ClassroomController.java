@@ -68,12 +68,6 @@ public class ClassroomController {
         return ResponseEntity.ok(classrooms);
     }
 
-//    @GetMapping("/{id}/teacher")
-//    public ResponseEntity<PersonDTO> getTeacher(@PathVariable int id) {
-//        PersonDTO teacher = classroomService.getTeacher(id);
-//        return ResponseEntity.ok(teacher);
-//    }
-//
     @GetMapping("/{id}/students")
     public ResponseEntity<List<PersonDTO>> getStudents(@PathVariable int id) {
         List<PersonDTO> students = classroomService.getStudents(id);

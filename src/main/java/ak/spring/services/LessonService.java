@@ -64,6 +64,8 @@ public class LessonService {
                 .name(lesson.getName())
                 .course(lesson.getCourse())
                 .content(lesson.getContent())
+                .access(lesson.isAccess())
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
         lessonRepository.save(newLesson);
 
@@ -75,10 +77,11 @@ public class LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
-        existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         existingLesson.setCourse(updatedLesson.getCourse());
-        lessonRepository.save(existingLesson);
+        existingLesson.setAccess(updatedLesson.isAccess());
+        existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
+        lessonRepository.save(existingLesson);
         return lessonDTOMapper.apply(existingLesson);
     }
 
@@ -96,12 +99,5 @@ public class LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 
-    public List<HomeworkDTO> getHomeworks(int id){
-        return lessonRepository.findById(id)
-                .map(lesson -> lesson.getHomeworks()
-                        .stream()
-                        .map(homeworkDTOMapper)
-                        .toList())
-                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
-    }
+
 }

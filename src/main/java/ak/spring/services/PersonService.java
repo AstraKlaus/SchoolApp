@@ -1,16 +1,17 @@
 package ak.spring.services;
 
+import ak.spring.dto.AnswerDTO;
 import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.dto.SettingsDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
+import ak.spring.mappers.AnswerDTOMapper;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
 import ak.spring.repositories.PersonRepository;
-import ak.spring.requests.PersonRequest;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,7 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final PersonDTOMapper personDTOMapper;
     private final SettingsDTOMapper settingsDTOMapper;
+    private final AnswerDTOMapper answerDTOMapper;
     private final ClassroomDTOMapper classroomDTOMapper;
 
     @Autowired
@@ -36,12 +38,13 @@ public class PersonService {
                          TokenRepository tokenRepository,
                          PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
-                         SettingsDTOMapper settingsDTOMapper, ClassroomDTOMapper classroomDTOMapper) {
+                         SettingsDTOMapper settingsDTOMapper, AnswerDTOMapper answerDTOMapper, ClassroomDTOMapper classroomDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
         this.settingsDTOMapper = settingsDTOMapper;
+        this.answerDTOMapper = answerDTOMapper;
         this.classroomDTOMapper = classroomDTOMapper;
     }
 
@@ -60,7 +63,7 @@ public class PersonService {
     public Person findByToken(String token) {
         return tokenRepository.findByToken(token)
                 .map(Token::getUser)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Token", "id", token));
     }
 
     public PersonDTO findById(int id) {
@@ -97,7 +100,9 @@ public class PersonService {
 
     public ClassroomDTO findClassroomForPerson(int personId) {
         return personRepository.findById(personId)
-                .map(Person::getClassroom).map(classroomDTOMapper).orElse(null);
+                .map(Person::getClassroom)
+                .map(classroomDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
     }
 
     public void assignRoleToUser(int personId, Role role) {
@@ -111,6 +116,37 @@ public class PersonService {
         return personRepository.findById(personId)
                 .map(Person::getSettings)
                 .map(settingsDTOMapper)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
+    }
+
+    public void deleteSettingsForPerson(int personId) {
+        personRepository.findById(personId).ifPresentOrElse(
+                person -> {
+                    person.setSettings(null);
+                    personRepository.save(person);
+                },
+                () -> { throw new ResourceNotFoundException("Person", "id", personId); }
+        );
+    }
+
+
+    public void deleteClassroomForPerson(int personId) {
+        personRepository.findById(personId)
+                .map(person -> person.getClassrooms()
+                        .stream()
+                        .map(classroomDTOMapper)
+                        .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", personId));
+    }
+
+
+    public List<AnswerDTO> findAnswerForPerson(int personId) {
+        return personRepository.findById(personId)
+                .map(person -> person
+                        .getAnswers()
+                        .stream()
+                        .map(answerDTOMapper)
+                        .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
     }
 }

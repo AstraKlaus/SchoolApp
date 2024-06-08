@@ -2,9 +2,11 @@ package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.CurriculumDTO;
+import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
+import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
 import ak.spring.repositories.CourseRepository;
 import jakarta.transaction.Transactional;
@@ -21,13 +23,15 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseDTOMapper courseDTOMapper;
+    private final LessonDTOMapper lessonDTOMapper;
     private final CurriculumDTOMapper curriculumDTOMapper;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         CourseDTOMapper courseDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
         this.courseRepository = courseRepository;
         this.courseDTOMapper = courseDTOMapper;
+        this.lessonDTOMapper = lessonDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
     }
 
@@ -55,10 +59,13 @@ public class CourseService {
         Course newCourse = Course.builder()
                 .description(course.getDescription())
                 .name(course.getName())
+                .access(course.isAccess())
+                .curriculum(course.getCurriculum())
+                .homeworks(course.getHomeworks())
+                .lessons(course.getLessons())
                 .build();
 
         courseRepository.save(newCourse);
-
         return courseDTOMapper.apply(newCourse);
     }
 
@@ -77,6 +84,10 @@ public class CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
         existingCourse.setName(updatedCourse.getName());
         existingCourse.setDescription(updatedCourse.getDescription());
+        existingCourse.setAccess(updatedCourse.isAccess());
+        existingCourse.setCurriculum(updatedCourse.getCurriculum());
+        existingCourse.setLessons(updatedCourse.getLessons());
+
         courseRepository.save(existingCourse);
 
         return courseDTOMapper.apply(existingCourse);
@@ -86,6 +97,15 @@ public class CourseService {
         return courseRepository.findById(id)
                 .map(Course::getCurriculum)
                 .map(curriculumDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public List<LessonDTO> getLessons(int id) {
+        return courseRepository.findById(id)
+                .map(lesson -> lesson.getLessons()
+                        .stream()
+                        .map(lessonDTOMapper)
+                        .toList())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 }

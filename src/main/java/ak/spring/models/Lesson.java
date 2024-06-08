@@ -35,9 +35,6 @@ public class Lesson {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-    private List<Homework> homeworks = new ArrayList<>();
-
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 

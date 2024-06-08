@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,8 +31,11 @@ public class Homework {
     private boolean access;
 
     @ManyToOne()
-    @JoinColumn(name = "lesson_id")
-    private Lesson lesson;
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @OneToMany(mappedBy = "homework")
+    private List<Answer> answers;
 
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;

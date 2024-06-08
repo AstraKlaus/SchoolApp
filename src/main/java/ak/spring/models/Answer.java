@@ -26,6 +26,10 @@ public class Answer {
 
     private String attachment;
 
+    @ManyToOne()
+    @JoinColumn(name = "homework_id")
+    private Homework homework;
+
     @Lob
     @Column(name = "file", length = 1000)
     private byte[] file;

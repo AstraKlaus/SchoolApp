@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.AnswerDTO;
 import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
@@ -70,6 +71,11 @@ public class HomeworkController {
     @GetMapping("/{id}/lesson")
     public ResponseEntity<LessonDTO> getLesson(@PathVariable int id) {
         return ResponseEntity.ok(homeworkService.getLesson(id));
+    }
+
+    @GetMapping("/{id}/answers")
+    public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable int id) {
+        return ResponseEntity.ok(homeworkService.getAnswers(id));
     }
 }
 

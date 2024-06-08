@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.dto.AnswerDTO;
 import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.dto.SettingsDTO;
@@ -73,11 +74,29 @@ public class PersonController {
     public ResponseEntity<ClassroomDTO> findClassroomForPerson(@PathVariable int personId) {
         ClassroomDTO classroom = personService.findClassroomForPerson(personId);
         return ResponseEntity.ok(classroom);
-    }
+}
 
     @GetMapping("/{personId}/settings")
     public ResponseEntity<SettingsDTO> findSettingsForPerson(@PathVariable int personId) {
         SettingsDTO settings = personService.findSettingsForPerson(personId);
         return ResponseEntity.ok(settings);
+    }
+
+    @GetMapping("/{personId}/answer")
+    public ResponseEntity<List<AnswerDTO>> findAnswerForPerson(@PathVariable int personId) {
+        List<AnswerDTO> answers = personService.findAnswerForPerson(personId);
+        return ResponseEntity.ok(answers);
+    }
+
+    @DeleteMapping("/{personId}/settings")
+    public ResponseEntity<Void> deleteSettingsForPerson(@PathVariable int personId) {
+        personService.deleteSettingsForPerson(personId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{personId}/classroom")
+    public ResponseEntity<Void> deleteClassroomForPerson(@PathVariable int personId) {
+        personService.deleteClassroomForPerson(personId);
+        return ResponseEntity.noContent().build();
     }
 }

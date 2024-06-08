@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Answer;
 import ak.spring.requests.AnswerRequest;
@@ -87,8 +88,8 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnswerDTO> update(@PathVariable int id, @Valid @RequestBody AnswerRequest updatedSubmission) {
-        AnswerDTO answer = answerService.update(id, updatedSubmission);
+    public ResponseEntity<AnswerDTO> update(@PathVariable int id, @Valid @RequestBody AnswerDTO updatedAnswer) {
+        AnswerDTO answer = answerService.update(id, updatedAnswer);
         return ResponseEntity.ok(answer);
     }
 
@@ -96,5 +97,11 @@ public class AnswerController {
     public ResponseEntity<PersonDTO> getPerson(@PathVariable int id) {
         PersonDTO person = answerService.getStudent(id);
         return ResponseEntity.ok(person);
+    }
+
+    @GetMapping("/{id}/homework")
+    public ResponseEntity<HomeworkDTO> getHomework(@PathVariable int id) {
+        HomeworkDTO homework = answerService.getHomework(id);
+        return ResponseEntity.ok(homework);
     }
 }
