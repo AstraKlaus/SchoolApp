@@ -28,6 +28,9 @@ public class Lesson {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "access")
     private boolean access;
 
