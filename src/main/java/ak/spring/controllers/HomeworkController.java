@@ -68,11 +68,6 @@ public class HomeworkController {
         return ResponseEntity.ok(homeworks);
     }
 
-    @GetMapping("/{id}/lesson")
-    public ResponseEntity<LessonDTO> getLesson(@PathVariable int id) {
-        return ResponseEntity.ok(homeworkService.getLesson(id));
-    }
-
     @GetMapping("/{id}/answers")
     public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable int id) {
         return ResponseEntity.ok(homeworkService.getAnswers(id));

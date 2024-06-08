@@ -2,10 +2,12 @@ package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
 import ak.spring.dto.CurriculumDTO;
+import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
+import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
 import ak.spring.repositories.CourseRepository;
@@ -24,14 +26,16 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseDTOMapper courseDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
+    private final HomeworkDTOMapper homeworkDTOMapper;
     private final CurriculumDTOMapper curriculumDTOMapper;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, HomeworkDTOMapper homeworkDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
         this.courseRepository = courseRepository;
         this.courseDTOMapper = courseDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
+        this.homeworkDTOMapper = homeworkDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
     }
 
@@ -105,6 +109,15 @@ public class CourseService {
                 .map(lesson -> lesson.getLessons()
                         .stream()
                         .map(lessonDTOMapper)
+                        .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public List<HomeworkDTO> getHomeworks(int id) {
+        return courseRepository.findById(id)
+                .map(homework -> homework.getHomeworks()
+                        .stream()
+                        .map(homeworkDTOMapper)
                         .toList())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }

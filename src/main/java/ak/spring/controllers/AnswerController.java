@@ -55,20 +55,6 @@ public class AnswerController {
         return ResponseEntity.ok(submission);
     }
 
-    @GetMapping("/download/{name}")
-    public ResponseEntity<byte[]> downloadAccord(@PathVariable String name) {
-        byte[] file = answerService.downloadAccord(name);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<>(file, headers, HttpStatus.OK);
-    }
-
-    @GetMapping("/search/{name}")
-    public ResponseEntity<AnswerDTO> findByName(@PathVariable String name) {
-        AnswerDTO answer = answerService.findByName(name);
-        return ResponseEntity.ok(answer);
-    }
-
     @PostMapping
     public ResponseEntity<AnswerDTO> save(@Valid @RequestBody Answer answer) {
         AnswerDTO savedAnswer = answerService.save(answer);

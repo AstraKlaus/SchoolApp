@@ -62,15 +62,6 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
 
-    public byte[] downloadAccord(String name) {
-        return findByName(name).getFile();
-    }
-
-    public AnswerDTO findByName(String name) {
-        return answerRepository.findByFeedbackContainingIgnoreCase(name).map(answerDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer", "name", name));
-    }
-
     public AnswerDTO save(Answer answer) {
         answer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         answerRepository.save(answer);

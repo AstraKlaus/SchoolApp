@@ -98,12 +98,6 @@ public class HomeworkService {
                 .toList();
     }
 
-    public LessonDTO getLesson(int id) {
-        return lessonRepository.findById(id)
-                .map(lessonDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
-    }
-
     public List<AnswerDTO> getAnswers(int id) {
         return homeworkRepository.findById(id)
                 .map(homework -> homework.getAnswers()

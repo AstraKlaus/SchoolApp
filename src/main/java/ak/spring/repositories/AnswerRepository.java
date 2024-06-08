@@ -8,7 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
-
-    Optional<Answer> findByFeedbackContainingIgnoreCase(String name);
-
 }

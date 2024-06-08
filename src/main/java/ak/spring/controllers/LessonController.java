@@ -71,7 +71,7 @@ public class LessonController {
     }
 
     @GetMapping("/{id}/course")
-    public ResponseEntity<CourseDTO> getCourses(@PathVariable int id) {
+    public ResponseEntity<CourseDTO> getCourse(@PathVariable int id) {
         return ResponseEntity.ok(lessonService.getCourse(id));
     }
 
