@@ -12,6 +12,5 @@ import java.util.List;
 public class ClassroomDTO {
     private int id;
     private String name;
-    private PersonDTO teacher;
     private List<PersonDTO> persons;
 }

@@ -54,7 +54,6 @@ public class ClassroomService {
         Classroom existingClassroom = classroomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         existingClassroom.setName(updatedClassroom.getName());
-        existingClassroom.setTeacher(updatedClassroom.getTeacher());
         existingClassroom.setPersons(updatedClassroom.getPersons());
         existingClassroom.setCurriculum(updatedClassroom.getCurriculum());
 
@@ -71,7 +70,6 @@ public class ClassroomService {
     public ClassroomDTO uploadGroup(Classroom classroom){
         Classroom newClassroom = Classroom.builder()
                 .name(classroom.getName())
-                .teacher(classroom.getTeacher())
                 .curriculum(classroom.getCurriculum())
                 .persons(classroom.getPersons())
                 .build();

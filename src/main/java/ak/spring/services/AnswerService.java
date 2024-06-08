@@ -9,15 +9,11 @@ import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Answer;
 import ak.spring.repositories.AnswerRepository;
-import ak.spring.requests.AnswerRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -37,20 +33,6 @@ public class AnswerService {
         this.personDTOMapper = personDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
-    }
-
-    public Answer uploadAccord(MultipartFile file) throws IOException {
-        return answerRepository.save(Answer.builder()
-                .file(file.getBytes())
-                .build());
-    }
-
-    public AnswerDTO updateAccord(int id, byte[] file) {
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
-        answer.setFile(file);
-        answerRepository.save(answer);
-        return answerDTOMapper.apply(answer);
     }
 
     public Page<AnswerDTO> findWithPagination(int offset, int pageSize) {
@@ -83,10 +65,9 @@ public class AnswerService {
     public AnswerDTO update(int id, AnswerDTO updatedAnswer) {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
-        existingAnswer.setFile(updatedAnswer.getFile());
         existingAnswer.setComment(updatedAnswer.getComment());
         existingAnswer.setAttachment(updatedAnswer.getAttachment());
-        existingAnswer.setDescription(updatedAnswer.getDescription());
+        existingAnswer.setText(updatedAnswer.getText());
         existingAnswer.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         answerRepository.save(existingAnswer);

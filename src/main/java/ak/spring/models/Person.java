@@ -49,22 +49,18 @@ public class Person implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "student")
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacher")
-    private List<Classroom> classrooms = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "settings_id", nullable = false)
     private Settings settings;
 
     @ManyToOne()
-    @JoinColumn(name = "id_group", referencedColumnName = "id")
+    @JoinColumn(name = "classroom_id", referencedColumnName = "id")
     private Classroom classroom;
 
     @JsonIgnore

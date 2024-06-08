@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 @Service
 @Lazy
@@ -19,8 +18,8 @@ public class ClassroomDTOMapper implements Function<Classroom, ClassroomDTO> {
 
     @Override
     public ClassroomDTO apply(Classroom classroom) {
-        return new ClassroomDTO(classroom.getId() ,classroom.getName(),
-                personMapper.apply(classroom.getTeacher()),
+        return new ClassroomDTO(classroom.getId(),
+                classroom.getName(),
                 classroom.getPersons()
                         .stream()
                         .map(personMapper)

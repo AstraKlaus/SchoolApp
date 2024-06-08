@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("v1/api/groups")
+@RequestMapping("v1/api/classrooms")
 @CrossOrigin(origins =  "http://localhost:5173")
 public class ClassroomController {
 

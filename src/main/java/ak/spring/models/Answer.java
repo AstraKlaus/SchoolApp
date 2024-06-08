@@ -22,7 +22,7 @@ public class Answer {
 
     private String comment;
 
-    private String description;
+    private String text;
 
     private String attachment;
 
@@ -30,12 +30,8 @@ public class Answer {
     @JoinColumn(name = "homework_id")
     private Homework homework;
 
-    @Lob
-    @Column(name = "file", length = 1000)
-    private byte[] file;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Person student;
 
     @Column(name = "created_at", nullable = false)

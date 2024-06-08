@@ -1,0 +1,369 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: andrew
+      changes:
+        - createTable:
+            tableName: theme
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+
+        - createTable:
+            tableName: font_size
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: settings
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: theme_id
+                  type: bigint
+              - column:
+                  name: font_size_id
+                  type: bigint
+              - column:
+                  name: is_serif
+                  type: boolean
+
+
+        - createTable:
+            tableName: person
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: patronymic
+                  type: varchar(255)
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: role
+                  type: varchar(25)
+              - column:
+                  name: settings_id
+                  type: bigint
+              - column:
+                  name: classroom_id
+                  type: bigint
+
+        - createTable:
+            tableName: classroom
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: curriculum_id
+                  type: bigint
+
+        - createTable:
+            tableName: curriculum
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: access
+                  type: boolean
+
+        - createTable:
+            tableName: course
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: access
+                  type: boolean
+              - column:
+                  name: curriculum_id
+                  type: bigint
+
+        - createTable:
+            tableName: lesson
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: attachment
+                  type: varchar(255)
+              - column:
+                  name: course_id
+                  type: bigint
+              - column:
+                  name: access
+                  type: boolean
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - createTable:
+            tableName: homework
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: attachment
+                  type: varchar(255)
+              - column:
+                  name: course_id
+                  type: bigint
+              - column:
+                  name: access
+                  type: boolean
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - createTable:
+            tableName: homework_status
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: answer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: text
+                  type: varchar(255)
+              - column:
+                  name: attachment
+                  type: varchar(255)
+              - column:
+                  name: comment
+                  type: varchar(255)
+              - column:
+                  name: student_id
+                  type: bigint
+              - column:
+                  name: homework_id
+                  type: bigint
+              - column:
+                  name: status_id
+                  type: bigint
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: theme_id
+            referencedTableName: theme
+            referencedColumnNames: id
+            constraintName: fk_settings_theme
+
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: font_size_id
+            referencedTableName: font_size
+            referencedColumnNames: id
+            constraintName: fk_settings_font_size
+
+        - addForeignKeyConstraint:
+            baseTableName: person
+            baseColumnNames: settings_id
+            referencedTableName: settings
+            referencedColumnNames: id
+            constraintName: fk_person_settings
+
+        - addForeignKeyConstraint:
+            baseTableName: person
+            baseColumnNames: classroom_id
+            referencedTableName: classroom
+            referencedColumnNames: id
+            constraintName: fk_person_classroom
+
+        - addForeignKeyConstraint:
+            baseTableName: classroom
+            baseColumnNames: curriculum_id
+            referencedTableName: curriculum
+            referencedColumnNames: id
+            constraintName: fk_classroom_curriculum
+
+        - addForeignKeyConstraint:
+            baseTableName: course
+            baseColumnNames: curriculum_id
+            referencedTableName: curriculum
+            referencedColumnNames: id
+            constraintName: fk_course_curriculum
+
+        - addForeignKeyConstraint:
+            baseTableName: lesson
+            baseColumnNames: course_id
+            referencedTableName: course
+            referencedColumnNames: id
+            constraintName: fk_lesson_course
+
+        - addForeignKeyConstraint:
+            baseTableName: homework
+            baseColumnNames: course_id
+            referencedTableName: course
+            referencedColumnNames: id
+            constraintName: fk_homework_course
+
+        - addForeignKeyConstraint:
+            baseTableName: answer
+            baseColumnNames: student_id
+            referencedTableName: person
+            referencedColumnNames: id
+            constraintName: fk_answer_student
+
+        - addForeignKeyConstraint:
+            baseTableName: answer
+            baseColumnNames: homework_id
+            referencedTableName: homework
+            referencedColumnNames: id
+            constraintName: fk_answer_homework
+
+        - addForeignKeyConstraint:
+            baseTableName: answer
+            baseColumnNames: status_id
+            referencedTableName: homework_status
+            referencedColumnNames: id
+            constraintName: fk_answer_homework_status

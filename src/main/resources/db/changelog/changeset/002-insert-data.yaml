@@ -1,0 +1,429 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: andrew
+      changes:
+        - insert:
+            tableName: theme
+            columns:
+              - column:
+                  name: name
+                  value: 'Светлый'
+
+        - insert:
+            tableName: theme
+            columns:
+              - column:
+                  name: name
+                  value: 'Голубой'
+
+        - insert:
+            tableName: theme
+            columns:
+              - column:
+                  name: name
+                  value: 'Темный'
+
+        - insert:
+            tableName: font_size
+            columns:
+              - column:
+                  name: name
+                  value: 'Нормальный'
+
+        - insert:
+            tableName: font_size
+            columns:
+              - column:
+                  name: name
+                  value: 'Увеличенный'
+
+        - insert:
+            tableName: font_size
+            columns:
+              - column:
+                  name: name
+                  value: 'Большой'
+
+
+        - insert:
+            tableName: settings
+            columns:
+              - column:
+                  name: theme_id
+                  valueNumeric: 1
+              - column:
+                  name: font_size_id
+                  valueNumeric: 1
+              - column:
+                  name: is_serif
+                  valueBoolean: false
+
+
+        - insert:
+            tableName: curriculum
+            columns:
+              - column:
+                  name: name
+                  value: '3 года'
+              - column:
+                  name: description
+                  value: 'Учебная программа для 3-х летних'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: curriculum
+            columns:
+              - column:
+                  name: name
+                  value: '4 года'
+              - column:
+                  name: description
+                  value: 'Учебная программа для 4-х летних'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+
+        - insert:
+            tableName: classroom
+            columns:
+              - column:
+                  name: name
+                  value: 'Группа 1'
+              - column:
+                  name: curriculum_id
+                  valueNumeric: 1
+
+        - insert:
+            tableName: classroom
+            columns:
+              - column:
+                  name: name
+                  value: 'Группа 2'
+              - column:
+                  name: curriculum_id
+                  valueNumeric: 2
+
+        - insert:
+            tableName: person
+            columns:
+              - column:
+                  name: first_name
+                  value: 'Иван'
+              - column:
+                  name: last_name
+                  value: 'Иванов'
+              - column:
+                  name: patronymic
+                  value: 'Иванович'
+              - column:
+                  name: username
+                  value: 'IvanIvanov'
+              - column:
+                  name: password
+                  value: 'password'
+              - column:
+                  name: role
+                  value: "STUDENT"
+              - column:
+                  name: settings_id
+                  valueNumeric: 1
+              - column:
+                  name: classroom_id
+                  valueNumeric: 1
+
+        - insert:
+            tableName: person
+            columns:
+              - column:
+                  name: first_name
+                  value: 'Алексей'
+              - column:
+                  name: last_name
+                  value: 'Алексеев'
+              - column:
+                  name: patronymic
+                  value: 'Алексеевич'
+              - column:
+                  name: username
+                  value: 'AlexeyAlexeev'
+              - column:
+                  name: password
+                  value: 'password'
+              - column:
+                  name: role
+                  value: "STUDENT"
+              - column:
+                  name: settings_id
+                  valueNumeric: 1
+              - column:
+                  name: classroom_id
+                  valueNumeric: 2
+
+        - insert:
+            tableName: person
+            columns:
+              - column:
+                  name: first_name
+                  value: 'Петр'
+              - column:
+                  name: last_name
+                  value: 'Петров'
+              - column:
+                  name: patronymic
+                  value: 'Петрович'
+              - column:
+                  name: username
+                  value: 'PetrPetrov'
+              - column:
+                  name: password
+                  value: 'password'
+              - column:
+                  name: role
+                  value: "ADMIN"
+              - column:
+                  name: settings_id
+                  valueNumeric: 1
+              - column:
+                  name: classroom_id
+                  valueNumeric: 1
+
+
+        - insert:
+            tableName: person
+            columns:
+              - column:
+                  name: first_name
+                  value: 'Александр'
+              - column:
+                  name: last_name
+                  value: 'Александров'
+              - column:
+                  name: patronymic
+                  value: 'Александрович'
+              - column:
+                  name: username
+                  value: 'AlexAlex'
+              - column:
+                  name: password
+                  value: 'password'
+              - column:
+                  name: role
+                  value: "TEACHER"
+              - column:
+                  name: settings_id
+                  valueNumeric: 1
+              - column:
+                  name: classroom_id
+                  valueNumeric: 2
+
+        - insert:
+            tableName: course
+            columns:
+              - column:
+                  name: name
+                  value: 'Цвета'
+              - column:
+                  name: description
+                  value: 'Изучаем цвета'
+              - column:
+                  name: curriculum_id
+                  valueNumeric: 1
+              - column:
+                  name: access
+                  valueBoolean: true
+
+        - insert:
+            tableName: course
+            columns:
+              - column:
+                  name: name
+                  value: 'Фигуры'
+              - column:
+                  name: description
+                  value: 'Изучаем фигуры'
+              - column:
+                  name: curriculum_id
+                  valueNumeric: 2
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: course
+            columns:
+              - column:
+                  name: name
+                  value: 'Счет'
+              - column:
+                  name: description
+                  value: 'Учимся считать'
+              - column:
+                  name: curriculum_id
+                  valueNumeric: 1
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: lesson
+            columns:
+              - column:
+                  name: name
+                  value: 'Урок 1'
+              - column:
+                  name: course_id
+                  valueNumeric: 1
+              - column:
+                  name: description
+                  value: 'Изучаем синий цвет'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: lesson
+            columns:
+              - column:
+                  name: name
+                  value: 'Урок 2'
+              - column:
+                  name: course_id
+                  valueNumeric: 1
+              - column:
+                  name: description
+                  value: 'Изучаем зеленый цвет'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: lesson
+            columns:
+              - column:
+                  name: name
+                  value: 'Урок 1'
+              - column:
+                  name: course_id
+                  valueNumeric: 2
+              - column:
+                  name: description
+                  value: 'Учимся считать от 1 до 5'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: lesson
+            columns:
+              - column:
+                  name: name
+                  value: 'Урок 1'
+              - column:
+                  name: course_id
+                  valueNumeric: 3
+              - column:
+                  name: description
+                  value: 'Фигура: треугольник'
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+        - insert:
+            tableName: homework
+            columns:
+              - column:
+                  name: name
+                  value: 'Задание 1'
+              - column:
+                  name: description
+                  value: 'Определить предмет синего цвета'
+              - column:
+                  name: course_id
+                  valueNumeric: 1
+              - column:
+                  name: access
+                  valueBoolean: true
+
+
+
+        - insert:
+            tableName: homework
+            columns:
+              - column:
+                  name: name
+                  value: 'Задание 1'
+              - column:
+                  name: description
+                  value: 'Посчитать количество предметов'
+              - column:
+                  name: course_id
+                  valueNumeric: 2
+              - column:
+                  name: access
+                  valueBoolean: true
+
+        - insert:
+            tableName: homework
+            columns:
+              - column:
+                  name: name
+                  value: 'Задание 1'
+              - column:
+                  name: description
+                  value: 'Раскрасить фигуру: треугольник'
+              - column:
+                  name: course_id
+                  valueNumeric: 3
+              - column:
+                  name: access
+                  valueBoolean: true
+
+        - insert:
+            tableName: homework_status
+            columns:
+              - column:
+                  name: name
+                  value: 'Выполнено'
+
+        - insert:
+            tableName: homework_status
+            columns:
+              - column:
+                  name: name
+                  value: 'На проверке'
+
+        - insert:
+            tableName: homework_status
+            columns:
+              - column:
+                  name: name
+                  value: 'Не выполнено'
+
+        - insert:
+            tableName: answer
+            columns:
+              - column:
+                  name: text
+                  value: 'Прикрепляю ответ'
+              - column:
+                  name: student_id
+                  valueNumeric: 1
+              - column:
+                  name: homework_id
+                  valueNumeric: 1
+              - column:
+                  name: status_id
+                  valueNumeric: 1
+

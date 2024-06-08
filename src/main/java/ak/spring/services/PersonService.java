@@ -131,12 +131,13 @@ public class PersonService {
 
 
     public void deleteClassroomForPerson(int personId) {
-        personRepository.findById(personId)
-                .map(person -> person.getClassrooms()
-                        .stream()
-                        .map(classroomDTOMapper)
-                        .toList())
-                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", personId));
+        personRepository.findById(personId).ifPresentOrElse(
+                person -> {
+                    person.setClassroom(null);
+                    personRepository.save(person);
+                },
+                () -> { throw new ResourceNotFoundException("Person", "id", personId); }
+        );
     }
 
 
