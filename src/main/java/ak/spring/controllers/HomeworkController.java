@@ -5,13 +5,19 @@ import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
 import ak.spring.services.HomeworkService;
+import io.minio.errors.*;
 import jakarta.validation.Valid;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -57,7 +63,8 @@ public class HomeworkController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HomeworkDTO> updateHomework(@PathVariable int id, @Valid @RequestBody Homework updatedHomework) {
+    public ResponseEntity<HomeworkDTO> updateHomework(@PathVariable int id,
+                                                      @Valid @RequestBody HomeworkDTO updatedHomework) {
         HomeworkDTO homework = homeworkService.updateHomework(id, updatedHomework);
         return ResponseEntity.ok(homework);
     }
@@ -71,6 +78,15 @@ public class HomeworkController {
     @GetMapping("/{id}/answers")
     public ResponseEntity<List<AnswerDTO>> getAnswers(@PathVariable int id) {
         return ResponseEntity.ok(homeworkService.getAnswers(id));
+    }
+
+
+    @SneakyThrows
+    @PostMapping("/{id}/image")
+    public ResponseEntity<Void> uploadImage(@PathVariable int id,
+                                            @RequestParam("image") MultipartFile image) {
+        homeworkService.uploadImage(id, image);
+        return ResponseEntity.ok().build();
     }
 }
 

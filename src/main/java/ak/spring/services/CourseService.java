@@ -83,17 +83,14 @@ public class CourseService {
         courseRepository.delete(existingCourse);
     }
 
-    public CourseDTO updateCourse(int id, Course updatedCourse) {
+    public CourseDTO updateCourse(int id, CourseDTO updatedCourse) {
         Course existingCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
         existingCourse.setName(updatedCourse.getName());
         existingCourse.setDescription(updatedCourse.getDescription());
         existingCourse.setAccess(updatedCourse.isAccess());
-        existingCourse.setCurriculum(updatedCourse.getCurriculum());
-        existingCourse.setLessons(updatedCourse.getLessons());
 
         courseRepository.save(existingCourse);
-
         return courseDTOMapper.apply(existingCourse);
     }
 

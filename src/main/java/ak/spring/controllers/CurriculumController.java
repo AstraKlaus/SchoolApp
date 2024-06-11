@@ -39,7 +39,8 @@ public class CurriculumController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CurriculumDTO> updateCurriculum(@PathVariable int id, @RequestBody Curriculum curriculumDetails) {
+    public ResponseEntity<CurriculumDTO> updateCurriculum(@PathVariable int id,
+                                                          @RequestBody CurriculumDTO curriculumDetails) {
         return ResponseEntity.ok(curriculumService.updateCurriculum(id, curriculumDetails));
     }
 

@@ -72,12 +72,11 @@ public class LessonService {
         return lessonDTOMapper.apply(newLesson);
     }
 
-    public LessonDTO updateLesson(int id, Lesson updatedLesson) {
+    public LessonDTO updateLesson(int id, LessonDTO updatedLesson) {
         Lesson existingLesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
-        existingLesson.setCourse(updatedLesson.getCourse());
         existingLesson.setAccess(updatedLesson.isAccess());
         existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 

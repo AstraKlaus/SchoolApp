@@ -14,6 +14,7 @@ public class LessonDTO {
     private String name;
     private String content;
     private String description;
+    private boolean access;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

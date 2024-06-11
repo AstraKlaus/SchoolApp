@@ -45,7 +45,8 @@ public class ClassroomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClassroomDTO> updateGroup(@PathVariable int id, @Valid @RequestBody Classroom updatedClassroom) {
+    public ResponseEntity<ClassroomDTO> updateGroup(@PathVariable int id,
+                                                    @Valid @RequestBody ClassroomDTO updatedClassroom) {
         ClassroomDTO classroom = classroomService.updateGroup(id, updatedClassroom);
         return ResponseEntity.ok(classroom);
     }

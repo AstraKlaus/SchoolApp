@@ -70,15 +70,13 @@ public class CurriculumService {
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
     }
 
-    public CurriculumDTO updateCurriculum(int id, Curriculum curriculumDetails) {
+    public CurriculumDTO updateCurriculum(int id, CurriculumDTO curriculumDetails) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
 
         curriculum.setName(curriculumDetails.getName());
         curriculum.setDescription(curriculumDetails.getDescription());
         curriculum.setAccess(curriculumDetails.getAccess());
-        curriculum.setCourses(curriculumDetails.getCourses());
-        curriculum.setClassrooms(curriculumDetails.getClassrooms());
 
         return curriculumDTOMapper.apply(curriculum);
     }

@@ -50,12 +50,10 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
     }
 
-    public ClassroomDTO updateGroup(int id, Classroom updatedClassroom) {
+    public ClassroomDTO updateGroup(int id, ClassroomDTO updatedClassroom) {
         Classroom existingClassroom = classroomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         existingClassroom.setName(updatedClassroom.getName());
-        existingClassroom.setPersons(updatedClassroom.getPersons());
-        existingClassroom.setCurriculum(updatedClassroom.getCurriculum());
 
         classroomRepository.save(existingClassroom);
         return classroomDTOMapper.apply(existingClassroom);

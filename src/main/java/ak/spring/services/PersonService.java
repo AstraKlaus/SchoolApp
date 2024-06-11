@@ -82,7 +82,7 @@ public class PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id)));
     }
 
-    public PersonDTO update(int id, Person updatedPerson) {
+    public PersonDTO update(int id, PersonDTO updatedPerson) {
         Person existingPerson = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
         existingPerson.setUsername(updatedPerson.getUsername());
@@ -90,9 +90,6 @@ public class PersonService {
         existingPerson.setLastName(updatedPerson.getLastName());
         existingPerson.setPatronymic(updatedPerson.getPatronymic());
         existingPerson.setRole(updatedPerson.getRole());
-        existingPerson.setClassroom(updatedPerson.getClassroom());
-        existingPerson.setSettings(updatedPerson.getSettings());
-        existingPerson.setPassword(passwordEncoder.encode(updatedPerson.getPassword()));
 
         personRepository.save(existingPerson);
         return personDTOMapper.apply(existingPerson);
