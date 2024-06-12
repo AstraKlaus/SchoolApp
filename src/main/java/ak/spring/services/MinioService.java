@@ -28,7 +28,7 @@ public class MinioService {
     }
 
     public String uploadFile(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fileName = "" + System.currentTimeMillis();
 
         try {
             minioClient.putObject(
