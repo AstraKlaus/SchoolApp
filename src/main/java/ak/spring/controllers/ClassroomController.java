@@ -75,6 +75,20 @@ public class ClassroomController {
         return ResponseEntity.ok(students);
     }
 
+    @PutMapping("/{classroomId}/students/{studentId}")
+    public ResponseEntity<ClassroomDTO> addStudentToClassroom(@PathVariable int classroomId,
+                                                              @PathVariable int studentId) {
+        ClassroomDTO classroom = classroomService.addStudentToClassroom(classroomId, studentId);
+        return ResponseEntity.ok(classroom);
+    }
+
+    @DeleteMapping("/{classroomId}/students/{studentId}")
+    public ResponseEntity<Void> deleteStudentFromClassroom(@PathVariable int classroomId,
+                                                          @PathVariable int studentId) {
+        classroomService.deleteStudentFromClassroom(classroomId, studentId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/curriculum")
     public ResponseEntity<CurriculumDTO> getCurriculumById(@PathVariable int id) {
         CurriculumDTO curriculum = classroomService.getCurriculum(id);

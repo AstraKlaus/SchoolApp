@@ -99,4 +99,14 @@ public class LessonService {
     }
 
 
+    public LessonDTO addCourseToLesson(int id, int courseId) {
+        return lessonRepository.findById(id)
+                .map(lesson -> {
+                    lesson.getCourse().getLessons().add(lessonRepository.findById(courseId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId)));
+                    lessonRepository.save(lesson);
+                    return lessonDTOMapper.apply(lesson);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
+    }
 }

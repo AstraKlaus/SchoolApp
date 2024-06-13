@@ -1,6 +1,7 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.CurriculumDTO;
 import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
@@ -80,6 +81,27 @@ public class HomeworkController {
         return ResponseEntity.ok(homeworkService.getAnswers(id));
     }
 
+    @GetMapping("/{id}/curriculum")
+    public ResponseEntity<CurriculumDTO> getCurriculum(@PathVariable int id) {
+        return ResponseEntity.ok(homeworkService.getCurriculum(id));
+    }
+
+    @PutMapping("/{id}/course/{courseId}")
+    public ResponseEntity<HomeworkDTO> addCourseToHomework(@PathVariable int id, @PathVariable int courseId) {
+        return ResponseEntity.ok(homeworkService.addCourseToHomework(id, courseId));
+    }
+
+    @PutMapping("/{id}/answers/{answerId}")
+    public ResponseEntity<HomeworkDTO> addAnswerToHomework(@PathVariable int id, @PathVariable int answerId) {
+        return ResponseEntity.ok(homeworkService.addAnswerToHomework(id, answerId));
+    }
+
+
+    @DeleteMapping("/{id}/answers/{answerId}")
+    public ResponseEntity<Void> deleteAnswer(@PathVariable int id, @PathVariable int answerId) {
+        homeworkService.deleteAnswer(id, answerId);
+        return ResponseEntity.noContent().build();
+    }
 
     @SneakyThrows
     @PostMapping("/{id}/image")
@@ -88,5 +110,7 @@ public class HomeworkController {
         homeworkService.uploadImage(id, image);
         return ResponseEntity.ok().build();
     }
+
+
 }
 

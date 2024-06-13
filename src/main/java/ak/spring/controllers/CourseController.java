@@ -82,9 +82,24 @@ public class CourseController {
         return ResponseEntity.ok(lessons);
     }
 
+    @PutMapping("/{id}/lessons/{lessonId}")
+    public ResponseEntity<CourseDTO> addLessonToCourse(@PathVariable int id,
+                                                      @PathVariable int lessonId) {
+        CourseDTO course = courseService.addLessonToCourse(id, lessonId);
+        return ResponseEntity.ok(course);
+    }
+
     @GetMapping("/{id}/homeworks")
     public ResponseEntity<List<HomeworkDTO>> getHomeworksById(@PathVariable int id) {
         List<HomeworkDTO> homeworks = courseService.getHomeworks(id);
         return ResponseEntity.ok(homeworks);
     }
+
+    @PutMapping("/{id}/homeworks/{homeworkId}")
+    public ResponseEntity<CourseDTO> addHomeworkToCourse(@PathVariable int id,
+                                                        @PathVariable int homeworkId) {
+        CourseDTO course = courseService.addHomeworkToCourse(id, homeworkId);
+        return ResponseEntity.ok(course);
+    }
+
 }

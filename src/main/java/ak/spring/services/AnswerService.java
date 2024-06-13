@@ -9,6 +9,7 @@ import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Answer;
 import ak.spring.repositories.AnswerRepository;
+import ak.spring.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,14 +23,16 @@ import java.util.List;
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final PersonRepository personRepository;
     private final PersonDTOMapper personDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
 
     @Autowired
     public AnswerService(AnswerRepository answerRepository,
-                         PersonDTOMapper personDTOMapper, HomeworkDTOMapper homeworkDTOMapper, AnswerDTOMapper answerDTOMapper) {
+                         PersonRepository personRepository, PersonDTOMapper personDTOMapper, HomeworkDTOMapper homeworkDTOMapper, AnswerDTOMapper answerDTOMapper) {
         this.answerRepository = answerRepository;
+        this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
@@ -85,6 +88,17 @@ public class AnswerService {
         return answerRepository.findById(id)
                 .map(Answer::getHomework)
                 .map(homeworkDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
+    }
+
+    public AnswerDTO addPersonToAnswer(int id, int personId) {
+        return answerRepository.findById(id)
+                .map(answer -> {
+                    answer.setStudent(personRepository.findById(personId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId)));
+                    answerRepository.save(answer);
+                    return answerDTOMapper.apply(answer);
+                })
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
 }

@@ -1,13 +1,14 @@
 package ak.spring.services;
 import ak.spring.dto.AnswerDTO;
+import ak.spring.dto.CurriculumDTO;
 import ak.spring.dto.HomeworkDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.AnswerDTOMapper;
+import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Homework;
-import ak.spring.repositories.HomeworkRepository;
-import ak.spring.repositories.LessonRepository;
+import ak.spring.repositories.*;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,19 +28,30 @@ import java.util.List;
 public class HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
+    private final CourseRepository courseRepository;
+    private final AnswerRepository answerRepository;
     private final LessonDTOMapper lessonDTOMapper;
     private final LessonRepository lessonRepository;
+    private final CurriculumDTOMapper curriculumDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final MinioService minioService;
 
     @Autowired
     public HomeworkService(HomeworkRepository homeworkRepository,
-                           LessonDTOMapper lessonDTOMapper, LessonRepository lessonRepository,
-                           AnswerDTOMapper answerDTOMapper, HomeworkDTOMapper homeworkDTOMapper, MinioService minioService) {
+                           CourseRepository courseRepository,
+                           AnswerRepository answerRepository, LessonDTOMapper lessonDTOMapper,
+                           LessonRepository lessonRepository,
+                           CurriculumDTOMapper curriculumDTOMapper,
+                           AnswerDTOMapper answerDTOMapper,
+                           HomeworkDTOMapper homeworkDTOMapper,
+                           MinioService minioService) {
         this.homeworkRepository = homeworkRepository;
+        this.courseRepository = courseRepository;
+        this.answerRepository = answerRepository;
         this.lessonDTOMapper = lessonDTOMapper;
         this.lessonRepository = lessonRepository;
+        this.curriculumDTOMapper = curriculumDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.minioService = minioService;
@@ -118,6 +130,46 @@ public class HomeworkService {
                 .map(homework -> {
                     homework.setAttachment(url);
                     return homeworkRepository.save(homework);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
+    }
+
+    public CurriculumDTO getCurriculum(int id) {
+        return homeworkRepository.findById(id)
+                .map(homework -> homework.getCourse().getCurriculum())
+                .map(curriculumDTOMapper)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public void deleteAnswer(int id, int answerId) {
+        homeworkRepository.findById(id)
+                .map(homework -> {
+                    homework.getAnswers()
+                            .removeIf(answer -> answer.getId() == answerId);
+                    return homeworkRepository.save(homework);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
+    }
+
+    public HomeworkDTO addCourseToHomework(int id, int courseId) {
+        return homeworkRepository.findById(id)
+                .map(homework -> {
+                    homework.setCourse(courseRepository.findById(courseId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId)));
+                    homeworkRepository.save(homework);
+                    return homeworkDTOMapper.apply(homework);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
+    }
+
+    public HomeworkDTO addAnswerToHomework(int id, int answerId) {
+        return homeworkRepository.findById(id)
+                .map(homework -> {
+                    homework.getAnswers()
+                            .add(answerRepository.findById(answerId)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", answerId)));
+                    homeworkRepository.save(homework);
+                    return homeworkDTOMapper.apply(homework);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
     }

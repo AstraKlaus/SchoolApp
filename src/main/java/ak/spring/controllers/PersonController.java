@@ -74,7 +74,12 @@ public class PersonController {
     public ResponseEntity<ClassroomDTO> findClassroomForPerson(@PathVariable int personId) {
         ClassroomDTO classroom = personService.findClassroomForPerson(personId);
         return ResponseEntity.ok(classroom);
-}
+    }
+
+    @PutMapping("/{personId}/classroom/{classroomId}")
+    public ResponseEntity<PersonDTO> updateClassroomForPerson(@PathVariable int personId, @PathVariable int classroomId) {
+        return ResponseEntity.ok(personService.updateClassroomForPerson(personId, classroomId));
+    }
 
     @GetMapping("/{personId}/settings")
     public ResponseEntity<SettingsDTO> findSettingsForPerson(@PathVariable int personId) {

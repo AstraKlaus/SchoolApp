@@ -60,6 +60,19 @@ public class CurriculumController {
         return ResponseEntity.ok(curriculumService.getClassroomById(curriculumId));
     }
 
+    @PutMapping("/{curriculumId}/classrooms/{classroomId}")
+    public ResponseEntity<CurriculumDTO> addClassroomToCurriculum(@PathVariable int curriculumId,
+                                                                  @PathVariable int classroomId) {
+        return ResponseEntity.ok(curriculumService.addClassroomToCurriculum(curriculumId, classroomId));
+    }
+
+    @DeleteMapping("/{curriculumId}/classrooms/{classroomId}")
+    public ResponseEntity<Void> deleteClassroomFromCurriculum(@PathVariable int curriculumId,
+                                                              @PathVariable int classroomId) {
+        curriculumService.deleteClassroomFromCurriculum(curriculumId, classroomId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/search/{name}")
     public ResponseEntity<List<CurriculumDTO>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(curriculumService.findByName(name));

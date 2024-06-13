@@ -8,6 +8,7 @@ import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.models.Classroom;
 import ak.spring.repositories.ClassroomRepository;
+import ak.spring.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,13 +23,15 @@ public class ClassroomService {
     private final ClassroomRepository classroomRepository;
     private final ClassroomDTOMapper classroomDTOMapper;
     private final CurriculumDTOMapper curriculumDTOMapper;
+    private final PersonRepository personRepository;
 
     @Autowired
     public ClassroomService(ClassroomRepository classroomRepository,
-                            ClassroomDTOMapper classroomDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
+                            ClassroomDTOMapper classroomDTOMapper, CurriculumDTOMapper curriculumDTOMapper, PersonRepository personRepository) {
         this.classroomRepository = classroomRepository;
         this.classroomDTOMapper = classroomDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
+        this.personRepository = personRepository;
     }
 
     public List<ClassroomDTO> findByName(String name) {
@@ -92,5 +95,26 @@ public class ClassroomService {
                 .map(Classroom::getCurriculum)
                 .map(curriculumDTOMapper)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public ClassroomDTO addStudentToClassroom(int classroomId, int studentId) {
+        return classroomRepository.findById(classroomId)
+                .map(classroom -> {
+                    classroom.getPersons().add(personRepository.findById(studentId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId)));
+                    classroomRepository.save(classroom);
+                    return classroomDTOMapper.apply(classroom);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
+    }
+
+    public void deleteStudentFromClassroom(int classroomId, int studentId) {
+        classroomRepository.findById(classroomId)
+                .map(classroom -> {
+                    classroom.getPersons().removeIf(person -> person.getId() == studentId);
+                    classroomRepository.save(classroom);
+                    return classroom;
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
     }
 }

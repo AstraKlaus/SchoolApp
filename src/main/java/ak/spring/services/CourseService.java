@@ -11,6 +11,8 @@ import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
 import ak.spring.repositories.CourseRepository;
+import ak.spring.repositories.HomeworkRepository;
+import ak.spring.repositories.LessonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,19 +26,23 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final LessonRepository lessonRepository;
     private final CourseDTOMapper courseDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final CurriculumDTOMapper curriculumDTOMapper;
+    private final HomeworkRepository homeworkRepository;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, HomeworkDTOMapper homeworkDTOMapper, CurriculumDTOMapper curriculumDTOMapper) {
+                         LessonRepository lessonRepository, CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, HomeworkDTOMapper homeworkDTOMapper, CurriculumDTOMapper curriculumDTOMapper, HomeworkRepository homeworkRepository) {
         this.courseRepository = courseRepository;
+        this.lessonRepository = lessonRepository;
         this.courseDTOMapper = courseDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
+        this.homeworkRepository = homeworkRepository;
     }
 
     public List<CourseDTO> findAll() {
@@ -116,6 +122,28 @@ public class CourseService {
                         .stream()
                         .map(homeworkDTOMapper)
                         .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public CourseDTO addLessonToCourse(int id, int lessonId) {
+        return courseRepository.findById(id)
+                .map(course -> {
+                    course.getLessons().add(lessonRepository.findById(lessonId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", lessonId)));
+                    courseRepository.save(course);
+                    return courseDTOMapper.apply(course);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public CourseDTO addHomeworkToCourse(int id, int homeworkId) {
+        return courseRepository.findById(id)
+                .map(course -> {
+                    course.getHomeworks().add(homeworkRepository.findById(homeworkId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", homeworkId)));
+                    courseRepository.save(course);
+                    return courseDTOMapper.apply(course);
+                })
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 }

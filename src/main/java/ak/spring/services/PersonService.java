@@ -11,6 +11,7 @@ import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
+import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.PersonRepository;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
@@ -27,6 +28,7 @@ public class PersonService {
 
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
+    private final ClassroomRepository classroomRepository;
     private final PersonRepository personRepository;
     private final PersonDTOMapper personDTOMapper;
     private final SettingsDTOMapper settingsDTOMapper;
@@ -36,11 +38,12 @@ public class PersonService {
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
                          TokenRepository tokenRepository,
-                         PersonRepository personRepository,
+                         ClassroomRepository classroomRepository, PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
                          SettingsDTOMapper settingsDTOMapper, AnswerDTOMapper answerDTOMapper, ClassroomDTOMapper classroomDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
+        this.classroomRepository = classroomRepository;
         this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
         this.settingsDTOMapper = settingsDTOMapper;
@@ -145,6 +148,17 @@ public class PersonService {
                         .stream()
                         .map(answerDTOMapper)
                         .toList())
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
+    }
+
+    public PersonDTO updateClassroomForPerson(int personId, int classroomId) {
+        return  personRepository.findById(personId)
+                .map(person -> {
+                    person.setClassroom(classroomRepository.findById(classroomId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId)));
+                    personRepository.save(person);
+                    return personDTOMapper.apply(person);
+                })
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
     }
 }

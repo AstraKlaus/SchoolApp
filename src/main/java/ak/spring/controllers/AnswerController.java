@@ -72,4 +72,9 @@ public class AnswerController {
         HomeworkDTO homework = answerService.getHomework(id);
         return ResponseEntity.ok(homework);
     }
+
+    @PutMapping("/{id}/person/{personId}")
+    public ResponseEntity<AnswerDTO> addPersonToAnswer(@PathVariable int id, @PathVariable int personId) {
+        return ResponseEntity.ok(answerService.addPersonToAnswer(id, personId));
+    }
 }

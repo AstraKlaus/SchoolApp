@@ -296,6 +296,7 @@ databaseChangeLog:
             baseColumnNames: theme_id
             referencedTableName: theme
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_settings_theme
 
         - addForeignKeyConstraint:
@@ -303,6 +304,7 @@ databaseChangeLog:
             baseColumnNames: font_size_id
             referencedTableName: font_size
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_settings_font_size
 
         - addForeignKeyConstraint:
@@ -310,6 +312,7 @@ databaseChangeLog:
             baseColumnNames: settings_id
             referencedTableName: settings
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_person_settings
 
         - addForeignKeyConstraint:
@@ -317,6 +320,7 @@ databaseChangeLog:
             baseColumnNames: classroom_id
             referencedTableName: classroom
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_person_classroom
 
         - addForeignKeyConstraint:
@@ -324,6 +328,7 @@ databaseChangeLog:
             baseColumnNames: curriculum_id
             referencedTableName: curriculum
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_classroom_curriculum
 
         - addForeignKeyConstraint:
@@ -331,6 +336,7 @@ databaseChangeLog:
             baseColumnNames: curriculum_id
             referencedTableName: curriculum
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_course_curriculum
 
         - addForeignKeyConstraint:
@@ -338,6 +344,7 @@ databaseChangeLog:
             baseColumnNames: course_id
             referencedTableName: course
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_lesson_course
 
         - addForeignKeyConstraint:
@@ -345,6 +352,7 @@ databaseChangeLog:
             baseColumnNames: course_id
             referencedTableName: course
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_homework_course
 
         - addForeignKeyConstraint:
@@ -352,6 +360,7 @@ databaseChangeLog:
             baseColumnNames: student_id
             referencedTableName: person
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_answer_student
 
         - addForeignKeyConstraint:
@@ -359,6 +368,7 @@ databaseChangeLog:
             baseColumnNames: homework_id
             referencedTableName: homework
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_answer_homework
 
         - addForeignKeyConstraint:
@@ -366,4 +376,5 @@ databaseChangeLog:
             baseColumnNames: status_id
             referencedTableName: homework_status
             referencedColumnNames: id
+            onDelete: SET NULL
             constraintName: fk_answer_homework_status

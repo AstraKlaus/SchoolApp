@@ -75,4 +75,11 @@ public class LessonController {
         return ResponseEntity.ok(lessonService.getCourse(id));
     }
 
+    @PutMapping("/{id}/course/{courseId}")
+    public ResponseEntity<LessonDTO> addCourseToLesson(@PathVariable int id,
+                                                       @PathVariable int courseId) {
+        LessonDTO lesson = lessonService.addCourseToLesson(id, courseId);
+        return ResponseEntity.ok(lesson);
+    }
+
 }
