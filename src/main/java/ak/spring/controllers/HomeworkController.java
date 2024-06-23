@@ -7,11 +7,15 @@ import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
 import ak.spring.services.HomeworkService;
 import io.minio.errors.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import static org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE;
 
 @RestController
 @RequestMapping("v1/api/homeworks")
@@ -111,6 +117,14 @@ public class HomeworkController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping(value = "/image/**")
+    public ResponseEntity<Object> getFile(HttpServletRequest request) throws IOException {
+        String pattern = (String) request.getAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String filename = new AntPathMatcher().extractPathWithinPattern(pattern, request.getServletPath());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(IOUtils.toByteArray(homeworkService.getObject(filename)));
+    }
 
 }
 

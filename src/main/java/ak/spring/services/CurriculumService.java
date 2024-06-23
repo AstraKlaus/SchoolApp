@@ -85,6 +85,7 @@ public class CurriculumService {
         curriculum.setDescription(curriculumDetails.getDescription());
         curriculum.setAccess(curriculumDetails.getAccess());
 
+        curriculumRepository.save(curriculum);
         return curriculumDTOMapper.apply(curriculum);
     }
 

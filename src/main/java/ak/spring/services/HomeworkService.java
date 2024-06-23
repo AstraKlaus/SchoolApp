@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -172,6 +173,10 @@ public class HomeworkService {
                     return homeworkDTOMapper.apply(homework);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
+    }
+
+    public InputStream getObject(String filename) {
+        return minioService.getObject(filename);
     }
 }
 
