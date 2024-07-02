@@ -102,4 +102,18 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
+    @PutMapping("/{courseId}/curriculum/{curriculumId}")
+    public ResponseEntity<CourseDTO> addCurriculumToCourse(@PathVariable int courseId,
+                                                          @PathVariable int curriculumId) {
+        CourseDTO course = courseService.addCurriculumToCourse(courseId, curriculumId);
+        return ResponseEntity.ok(course);
+    }
+
+    @DeleteMapping("/{courseId}/curriculum/{curriculumId}")
+    public ResponseEntity<Void> deleteCurriculumFromCourse(@PathVariable int courseId,
+                                                          @PathVariable int curriculumId) {
+        courseService.deleteCurriculumFromCourse(courseId, curriculumId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

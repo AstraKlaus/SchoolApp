@@ -11,6 +11,7 @@ import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
 import ak.spring.repositories.CourseRepository;
+import ak.spring.repositories.CurriculumRepository;
 import ak.spring.repositories.HomeworkRepository;
 import ak.spring.repositories.LessonRepository;
 import jakarta.transaction.Transactional;
@@ -32,10 +33,11 @@ public class CourseService {
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final CurriculumDTOMapper curriculumDTOMapper;
     private final HomeworkRepository homeworkRepository;
+    private final CurriculumRepository curriculumRepository;
 
     @Autowired
     public CourseService(CourseRepository courseRepository,
-                         LessonRepository lessonRepository, CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, HomeworkDTOMapper homeworkDTOMapper, CurriculumDTOMapper curriculumDTOMapper, HomeworkRepository homeworkRepository) {
+                         LessonRepository lessonRepository, CourseDTOMapper courseDTOMapper, LessonDTOMapper lessonDTOMapper, HomeworkDTOMapper homeworkDTOMapper, CurriculumDTOMapper curriculumDTOMapper, HomeworkRepository homeworkRepository, CurriculumRepository curriculumRepository) {
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
         this.courseDTOMapper = courseDTOMapper;
@@ -43,6 +45,7 @@ public class CourseService {
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
         this.homeworkRepository = homeworkRepository;
+        this.curriculumRepository = curriculumRepository;
     }
 
     public List<CourseDTO> findAll() {
@@ -145,5 +148,26 @@ public class CourseService {
                     return courseDTOMapper.apply(course);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+    }
+
+    public CourseDTO addCurriculumToCourse(int courseId, int curriculumId) {
+        return courseRepository.findById(courseId)
+                .map(course -> {
+                    course.setCurriculum(curriculumRepository.findById(curriculumId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId)));
+                    courseRepository.save(course);
+                    return courseDTOMapper.apply(course);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
+    }
+
+    public void deleteCurriculumFromCourse(int courseId, int curriculumId) {
+        courseRepository.findById(courseId)
+                .map(course -> {
+                    course.setCurriculum(null);
+                    courseRepository.save(course);
+                    return course;
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
     }
 }
