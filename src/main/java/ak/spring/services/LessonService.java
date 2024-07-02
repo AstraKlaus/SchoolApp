@@ -80,6 +80,7 @@ public class LessonService {
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
         existingLesson.setAccess(updatedLesson.isAccess());
+        existingLesson.setDescription(updatedLesson.getDescription());
         existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         lessonRepository.save(existingLesson);
