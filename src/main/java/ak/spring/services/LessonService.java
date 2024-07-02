@@ -1,13 +1,13 @@
 package ak.spring.services;
 
 import ak.spring.dto.CourseDTO;
-import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Lesson;
+import ak.spring.repositories.CourseRepository;
 import ak.spring.repositories.LessonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +25,16 @@ public class LessonService {
     private final CourseDTOMapper courseDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
+    private final CourseRepository courseRepository;
 
     @Autowired
     public LessonService(LessonRepository lessonRepository,
-                         CourseDTOMapper courseDTOMapper, HomeworkDTOMapper homeworkDTOMapper, LessonDTOMapper lessonDTOMapper) {
+                         CourseDTOMapper courseDTOMapper, HomeworkDTOMapper homeworkDTOMapper, LessonDTOMapper lessonDTOMapper, CourseRepository courseRepository) {
         this.lessonRepository = lessonRepository;
         this.courseDTOMapper = courseDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
+        this.courseRepository = courseRepository;
     }
 
     public List<LessonDTO> findByName(String name) {
@@ -102,7 +104,7 @@ public class LessonService {
     public LessonDTO addCourseToLesson(int id, int courseId) {
         return lessonRepository.findById(id)
                 .map(lesson -> {
-                    lesson.getCourse().getLessons().add(lessonRepository.findById(courseId)
+                    lesson.setCourse(courseRepository.findById(courseId)
                             .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId)));
                     lessonRepository.save(lesson);
                     return lessonDTOMapper.apply(lesson);
