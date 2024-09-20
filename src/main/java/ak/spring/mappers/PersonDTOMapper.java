@@ -1,6 +1,7 @@
 package ak.spring.mappers;
 
 import ak.spring.dto.PersonDTO;
+import ak.spring.dto.SettingsDTO;
 import ak.spring.models.Person;
 import ak.spring.models.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
     @Override
     public PersonDTO apply(Person person) {
         String classroomName = (person.getClassroom() != null) ? person.getClassroom().getName() : null;
-        Settings settings = (person.getSettings() != null) ? person.getSettings() : null;
+        SettingsDTO settings = (person.getSettings() != null) ? settingsDTOMapper.apply(person.getSettings()) : null;
 
         return PersonDTO.builder()
                 .id(person.getId())
@@ -30,7 +31,7 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
                 .lastName(person.getLastName())
                 .patronymic(person.getPatronymic())
                 .role(person.getRole())
-                .settings(settingsDTOMapper.apply(settings))
+                .settings(settings)
                 .classroomName(classroomName)
                 .build();
     }

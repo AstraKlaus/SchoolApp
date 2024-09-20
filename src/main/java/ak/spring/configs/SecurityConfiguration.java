@@ -58,6 +58,10 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
+                //.formLogin(form -> form
+                //        .loginProcessingUrl("/api/auth/login")
+                 //       .permitAll()
+                //)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/logout")
@@ -70,7 +74,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:8084"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
