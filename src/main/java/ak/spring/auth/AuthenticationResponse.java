@@ -1,5 +1,6 @@
 package ak.spring.auth;
 
+import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -17,5 +18,5 @@ public class AuthenticationResponse {
   private String accessToken;
   @JsonProperty("refresh_token")
   private String refreshToken;
-  private Person person;
+  private PersonDTO person;
 }

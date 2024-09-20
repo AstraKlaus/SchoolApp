@@ -1,5 +1,5 @@
 package ak.spring.configs;
-/*
+
 
 import ak.spring.token.TokenRepository;
 import jakarta.servlet.FilterChain;
@@ -70,4 +70,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 }
-*/

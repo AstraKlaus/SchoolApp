@@ -56,7 +56,7 @@ public class Person implements UserDetails {
     private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "settings_id", nullable = false)
+    @JoinColumn(name = "settings_id")
     private Settings settings;
 
     @ManyToOne()
@@ -65,7 +65,7 @@ public class Person implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

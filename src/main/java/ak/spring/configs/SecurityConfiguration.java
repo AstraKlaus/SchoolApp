@@ -22,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,27 +43,27 @@ public class SecurityConfiguration {
             "/swagger-ui.html"};
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req.requestMatchers("/api").permitAll().anyRequest().permitAll())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .authenticationProvider(authenticationProvider)
-                .formLogin(form -> form
-                        .loginProcessingUrl("/api/auth/login")
-                        .permitAll()
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
+                                .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
+                                .anyRequest()
+                                .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
-                        .addLogoutHandler(new SecurityContextLogoutHandler())
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout ->
+                        logout.logoutUrl("/api/logout")
+                                .addLogoutHandler(logoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 );
-
         return http.build();
     }
 
@@ -79,7 +81,6 @@ public class SecurityConfiguration {
 
         return source;
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
