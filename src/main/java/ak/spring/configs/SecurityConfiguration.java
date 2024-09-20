@@ -50,8 +50,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
-                                .requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
+                        req//.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
+                                //.requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .permitAll()
                 )
