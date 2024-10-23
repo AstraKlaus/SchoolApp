@@ -5,6 +5,7 @@ import ak.spring.configs.JwtService;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.repositories.PersonRepository;
+import ak.spring.services.ExcelService;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -29,27 +31,61 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final PersonDTOMapper personDTOMapper;
-
+  private final ExcelService excelService;
 
   public AuthenticationResponse register(RegisterRequest request) {
+    String username = generateUsername();
+
+    String password = generateRandomPassword();
+
+    try {
+      excelService.addUserToExcel(username, request.getFirstName(), request.getPatronymic(), request.getLastName(), password);
+    } catch (IOException e) {
+      System.out.println("Ошибка при сохранении в Excel: " + e.getMessage());
+    }
+
     var user = Person.builder()
             .firstName(request.getFirstName())
             .lastName(request.getLastName())
             .patronymic(request.getPatronymic())
-            .username(request.getUsername())
-            .password(passwordEncoder.encode(request.getPassword()))
+            .username(username)
+            .password(passwordEncoder.encode(password))
             .role(request.getRole())
             .build();
+
     var savedUser = repository.save(user);
+
     var jwtToken = jwtService.generateToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
+
     saveUserToken(savedUser, jwtToken);
+
     return AuthenticationResponse.builder()
             .accessToken(jwtToken)
             .refreshToken(refreshToken)
             .person(personDTOMapper.apply(user))
             .build();
   }
+
+  private String generateUsername() {
+    int year = LocalDate.now().getYear();
+    String yearPattern = year + "%";
+    int nextNumber = repository.getNextUserNumber(yearPattern) + 1;
+    return String.format("%d%04d", year, nextNumber);
+  }
+
+
+  private String generateRandomPassword() {
+    int length = 8;
+    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    Random random = new Random();
+    StringBuilder password = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+      password.append(characters.charAt(random.nextInt(characters.length())));
+    }
+    return password.toString();
+  }
+
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
     authenticationManager.authenticate(

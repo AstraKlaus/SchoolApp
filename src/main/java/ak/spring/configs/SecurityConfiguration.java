@@ -50,7 +50,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req//.requestMatchers("/api/personFavorites/**", "/api/person/**").authenticated()
+                        req.requestMatchers("v1/api/people/**", "v1/api/people/**").authenticated()
                                 //.requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .permitAll()
@@ -64,7 +64,7 @@ public class SecurityConfiguration {
                 //)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/api/logout")
+                        logout.logoutUrl("v1/api/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 );

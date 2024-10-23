@@ -59,12 +59,12 @@ public class Person implements UserDetails {
     @JoinColumn(name = "settings_id")
     private Settings settings;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classroom_id", referencedColumnName = "id")
     private Classroom classroom;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
 
     @Override

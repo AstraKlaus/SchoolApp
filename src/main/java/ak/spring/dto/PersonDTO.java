@@ -17,5 +17,5 @@ public class PersonDTO {
     private String patronymic;
     private Role role;
     private SettingsDTO settings;
-    private String classroomName;
+    private Integer classroomId;
 }

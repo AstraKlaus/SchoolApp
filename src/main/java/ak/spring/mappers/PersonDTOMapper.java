@@ -21,7 +21,7 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
 
     @Override
     public PersonDTO apply(Person person) {
-        String classroomName = (person.getClassroom() != null) ? person.getClassroom().getName() : null;
+        Integer classroomId = (person.getClassroom() != null) ? person.getClassroom().getId() : null;
         SettingsDTO settings = (person.getSettings() != null) ? settingsDTOMapper.apply(person.getSettings()) : null;
 
         return PersonDTO.builder()
@@ -32,7 +32,7 @@ public class PersonDTOMapper implements Function<Person, PersonDTO> {
                 .patronymic(person.getPatronymic())
                 .role(person.getRole())
                 .settings(settings)
-                .classroomName(classroomName)
+                .classroomId(classroomId)
                 .build();
     }
 }

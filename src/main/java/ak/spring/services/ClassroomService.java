@@ -125,13 +125,17 @@ public class ClassroomService {
         Person student = personRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
 
-        List<Person>  persons =  classroom.getPersons();
+        student.setClassroom(classroom);
+
+        List<Person> persons = classroom.getPersons();
         persons.add(student);
+        classroom.setPersons(persons);
 
         // Логирование для проверки содержимого списка persons
         System.out.println("Persons in classroom before save: " + classroom.getPersons());
 
-        classroomRepository.save(classroom).setPersons(persons);
+        classroomRepository.save(classroom);
+        personRepository.save(student);
 
         // Логирование для проверки успешного сохранения
         System.out.println("Classroom saved successfully");
@@ -146,6 +150,12 @@ public class ClassroomService {
 
 
     public void deleteStudentFromClassroom(int classroomId, int studentId) {
+        Person student = personRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
+
+        student.setClassroom(null);
+        personRepository.save(student);
+
         classroomRepository.findById(classroomId)
                 .map(classroom -> {
                     classroom.getPersons().removeIf(person -> person.getId() == studentId);

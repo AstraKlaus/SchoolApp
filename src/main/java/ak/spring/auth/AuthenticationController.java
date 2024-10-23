@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("v1/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
