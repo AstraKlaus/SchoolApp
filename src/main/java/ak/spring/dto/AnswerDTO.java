@@ -14,6 +14,8 @@ public class AnswerDTO {
     private String text;
     private String comment;
     private String attachment;
+    private int studentId;
+    private int homeworkId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }
