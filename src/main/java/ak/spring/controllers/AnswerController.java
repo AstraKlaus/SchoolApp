@@ -38,9 +38,9 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<AnswerDTO> save(@Valid @RequestBody Answer answer) {
-        AnswerDTO savedAnswer = answerService.save(answer);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnswer);
+    public ResponseEntity<AnswerDTO> save(@Valid @RequestBody AnswerDTO answer) {
+        Answer savedAnswer = answerService.save(answer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(answerService.findById(savedAnswer.getId()));
     }
 
     @GetMapping

@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -34,7 +33,7 @@ public class Homework {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "homework")
+    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
     @Column(name = "created_at", nullable = false)

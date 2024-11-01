@@ -13,10 +13,11 @@ public class AnswerDTOMapper implements Function<Answer, AnswerDTO> {
     public AnswerDTO apply(Answer answer) {
         return new AnswerDTO(answer.getId(),
                 answer.getComment(),
-                answer.getAttachment(),
                 answer.getText(),
+                answer.getAttachment(),
                 answer.getStudent().getId(),
                 answer.getHomework().getId(),
+                answer.getStatus().getId(),
                 answer.getCreatedAt(),
                 answer.getUpdatedAt());
     }

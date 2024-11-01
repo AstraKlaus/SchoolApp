@@ -34,6 +34,10 @@ public class Answer {
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Person student;
 
+    @ManyToOne
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private Status status;
+
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 

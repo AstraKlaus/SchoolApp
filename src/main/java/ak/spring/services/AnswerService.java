@@ -9,7 +9,9 @@ import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Answer;
 import ak.spring.repositories.AnswerRepository;
+import ak.spring.repositories.HomeworkRepository;
 import ak.spring.repositories.PersonRepository;
+import ak.spring.repositories.StatusRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,15 +29,24 @@ public class AnswerService {
     private final PersonDTOMapper personDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
+    private final HomeworkRepository homeworkRepository;
+    private final StatusRepository statusRepository;
 
     @Autowired
     public AnswerService(AnswerRepository answerRepository,
-                         PersonRepository personRepository, PersonDTOMapper personDTOMapper, HomeworkDTOMapper homeworkDTOMapper, AnswerDTOMapper answerDTOMapper) {
+                         PersonRepository personRepository,
+                         PersonDTOMapper personDTOMapper,
+                         HomeworkDTOMapper homeworkDTOMapper,
+                         AnswerDTOMapper answerDTOMapper,
+                         HomeworkRepository homeworkRepository,
+                         StatusRepository statusRepository) {
         this.answerRepository = answerRepository;
         this.personRepository = personRepository;
         this.personDTOMapper = personDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
+        this.homeworkRepository = homeworkRepository;
+        this.statusRepository = statusRepository;
     }
 
     public Page<AnswerDTO> findWithPagination(int offset, int pageSize) {
@@ -47,10 +58,20 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
 
-    public AnswerDTO save(Answer answer) {
+    public Answer save(AnswerDTO answer) {
         answer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        answerRepository.save(answer);
-        return answerDTOMapper.apply(answer);
+        return answerRepository.save(Answer.builder()
+                        .attachment(answer.getAttachment())
+                        .comment(answer.getComment())
+                        .text(answer.getText())
+                        .homework(homeworkRepository.findById(answer.getHomeworkId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", answer.getHomeworkId())))
+                        .student(personRepository.findById(answer.getStudentId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", answer.getStudentId())))
+                        .status(statusRepository.findById(answer.getStatusId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Status", "id", answer.getStatusId())))
+                        .updatedAt(new Timestamp(System.currentTimeMillis()))
+                .build());
     }
 
     public List<AnswerDTO> findAll() {
@@ -71,6 +92,12 @@ public class AnswerService {
         existingAnswer.setComment(updatedAnswer.getComment());
         existingAnswer.setAttachment(updatedAnswer.getAttachment());
         existingAnswer.setText(updatedAnswer.getText());
+        existingAnswer.setStatus(statusRepository.findById(updatedAnswer.getStatusId())
+                .orElseThrow(() -> new ResourceNotFoundException("Status", "id", updatedAnswer.getStatusId())));
+        existingAnswer.setStudent(personRepository.findById(updatedAnswer.getStudentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", updatedAnswer.getStudentId())));
+        existingAnswer.setHomework(homeworkRepository.findById(updatedAnswer.getHomeworkId())
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", updatedAnswer.getHomeworkId())));
         existingAnswer.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         answerRepository.save(existingAnswer);
