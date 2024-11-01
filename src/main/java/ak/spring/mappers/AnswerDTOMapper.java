@@ -12,8 +12,8 @@ public class AnswerDTOMapper implements Function<Answer, AnswerDTO> {
     @Override
     public AnswerDTO apply(Answer answer) {
         return new AnswerDTO(answer.getId(),
-                answer.getComment(),
                 answer.getText(),
+                answer.getComment(),
                 answer.getAttachment(),
                 answer.getStudent().getId(),
                 answer.getHomework().getId(),
