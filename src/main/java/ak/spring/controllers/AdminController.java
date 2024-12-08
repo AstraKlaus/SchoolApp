@@ -1,5 +1,6 @@
 package ak.spring.controllers;
 
+import ak.spring.auth.RegisterRequest;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -61,6 +63,25 @@ public class AdminController {
     public ResponseEntity<Void> assignRoleToUser(@PathVariable int userId, @RequestBody Role role) {
         personService.assignRoleToUser(userId, role);
         return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/users/import")
+    public ResponseEntity<String> importUsersFromExcel(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Файл пуст или не предоставлен");
+        }
+
+        try {
+            // Читаем пользователей из Excel
+            List<RegisterRequest> users = excelService.importUsersFromExcel(file.getInputStream());
+            return ResponseEntity.ok(String.format("Пользователи успешно импортированы %s", users.toString()));
+        }
+        catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при чтении файла: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Некорректный формат данных в файле: " + e.getMessage());
+        }
     }
 
 

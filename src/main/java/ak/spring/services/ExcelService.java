@@ -1,25 +1,66 @@
 package ak.spring.services;
 
+import ak.spring.auth.AuthenticationService;
+import ak.spring.auth.RegisterRequest;
+import ak.spring.models.Role;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
+
 import ak.spring.dto.PersonDTO;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ExcelService {
 
     private static final String FILE_PATH = "users_data.xlsx";
+    private final AuthenticationService authenticationService;
 
+    public ExcelService(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
+
+    public List<RegisterRequest> importUsersFromExcel(InputStream inputStream) throws IOException {
+        List<RegisterRequest> users = new ArrayList<>();
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        // Начинаем с первой строки данных (пропускаем заголовок)
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+
+            if (row != null) {
+                String lastName = row.getCell(0).getStringCellValue();
+                String firstName = row.getCell(1).getStringCellValue();
+                String patronymic = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "";
+                String roleString = row.getCell(3).getStringCellValue();
+
+                // Преобразуем строку роли в enum
+                Role role = Role.valueOf(roleString.toUpperCase());
+
+                // Создаем PersonDTO
+                RegisterRequest user = RegisterRequest.builder()
+                        .lastName(lastName)
+                        .firstName(firstName)
+                        .patronymic(patronymic)
+                        .role(role)
+                        .build();
+
+                authenticationService.register(user);
+                users.add(user);
+            }
+        }
+
+        workbook.close();
+        return users;
+    }
 
     public ByteArrayInputStream exportUsersToExcel(List<PersonDTO> users) throws IOException {
         // Создаем новый Workbook
