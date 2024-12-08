@@ -6,21 +6,14 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.AnswerDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
-import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Homework;
 import ak.spring.repositories.*;
-import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -31,31 +24,23 @@ public class HomeworkService {
     private final HomeworkRepository homeworkRepository;
     private final CourseRepository courseRepository;
     private final AnswerRepository answerRepository;
-    private final LessonDTOMapper lessonDTOMapper;
-    private final LessonRepository lessonRepository;
     private final CurriculumDTOMapper curriculumDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
     private final HomeworkDTOMapper homeworkDTOMapper;
-    private final MinioService minioService;
 
     @Autowired
     public HomeworkService(HomeworkRepository homeworkRepository,
                            CourseRepository courseRepository,
-                           AnswerRepository answerRepository, LessonDTOMapper lessonDTOMapper,
-                           LessonRepository lessonRepository,
+                           AnswerRepository answerRepository,
                            CurriculumDTOMapper curriculumDTOMapper,
                            AnswerDTOMapper answerDTOMapper,
-                           HomeworkDTOMapper homeworkDTOMapper,
-                           MinioService minioService) {
+                           HomeworkDTOMapper homeworkDTOMapper) {
         this.homeworkRepository = homeworkRepository;
         this.courseRepository = courseRepository;
         this.answerRepository = answerRepository;
-        this.lessonDTOMapper = lessonDTOMapper;
-        this.lessonRepository = lessonRepository;
         this.curriculumDTOMapper = curriculumDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
         this.homeworkDTOMapper = homeworkDTOMapper;
-        this.minioService = minioService;
     }
 
     public List<HomeworkDTO> findByName(String name) {
@@ -86,7 +71,7 @@ public class HomeworkService {
         Homework newHomework = Homework.builder()
                 .name(homework.getName())
                 .description(homework.getDescription())
-                .attachment(homework.getAttachment())
+                .attachments(homework.getAttachments())
                 .access(homework.isAccess())
                 .course(homework.getCourse())
                 .answers(homework.getAnswers())
@@ -101,7 +86,7 @@ public class HomeworkService {
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
         existingHomework.setName(updatedHomework.getName());
         existingHomework.setDescription(updatedHomework.getDescription());
-        existingHomework.setAttachment(updatedHomework.getAttachment());
+        existingHomework.setAttachments(updatedHomework.getAttachments());
         existingHomework.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         homeworkRepository.save(existingHomework);
@@ -121,17 +106,6 @@ public class HomeworkService {
                         .stream()
                         .map(answerDTOMapper)
                         .toList())
-                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
-    }
-
-    public void uploadImage(int id, MultipartFile image) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        String url = minioService.uploadFile(image);
-
-        homeworkRepository.findById(id)
-                .map(homework -> {
-                    homework.setAttachment(url);
-                    return homeworkRepository.save(homework);
-                })
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
     }
 
@@ -173,10 +147,6 @@ public class HomeworkService {
                     return homeworkDTOMapper.apply(homework);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
-    }
-
-    public InputStream getObject(String filename) {
-        return minioService.getObject(filename);
     }
 }
 

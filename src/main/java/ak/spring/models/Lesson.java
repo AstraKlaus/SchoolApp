@@ -1,11 +1,11 @@
 package ak.spring.models;
 
 
+import ak.spring.mappers.StringListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,6 +27,10 @@ public class Lesson {
 
     @Column(name = "content")
     private String content;
+
+    @Convert(converter = StringListToJsonConverter.class)
+    @Column(name = "attachments", columnDefinition = "TEXT")
+    private List<String> attachments;
 
     @Column(name = "description")
     private String description;

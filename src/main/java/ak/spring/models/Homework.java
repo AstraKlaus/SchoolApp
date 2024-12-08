@@ -1,5 +1,6 @@
 package ak.spring.models;
 
+import ak.spring.mappers.StringListToJsonConverter;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -25,7 +26,9 @@ public class Homework {
 
     private String description;
 
-    private String attachment;
+    @Convert(converter = StringListToJsonConverter.class)
+    @Column(name = "attachments", columnDefinition = "TEXT")
+    private List<String> attachments;
 
     private boolean access;
 

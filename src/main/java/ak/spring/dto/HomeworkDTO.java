@@ -1,9 +1,9 @@
 package ak.spring.dto;
 
-import ak.spring.models.Lesson;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class HomeworkDTO {
     private int id;
     private String name;
     private String description;
-    private String attachment;
+    private List<String> attachments;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

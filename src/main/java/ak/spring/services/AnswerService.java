@@ -61,7 +61,7 @@ public class AnswerService {
     public Answer save(AnswerDTO answer) {
         answer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         return answerRepository.save(Answer.builder()
-                        .attachment(answer.getAttachment())
+                        .attachments(answer.getAttachments())
                         .comment(answer.getComment())
                         .text(answer.getText())
                         .homework(homeworkRepository.findById(answer.getHomeworkId())
@@ -90,7 +90,7 @@ public class AnswerService {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
         existingAnswer.setComment(updatedAnswer.getComment());
-        existingAnswer.setAttachment(updatedAnswer.getAttachment());
+        existingAnswer.setAttachments(updatedAnswer.getAttachments());
         existingAnswer.setText(updatedAnswer.getText());
         existingAnswer.setStatus(statusRepository.findById(updatedAnswer.getStatusId())
                 .orElseThrow(() -> new ResourceNotFoundException("Status", "id", updatedAnswer.getStatusId())));

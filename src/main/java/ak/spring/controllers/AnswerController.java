@@ -5,13 +5,20 @@ import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Answer;
 import ak.spring.services.AnswerService;
+import ak.spring.services.MinioService;
 import jakarta.validation.Valid;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
+
+import static ak.spring.services.MinioService.getResourceResponseEntity;
 
 @RestController
 @RequestMapping("v1/api/answers")
@@ -20,9 +27,13 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
+    private final MinioService minioService;
+
     @Autowired
-    public AnswerController(AnswerService answerService) {
+    public AnswerController(AnswerService answerService,
+                            MinioService minioService) {
         this.answerService = answerService;
+        this.minioService = minioService;
     }
 
     @GetMapping("/paginated")
@@ -77,4 +88,27 @@ public class AnswerController {
     public ResponseEntity<AnswerDTO> addPersonToAnswer(@PathVariable int id, @PathVariable int personId) {
         return ResponseEntity.ok(answerService.addPersonToAnswer(id, personId));
     }
+
+    @SneakyThrows
+    @PostMapping("/{id}/attachments")
+    public ResponseEntity<Void> uploadImage(@PathVariable int id,
+                                            @RequestParam("image") MultipartFile image) {
+        minioService.uploadFileToAnswer(id, image);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/attachments/{fileName}")
+    public ResponseEntity<Void> deleteImage(@PathVariable int id, @PathVariable String fileName) {
+        minioService.removeFileFromAnswer(id, fileName);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{answerId}/attachments/{fileName}")
+    public ResponseEntity<Resource> getFile(@PathVariable int answerId,
+                                            @PathVariable String fileName) {
+        AnswerDTO answer = answerService.findById(answerId);
+
+        return getResourceResponseEntity(fileName, answer.getAttachments(), minioService);
+    }
+
 }

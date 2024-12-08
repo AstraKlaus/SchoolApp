@@ -1,18 +1,23 @@
 package ak.spring.controllers;
 
 import ak.spring.dto.CourseDTO;
-import ak.spring.dto.HomeworkDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.models.Lesson;
 import ak.spring.services.LessonService;
+import ak.spring.services.MinioService;
 import jakarta.validation.Valid;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static ak.spring.services.MinioService.getResourceResponseEntity;
 
 @RestController
 @RequestMapping("v1/api/lessons")
@@ -20,10 +25,13 @@ import java.util.List;
 public class LessonController {
 
     private final LessonService lessonService;
+    private final MinioService minioService;
 
     @Autowired
-    public LessonController(LessonService lessonService) {
+    public LessonController(LessonService lessonService,
+                            MinioService minioService) {
         this.lessonService = lessonService;
+        this.minioService = minioService;
     }
 
     @GetMapping("/search/{name}")
@@ -82,4 +90,25 @@ public class LessonController {
         return ResponseEntity.ok(lesson);
     }
 
+    @SneakyThrows
+    @PostMapping("/{id}/attachments")
+    public ResponseEntity<Void> uploadImage(@PathVariable int id,
+                                            @RequestParam("image") MultipartFile image) {
+        minioService.uploadFileToLesson(id, image);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/attachments/{filename}")
+    public ResponseEntity<Void> deleteFile(@PathVariable int id, @PathVariable String filename) {
+        minioService.removeFileFromLesson(id, filename);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{lessonId}/attachments/{fileName}")
+    public ResponseEntity<Resource> getFile(@PathVariable int lessonId,
+                                            @PathVariable String fileName) {
+        LessonDTO lesson = lessonService.findById(lessonId);
+
+        return getResourceResponseEntity(fileName, lesson.getAttachments(), minioService);
+    }
 }

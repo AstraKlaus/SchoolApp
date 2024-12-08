@@ -14,7 +14,7 @@ public class AnswerDTOMapper implements Function<Answer, AnswerDTO> {
         return new AnswerDTO(answer.getId(),
                 answer.getText(),
                 answer.getComment(),
-                answer.getAttachment(),
+                answer.getAttachments(),
                 answer.getStudent().getId(),
                 answer.getHomework().getId(),
                 answer.getStatus().getId(),

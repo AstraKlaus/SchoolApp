@@ -6,15 +6,59 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import ak.spring.dto.PersonDTO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class ExcelService {
 
     private static final String FILE_PATH = "users_data.xlsx";
+
+
+    public ByteArrayInputStream exportUsersToExcel(List<PersonDTO> users) throws IOException {
+        // Создаем новый Workbook
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Users");
+
+        // Заголовки столбцов
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Фамилия");
+        headerRow.createCell(1).setCellValue("Имя");
+        headerRow.createCell(2).setCellValue("Отчество");
+        headerRow.createCell(3).setCellValue("Имя пользователя");
+        headerRow.createCell(4).setCellValue("Роль");
+
+        // Заполняем данные
+        int rowIndex = 1;
+        for (PersonDTO user : users) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(user.getLastName() != null ? user.getLastName() : ""); // Фамилия
+            row.createCell(1).setCellValue(user.getFirstName() != null ? user.getFirstName() : ""); // Имя
+            row.createCell(2).setCellValue(user.getPatronymic() != null ? user.getPatronymic() : ""); // Отчество
+            row.createCell(3).setCellValue(user.getUsername()); // Имя пользователя
+            row.createCell(4).setCellValue(user.getRole() != null ? user.getRole().name() : ""); // Роль
+        }
+
+        // Автоматически подгоняем ширину столбцов
+        for (int i = 0; i < 5; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Сохраняем Workbook в поток
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } finally {
+            workbook.close();
+        }
+    }
+
 
     // Метод для добавления пользователя в файл Excel
     public void addUserToExcel(String username, String firstName, String patronymic, String lastName, String password) throws IOException {

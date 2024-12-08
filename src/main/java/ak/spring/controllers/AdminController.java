@@ -3,14 +3,20 @@ package ak.spring.controllers;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
+import ak.spring.services.ExcelService;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,10 +25,12 @@ import java.util.List;
 public class AdminController {
 
     private final PersonService personService;
+    private final ExcelService excelService;
 
     @Autowired
-    public AdminController(PersonService personService) {
+    public AdminController(PersonService personService, ExcelService excelService) {
         this.personService = personService;
+        this.excelService = excelService;
     }
 
     @GetMapping("/users")
@@ -55,4 +63,27 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/users/export")
+    public ResponseEntity<Resource> exportUsersToExcel() {
+        try {
+            // Получаем список пользователей
+            List<PersonDTO> users = personService.findAll();
+
+            // Генерируем Excel-файл
+            ByteArrayInputStream inputStream = excelService.exportUsersToExcel(users);
+
+            // Настраиваем HTTP-ответ для скачивания файла
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.xlsx");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(inputStream));
+        } catch (IOException e) {
+            // Обрабатываем исключения (в данном случае, возвращаем 500)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

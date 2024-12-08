@@ -1,10 +1,12 @@
 package ak.spring.models;
 
 
+import ak.spring.mappers.StringListToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +26,9 @@ public class Answer {
 
     private String text;
 
-    private String attachment;
+    @Convert(converter = StringListToJsonConverter.class)
+    @Column(name = "attachments", columnDefinition = "TEXT")
+    private List<String> attachments;
 
     @ManyToOne()
     @JoinColumn(name = "homework_id")

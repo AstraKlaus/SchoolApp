@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: andrew
+      changes:
+        - modifyDataType:
+            tableName: answer
+            columnName: attachment
+            newDataType: text
+        - renameColumn:
+            tableName: answer
+            oldColumnName: attachment
+            newColumnName: attachments
+            columnDataType: text
+
+        - modifyDataType:
+            tableName: homework
+            columnName: attachment
+            newDataType: text
+        - renameColumn:
+            tableName: homework
+            oldColumnName: attachment
+            newColumnName: attachments
+            columnDataType: text
+
+        - modifyDataType:
+            tableName: lesson
+            columnName: attachment
+            newDataType: text
+        - renameColumn:
+            tableName: lesson
+            oldColumnName: attachment
+            newColumnName: attachments
+            columnDataType: text

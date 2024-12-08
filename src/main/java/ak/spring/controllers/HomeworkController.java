@@ -3,29 +3,20 @@ package ak.spring.controllers;
 import ak.spring.dto.AnswerDTO;
 import ak.spring.dto.CurriculumDTO;
 import ak.spring.dto.HomeworkDTO;
-import ak.spring.dto.LessonDTO;
 import ak.spring.models.Homework;
 import ak.spring.services.HomeworkService;
-import io.minio.errors.*;
-import jakarta.servlet.http.HttpServletRequest;
+import ak.spring.services.MinioService;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
-import static org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE;
+import static ak.spring.services.MinioService.getResourceResponseEntity;
 
 @RestController
 @RequestMapping("v1/api/homeworks")
@@ -33,10 +24,13 @@ import static org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTE
 public class HomeworkController {
 
     private final HomeworkService homeworkService;
+    private final MinioService minioService;
 
     @Autowired
-    public HomeworkController(HomeworkService homeworkService) {
+    public HomeworkController(HomeworkService homeworkService,
+                              MinioService minioService) {
         this.homeworkService = homeworkService;
+        this.minioService = minioService;
     }
 
     @GetMapping("/search/{name}")
@@ -110,21 +104,25 @@ public class HomeworkController {
     }
 
     @SneakyThrows
-    @PostMapping("/{id}/image")
+    @PostMapping("/{id}/attachments")
     public ResponseEntity<Void> uploadImage(@PathVariable int id,
                                             @RequestParam("image") MultipartFile image) {
-        homeworkService.uploadImage(id, image);
+        minioService.uploadFileToHomework(id, image);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/image/**")
-    public ResponseEntity<Object> getFile(HttpServletRequest request) throws IOException {
-        String pattern = (String) request.getAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE);
-        String filename = new AntPathMatcher().extractPathWithinPattern(pattern, request.getServletPath());
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(IOUtils.toByteArray(homeworkService.getObject(filename)));
+    @DeleteMapping("/{id}/attachments/{filename}")
+    public ResponseEntity<Void> deleteImage(@PathVariable int id, @PathVariable String filename) {
+        minioService.removeFileFromHomework(id, filename);
+        return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{homeworkId}/attachments/{fileName}")
+    public ResponseEntity<Resource> getFile(@PathVariable int homeworkId,
+                                            @PathVariable String fileName) {
+        HomeworkDTO homework = homeworkService.findById(homeworkId);
+
+        return getResourceResponseEntity(fileName, homework.getAttachments(), minioService);
+    }
 }
 

@@ -4,7 +4,6 @@ import ak.spring.dto.CourseDTO;
 import ak.spring.dto.LessonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.CourseDTOMapper;
-import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Lesson;
 import ak.spring.repositories.CourseRepository;
@@ -23,16 +22,16 @@ import java.util.List;
 public class LessonService {
     private final LessonRepository lessonRepository;
     private final CourseDTOMapper courseDTOMapper;
-    private final HomeworkDTOMapper homeworkDTOMapper;
     private final LessonDTOMapper lessonDTOMapper;
     private final CourseRepository courseRepository;
 
     @Autowired
     public LessonService(LessonRepository lessonRepository,
-                         CourseDTOMapper courseDTOMapper, HomeworkDTOMapper homeworkDTOMapper, LessonDTOMapper lessonDTOMapper, CourseRepository courseRepository) {
+                         CourseDTOMapper courseDTOMapper,
+                         LessonDTOMapper lessonDTOMapper,
+                         CourseRepository courseRepository) {
         this.lessonRepository = lessonRepository;
         this.courseDTOMapper = courseDTOMapper;
-        this.homeworkDTOMapper = homeworkDTOMapper;
         this.lessonDTOMapper = lessonDTOMapper;
         this.courseRepository = courseRepository;
     }
@@ -66,6 +65,7 @@ public class LessonService {
                 .name(lesson.getName())
                 .course(lesson.getCourse())
                 .content(lesson.getContent())
+                .attachments(lesson.getAttachments())
                 .access(lesson.isAccess())
                 .description(lesson.getDescription())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
@@ -80,6 +80,7 @@ public class LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", id));
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
+        existingLesson.setAttachments(updatedLesson.getAttachments());
         existingLesson.setAccess(updatedLesson.isAccess());
         existingLesson.setDescription(updatedLesson.getDescription());
         existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
