@@ -1,5 +1,7 @@
 package ak.spring.controllers;
 
+import ak.spring.auth.AuthenticationResponse;
+import ak.spring.auth.AuthenticationService;
 import ak.spring.auth.RegisterRequest;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
@@ -28,11 +30,13 @@ public class AdminController {
 
     private final PersonService personService;
     private final ExcelService excelService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AdminController(PersonService personService, ExcelService excelService) {
+    public AdminController(PersonService personService, ExcelService excelService, AuthenticationService authenticationService) {
         this.personService = personService;
         this.excelService = excelService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("/users")
@@ -74,7 +78,7 @@ public class AdminController {
 
         try {
             // Читаем пользователей из Excel
-            List<RegisterRequest> users = excelService.importUsersFromExcel(file.getInputStream());
+            List<AuthenticationResponse> users = authenticationService.registerUsersFromExcel(file.getInputStream());
             return ResponseEntity.ok(String.format("Пользователи успешно импортированы %s", users.toString()));
         }
         catch (IOException e) {

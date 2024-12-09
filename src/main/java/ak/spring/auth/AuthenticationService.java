@@ -19,7 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -74,6 +77,14 @@ public class AuthenticationService {
     return String.format("%d%04d", year, nextNumber);
   }
 
+  public List<AuthenticationResponse> registerUsersFromExcel(InputStream inputStream) throws IOException {
+    List<RegisterRequest> users = excelService.importUsersFromExcel(inputStream);
+    List<AuthenticationResponse> registeredUsers = new ArrayList<>();
+    for (RegisterRequest user: users) {
+        registeredUsers.add(register(user));
+    }
+    return registeredUsers;
+  }
 
   private String generateRandomPassword() {
     int length = 8;

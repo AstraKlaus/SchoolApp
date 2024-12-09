@@ -20,12 +20,6 @@ import java.util.List;
 public class ExcelService {
 
     private static final String FILE_PATH = "users_data.xlsx";
-    private final AuthenticationService authenticationService;
-
-    public ExcelService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
 
     public List<RegisterRequest> importUsersFromExcel(InputStream inputStream) throws IOException {
         List<RegisterRequest> users = new ArrayList<>();
@@ -53,7 +47,6 @@ public class ExcelService {
                         .role(role)
                         .build();
 
-                authenticationService.register(user);
                 users.add(user);
             }
         }
