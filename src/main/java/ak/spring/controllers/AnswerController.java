@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static ak.spring.services.MinioService.getResourceResponseEntity;
-
 @RestController
 @RequestMapping("v1/api/answers")
 @CrossOrigin(origins =  "http://localhost:5173", allowCredentials = "true")
@@ -108,7 +106,7 @@ public class AnswerController {
                                             @PathVariable String fileName) {
         AnswerDTO answer = answerService.findById(answerId);
 
-        return getResourceResponseEntity(fileName, answer.getAttachments(), minioService);
+        return  minioService.getResourceResponseEntity(fileName, answer.getAttachments(), minioService);
     }
 
 }

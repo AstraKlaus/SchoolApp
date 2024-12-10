@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import static ak.spring.services.MinioService.getResourceResponseEntity;
 
 @RestController
 @RequestMapping("v1/api/homeworks")
@@ -122,7 +121,7 @@ public class HomeworkController {
                                             @PathVariable String fileName) {
         HomeworkDTO homework = homeworkService.findById(homeworkId);
 
-        return getResourceResponseEntity(fileName, homework.getAttachments(), minioService);
+        return minioService.getResourceResponseEntity(fileName, homework.getAttachments(), minioService);
     }
 }
 

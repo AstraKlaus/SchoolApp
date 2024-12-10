@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static ak.spring.services.MinioService.getResourceResponseEntity;
 
 @RestController
 @RequestMapping("v1/api/lessons")
@@ -109,6 +108,6 @@ public class LessonController {
                                             @PathVariable String fileName) {
         LessonDTO lesson = lessonService.findById(lessonId);
 
-        return getResourceResponseEntity(fileName, lesson.getAttachments(), minioService);
+        return minioService.getResourceResponseEntity(fileName, lesson.getAttachments(), minioService);
     }
 }

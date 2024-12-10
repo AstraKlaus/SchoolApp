@@ -7,9 +7,7 @@ import ak.spring.models.Lesson;
 import ak.spring.repositories.AnswerRepository;
 import ak.spring.repositories.HomeworkRepository;
 import ak.spring.repositories.LessonRepository;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-
-import io.minio.RemoveObjectArgs;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,8 +46,7 @@ public class MinioService {
         this.homeworkRepository = homeworkRepository;
     }
 
-    @NotNull
-    public static ResponseEntity<Resource> getResourceResponseEntity(@PathVariable String fileName,
+    public ResponseEntity<Resource> getResourceResponseEntity(@PathVariable String fileName,
                                                                      List<String> attachments,
                                                                      MinioService minioService) {
         if (!attachments.contains(fileName)) {
@@ -59,8 +54,9 @@ public class MinioService {
         }
 
         InputStream fileStream = minioService.getFile(fileName);
+
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.parseMediaType(getContentType(fileName)))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(new InputStreamResource(fileStream));
     }
@@ -119,7 +115,6 @@ public class MinioService {
      * Можно возвращать InputStream, чтобы далее переслать пользователю.
      */
     public InputStream getFile(String fileName) {
-
         try {
             return minioClient.getObject(
                     GetObjectArgs.builder()
@@ -131,6 +126,21 @@ public class MinioService {
             throw new RuntimeException("Не удалось получить файл из MinIO", e);
         }
     }
+
+    public String getContentType(String fileName) {
+        try {
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .build()
+            );
+            return stat.contentType();
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось получить метаданные из MinIO", e);
+        }
+    }
+
 
     /**
      * Удаление файла из MinIO и из списка вложений.
