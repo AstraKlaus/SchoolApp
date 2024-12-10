@@ -126,7 +126,7 @@ databaseChangeLog:
                   value: 'IvanIvanov'
               - column:
                   name: password
-                  value: 'password'
+                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
               - column:
                   name: role
                   value: "STUDENT"
@@ -154,7 +154,7 @@ databaseChangeLog:
                   value: 'AlexeyAlexeev'
               - column:
                   name: password
-                  value: 'password'
+                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
               - column:
                   name: role
                   value: "STUDENT"
@@ -182,7 +182,7 @@ databaseChangeLog:
                   value: 'PetrPetrov'
               - column:
                   name: password
-                  value: 'password'
+                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
               - column:
                   name: role
                   value: "ADMIN"
@@ -211,7 +211,7 @@ databaseChangeLog:
                   value: 'AlexAlex'
               - column:
                   name: password
-                  value: 'password'
+                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
               - column:
                   name: role
                   value: "TEACHER"

@@ -7,18 +7,30 @@ services:
     ports:
       - "9000:9000"  # Основной порт для доступа к MinIO
       - "9001:9001"  # Порт для панели управления
+    networks:
+      - app-network
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: [ "CMD", "mc", "alias", "set", "local", "http://127.0.0.1:9000", "minioadmin", "minioadmin" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
     restart: always
 
   createBuckets:
     image: minio/mc
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
+    networks:
+      - app-network
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
@@ -27,6 +39,48 @@ services:
       exit 0;
       "
 
+  postgres:
+    image: postgres:15-alpine
+    container_name: school-db
+    environment:
+      POSTGRES_DB: school
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    env_file:
+      - .env
+
+  spring-school-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-school-app
+    depends_on:
+      - postgres
+      - minio
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://school-db:5432/school
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_LIQUIBASE_CHANGELOG: classpath:db/changelog/db.changelog-master.yaml
+    networks:
+      - app-network
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./db/changelog:/app/db/changelog
+      - ./logs:/app/logs
+      #- /etc/letsencrypt:/etc/letsencrypt
+    restart: on-failure
+
 volumes:
   minio_data:
     driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+
