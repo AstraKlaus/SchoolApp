@@ -89,10 +89,9 @@ public class AnswerController {
 
     @SneakyThrows
     @PostMapping("/{id}/attachments")
-    public ResponseEntity<Void> uploadImage(@PathVariable int id,
+    public ResponseEntity<String> uploadImage(@PathVariable int id,
                                             @RequestParam("image") MultipartFile image) {
-        minioService.uploadFileToAnswer(id, image);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(minioService.uploadFileToAnswer(id, image));
     }
 
     @DeleteMapping("/{id}/attachments/{fileName}")

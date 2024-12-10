@@ -63,7 +63,7 @@ public class MinioService {
     /**
      * Пример загрузки файла для конкретного ответа (Answer).
      */
-    public void uploadFileToAnswer(int answerId, MultipartFile file) {
+    public String uploadFileToAnswer(int answerId, MultipartFile file) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new RuntimeException("Answer not found"));
 
@@ -75,12 +75,14 @@ public class MinioService {
         attachments.add(fileName);
         answer.setAttachments(attachments);
         answerRepository.save(answer);
+
+        return fileName;
     }
 
     /**
      * Пример загрузки файла для урока (Lesson).
      */
-    public void uploadFileToLesson(int lessonId, MultipartFile file) {
+    public String uploadFileToLesson(int lessonId, MultipartFile file) {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
 
@@ -91,12 +93,14 @@ public class MinioService {
         attachments.add(fileName);
         lesson.setAttachments(attachments);
         lessonRepository.save(lesson);
+
+        return fileName;
     }
 
     /**
      * Пример загрузки файла для домашнего задания (Homework).
      */
-    public void uploadFileToHomework(int homeworkId, MultipartFile file) {
+    public String  uploadFileToHomework(int homeworkId, MultipartFile file) {
         Homework homework = homeworkRepository.findById(homeworkId)
                 .orElseThrow(() -> new RuntimeException("Homework not found"));
 
@@ -107,6 +111,8 @@ public class MinioService {
         attachments.add(fileName);
         homework.setAttachments(attachments);
         homeworkRepository.save(homework);
+
+        return fileName;
     }
 
     /**

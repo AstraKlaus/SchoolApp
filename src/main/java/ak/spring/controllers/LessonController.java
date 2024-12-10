@@ -91,10 +91,9 @@ public class LessonController {
 
     @SneakyThrows
     @PostMapping("/{id}/attachments")
-    public ResponseEntity<Void> uploadImage(@PathVariable int id,
+    public ResponseEntity<String> uploadImage(@PathVariable int id,
                                             @RequestParam("image") MultipartFile image) {
-        minioService.uploadFileToLesson(id, image);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(minioService.uploadFileToLesson(id, image));
     }
 
     @DeleteMapping("/{id}/attachments/{filename}")
