@@ -59,7 +59,6 @@ public class AnswerService {
     }
 
     public Answer save(AnswerDTO answer) {
-        answer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         return answerRepository.save(Answer.builder()
                         .attachments(answer.getAttachments())
                         .comment(answer.getComment())
@@ -71,6 +70,7 @@ public class AnswerService {
                         .status(statusRepository.findById(answer.getStatusId())
                                 .orElseThrow(() -> new ResourceNotFoundException("Status", "id", answer.getStatusId())))
                         .updatedAt(new Timestamp(System.currentTimeMillis()))
+                        .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build());
     }
 
