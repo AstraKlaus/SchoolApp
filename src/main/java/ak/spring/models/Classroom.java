@@ -6,6 +6,14 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -16,17 +24,23 @@ import java.util.List;
 public class Classroom {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(message = "Идентификатор класса должен быть положительным числом")
+    @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
-    @Column(name = "name")
+    @NotBlank(message = "Название класса не может быть пустым")
+    @Size(min = 3, max = 100, message = "Название класса должно содержать от 3 до 100 символов")
+    @Column(name = "name", nullable = false, length = 100, unique = true)
     private String name;
 
+    @NotNull(message = "Учебный план обязателен")
     @ManyToOne
-    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
+    @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
     private Curriculum curriculum;
 
-    @OneToMany(mappedBy = "classroom")
-    private List<Person> persons = new ArrayList<>();
+    @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<@Valid Person> persons = new ArrayList<>();
 }
+

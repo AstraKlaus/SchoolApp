@@ -5,7 +5,9 @@ import ak.spring.dto.CourseDTO;
 import ak.spring.dto.CurriculumDTO;
 import ak.spring.models.Curriculum;
 import ak.spring.services.CurriculumService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +42,7 @@ public class CurriculumController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CurriculumDTO> updateCurriculum(@PathVariable int id,
-                                                          @RequestBody CurriculumDTO curriculumDetails) {
+                                                          @Valid @RequestBody CurriculumDTO curriculumDetails) {
         return ResponseEntity.ok(curriculumService.updateCurriculum(id, curriculumDetails));
     }
 

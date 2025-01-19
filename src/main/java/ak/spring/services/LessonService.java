@@ -66,7 +66,7 @@ public class LessonService {
                 .course(lesson.getCourse())
                 .content(lesson.getContent())
                 .attachments(lesson.getAttachments())
-                .access(lesson.isAccess())
+                .access(lesson.getAccess())
                 .description(lesson.getDescription())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -81,7 +81,7 @@ public class LessonService {
         existingLesson.setName(updatedLesson.getName());
         existingLesson.setContent(updatedLesson.getContent());
         existingLesson.setAttachments(updatedLesson.getAttachments());
-        existingLesson.setAccess(updatedLesson.isAccess());
+        existingLesson.setAccess(updatedLesson.getAccess());
         existingLesson.setDescription(updatedLesson.getDescription());
         existingLesson.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 

@@ -72,7 +72,7 @@ public class HomeworkService {
                 .name(homework.getName())
                 .description(homework.getDescription())
                 .attachments(homework.getAttachments())
-                .access(homework.isAccess())
+                .access(homework.getAccess())
                 .course(homework.getCourse())
                 .answers(homework.getAnswers())
                 .createdAt(new Timestamp(System.currentTimeMillis()))

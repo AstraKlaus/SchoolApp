@@ -14,6 +14,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -22,41 +35,48 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "person")
 public class Person implements UserDetails {
+
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(message = "Идентификатор пользователя должен быть положительным числом")
+    @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
-    @NotEmpty(message = "Имя пользователя не должно быть пустым")
-    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
-    @Column(name = "username")
+    @NotBlank(message = "Имя пользователя не должно быть пустым")
+    @Size(min = 2, max = 50, message = "Имя пользователя должно быть от 2 до 50 символов длиной")
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @NotEmpty(message = "Имя не должно быть пустым")
+    @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @NotEmpty(message = "Имя не должно быть пустым")
+    @NotBlank(message = "Фамилия не должна быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
     @Size(min = 2, max = 50, message = "Отчество должно быть от 2 до 50 символов длиной")
-    @Column(name = "patronymic")
+    @Column(name = "patronymic", length = 50)
     private String patronymic;
 
-    @Column(name = "password")
+    @NotBlank(message = "Пароль не должен быть пустым")
+    @Size(min = 6, message = "Пароль должен содержать минимум 6 символов")
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @NotNull(message = "Роль пользователя обязательна")
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Size(max = 100, message = "Максимальное количество ответов — 100")
     private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "settings_id")
+    @JoinColumn(name = "settings_id", referencedColumnName = "id")
     private Settings settings;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -64,8 +84,8 @@ public class Person implements UserDetails {
     private Classroom classroom;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Token> tokens;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Token> tokens = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -97,3 +117,4 @@ public class Person implements UserDetails {
         return true;
     }
 }
+

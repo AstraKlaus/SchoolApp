@@ -2,7 +2,8 @@ package ak.spring.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,33 +11,41 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-@Table(name = "Course")
+@Table(name = "course")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(message = "Идентификатор курса должен быть положительным числом")
+    @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
-    @Column(name = "name")
+    @NotBlank(message = "Название курса не может быть пустым")
+    @Size(min = 5, max = 150, message = "Название курса должно содержать от 5 до 150 символов")
+    @Column(name = "name", nullable = false, length = 150, unique = true)
     private String name;
 
-    @Column(name = "description")
+    @Size(max = 1000, message = "Описание курса не должно превышать 1000 символов")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "access")
-    private boolean access;
+    @NotNull(message = "Поле 'доступ' не может быть пустым")
+    @Column(name = "access", nullable = false)
+    private Boolean access;
 
-    @OneToMany(mappedBy = "course")
-    private List<Lesson> lessons = new ArrayList<>();
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Size(max = 50, message = "Максимальное количество уроков — 50")
+    private List<@Valid Lesson> lessons = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course")
-    private List<Homework> homeworks = new ArrayList<>();
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Size(max = 100, message = "Максимальное количество домашних заданий — 100")
+    private List<@Valid Homework> homeworks = new ArrayList<>();
 
+    @NotNull(message = "Учебный план обязателен")
     @ManyToOne
-    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
+    @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
     private Curriculum curriculum;
-
 }
+

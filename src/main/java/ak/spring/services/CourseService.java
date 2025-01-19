@@ -72,7 +72,7 @@ public class CourseService {
         Course newCourse = Course.builder()
                 .description(course.getDescription())
                 .name(course.getName())
-                .access(course.isAccess())
+                .access(course.getAccess())
                 .curriculum(course.getCurriculum())
                 .homeworks(course.getHomeworks())
                 .lessons(course.getLessons())

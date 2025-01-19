@@ -8,6 +8,13 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+import java.sql.Timestamp;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -22,30 +29,46 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Size(max = 300, message = "Комментарий не должен превышать 300 символов")
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
+    @NotBlank(message = "Текст ответа не может быть пустым")
+    @Size(min = 10, max = 5000, message = "Текст ответа должен содержать от 10 до 5000 символов")
+    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
-    private List<String> attachments;
+    @Size(max = 10, message = "Максимальное количество вложений — 10")
+    private List<
+            @Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
+                    message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
+                    String
+            > attachments;
 
-    @ManyToOne()
-    @JoinColumn(name = "homework_id")
+    @NotNull(message = "Домашнее задание обязательно")
+    @ManyToOne
+    @JoinColumn(name = "homework_id", nullable = false)
     private Homework homework;
 
+    @NotNull(message = "Студент обязателен")
     @ManyToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Person student;
 
+    @NotNull(message = "Статус обязателен")
     @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
     private Status status;
 
+    @NotNull(message = "Дата создания не может быть пустой")
+    @PastOrPresent(message = "Дата создания не может быть в будущем")
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
+    @PastOrPresent(message = "Дата обновления не может быть в будущем")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
 }
+
