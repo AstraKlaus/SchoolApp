@@ -8,16 +8,17 @@ import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.models.Homework;
 import ak.spring.repositories.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Transactional
 public class HomeworkService {
 
     private final HomeworkRepository homeworkRepository;

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
     private final ClassroomDTOMapper classroomDTOMapper;

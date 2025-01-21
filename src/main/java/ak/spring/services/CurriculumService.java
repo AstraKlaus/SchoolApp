@@ -10,12 +10,14 @@ import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.models.Curriculum;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CurriculumService {
 
     private final CurriculumDTOMapper curriculumDTOMapper;

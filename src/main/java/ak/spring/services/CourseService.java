@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional
 public class CourseService {
 
     private final CourseRepository courseRepository;
