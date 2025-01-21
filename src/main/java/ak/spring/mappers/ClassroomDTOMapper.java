@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
+@Lazy
 public class ClassroomDTOMapper implements Function<Classroom, ClassroomDTO> {
     private final PersonDTOMapper personMapper;
 
-    public ClassroomDTOMapper(PersonDTOMapper personMapper) {
+    public ClassroomDTOMapper(@Lazy PersonDTOMapper personMapper) {
         this.personMapper = personMapper;
     }
 
