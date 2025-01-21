@@ -68,14 +68,13 @@ public class CourseService {
                 .toList();
     }
 
-    public CourseDTO uploadCourse(Course course){
+    public CourseDTO uploadCourse(CourseDTO course){
         Course newCourse = Course.builder()
                 .description(course.getDescription())
                 .name(course.getName())
                 .access(course.getAccess())
-                .curriculum(course.getCurriculum())
-                .homeworks(course.getHomeworks())
-                .lessons(course.getLessons())
+                .curriculum(curriculumRepository.findById(course.getCurriculumId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", course.getCurriculumId())))
                 .build();
 
         courseRepository.save(newCourse);

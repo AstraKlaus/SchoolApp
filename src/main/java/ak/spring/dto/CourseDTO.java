@@ -26,5 +26,9 @@ public class CourseDTO {
     private String description;
 
     private Boolean access;
+
+    @Positive(message = "Идентификатор учебного плана должен быть положительным числом")
+    @NotNull(message = "Идентификатор учебного плана обязателен для заполнения")
+    private Integer curriculumId;
 }
 

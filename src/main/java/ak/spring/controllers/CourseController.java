@@ -46,7 +46,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseDTO> uploadCourse(@Valid @RequestBody Course course) {
+    public ResponseEntity<CourseDTO> uploadCourse(@Valid @RequestBody CourseDTO course) {
         CourseDTO savedCourse = courseService.uploadCourse(course);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCourse);
     }

@@ -27,6 +27,3 @@ databaseChangeLog:
               - column:
                   name: settings_id
                   valueNumeric: 1
-              - column:
-                  name: classroom_id
-                  valueNumeric: 1
