@@ -62,12 +62,9 @@ public class Answer {
     @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
     private Status status;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
-    @PastOrPresent(message = "Дата обновления не может быть в будущем")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 }

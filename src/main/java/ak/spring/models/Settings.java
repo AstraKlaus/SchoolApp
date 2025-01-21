@@ -23,7 +23,6 @@ public class Settings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор настроек должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

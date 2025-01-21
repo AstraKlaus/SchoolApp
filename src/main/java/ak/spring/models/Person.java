@@ -38,7 +38,6 @@ public class Person implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор пользователя должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

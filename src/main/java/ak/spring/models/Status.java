@@ -18,7 +18,6 @@ public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор статуса должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

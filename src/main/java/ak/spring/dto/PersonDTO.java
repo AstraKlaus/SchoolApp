@@ -15,7 +15,6 @@ import lombok.*;
 @AllArgsConstructor
 public class PersonDTO {
 
-    @Positive(message = "Идентификатор пользователя должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Имя пользователя не может быть пустым")

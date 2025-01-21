@@ -27,7 +27,6 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор урока должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
@@ -61,12 +60,9 @@ public class Lesson {
     @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Course course;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
-    @PastOrPresent(message = "Дата обновления не может быть в будущем")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 }

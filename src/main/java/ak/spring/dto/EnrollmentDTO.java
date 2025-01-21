@@ -26,8 +26,6 @@ public class EnrollmentDTO {
     @Valid
     private CourseDTO course;
 
-    @NotNull(message = "Дата регистрации не может быть пустой")
-    @PastOrPresent(message = "Дата регистрации не может быть в будущем")
     private Timestamp createdAt;
 }
 

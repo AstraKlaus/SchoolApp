@@ -14,7 +14,6 @@ import lombok.*;
 @AllArgsConstructor
 public class SettingsDTO {
 
-    @Positive(message = "Идентификатор настроек должен быть положительным числом")
     private int id;
 
     @NotNull(message = "Тема обязательна для выбора")

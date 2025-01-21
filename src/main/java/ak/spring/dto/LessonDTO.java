@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class LessonDTO {
 
-    @Positive(message = "Идентификатор урока должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Название урока не может быть пустым")
@@ -44,8 +43,6 @@ public class LessonDTO {
     @NotNull(message = "Поле 'доступ' не может быть пустым")
     private Boolean access;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     private Timestamp createdAt;
 
     @PastOrPresent(message = "Дата обновления не может быть в будущем")

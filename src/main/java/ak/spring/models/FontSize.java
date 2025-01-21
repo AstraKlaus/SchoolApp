@@ -18,7 +18,6 @@ public class FontSize {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор размера шрифта должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

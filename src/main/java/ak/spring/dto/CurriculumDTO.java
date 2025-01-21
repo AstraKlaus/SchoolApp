@@ -18,7 +18,6 @@ import lombok.*;
 @NoArgsConstructor
 public class CurriculumDTO {
 
-    @Positive(message = "Идентификатор учебного плана должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Название учебного плана не может быть пустым")

@@ -24,7 +24,6 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор записи должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
@@ -38,8 +37,6 @@ public class Enrollment {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 }

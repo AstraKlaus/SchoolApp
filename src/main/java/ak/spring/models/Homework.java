@@ -28,7 +28,6 @@ public class Homework {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор домашнего задания должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
@@ -61,12 +60,9 @@ public class Homework {
     @Size(max = 300, message = "Максимальное количество ответов — 300")
     private List<@Valid Answer> answers;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
-    @PastOrPresent(message = "Дата обновления не может быть в будущем")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 }

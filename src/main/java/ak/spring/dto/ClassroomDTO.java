@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ClassroomDTO {
 
-    @Positive(message = "Идентификатор класса должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Название класса не может быть пустым")

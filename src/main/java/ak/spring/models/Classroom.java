@@ -25,7 +25,6 @@ public class Classroom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор класса должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

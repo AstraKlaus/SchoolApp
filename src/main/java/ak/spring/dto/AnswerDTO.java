@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class AnswerDTO {
 
-    @Positive(message = "Идентификатор должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Текст ответа не может быть пустым")
@@ -43,10 +42,8 @@ public class AnswerDTO {
     @Max(value = 5, message = "Недопустимый статус. Максимальное значение: 5")
     private int statusId;
 
-    @PastOrPresent(message = "Дата создания должна быть в прошлом или настоящем")
     private Timestamp createdAt;
 
-    @PastOrPresent(message = "Дата обновления должна быть в прошлом или настоящем")
     private Timestamp updatedAt;
 }
 

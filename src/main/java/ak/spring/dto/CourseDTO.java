@@ -16,7 +16,6 @@ import lombok.*;
 @AllArgsConstructor
 public class CourseDTO {
 
-    @Positive(message = "Идентификатор курса должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Название курса не может быть пустым")

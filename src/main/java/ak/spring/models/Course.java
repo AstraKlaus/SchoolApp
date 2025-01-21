@@ -18,7 +18,6 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive(message = "Идентификатор курса должен быть положительным числом")
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

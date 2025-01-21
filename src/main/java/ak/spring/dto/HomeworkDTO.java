@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class HomeworkDTO {
 
-    @Positive(message = "Идентификатор домашнего задания должен быть положительным числом")
     private int id;
 
     @NotBlank(message = "Название домашнего задания не может быть пустым")
@@ -38,11 +37,8 @@ public class HomeworkDTO {
     @NotNull(message = "Поле 'доступ' не может быть пустым")
     private Boolean access;
 
-    @NotNull(message = "Дата создания не может быть пустой")
-    @PastOrPresent(message = "Дата создания не может быть в будущем")
     private Timestamp createdAt;
 
-    @PastOrPresent(message = "Дата обновления не может быть в будущем")
     private Timestamp updatedAt;
 }
 
