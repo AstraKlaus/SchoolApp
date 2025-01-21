@@ -8,16 +8,16 @@ databaseChangeLog:
             columns:
               - column:
                   name: first_name
-                  value: 'Максим'
+                  value: 'Алина'
               - column:
                   name: last_name
-                  value: 'Максимов'
+                  value: 'Алиновна'
               - column:
                   name: patronymic
-                  value: 'Максимович'
+                  value: 'Алинковивна'
               - column:
                   name: username
-                  value: 'MaximMaximov'
+                  value: 'AlinaAlinova'
               - column:
                   name: password
                   value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'

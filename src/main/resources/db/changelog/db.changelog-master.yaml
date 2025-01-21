@@ -8,4 +8,4 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/004-size.yaml
   - include:
-      file: db/changelog/changeset/005-add-admin.yaml
+      file: db/changelog/changeset/005-add-new-admin.yaml
