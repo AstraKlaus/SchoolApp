@@ -35,7 +35,6 @@ public class Lesson {
     @Column(name = "name", nullable = false, length = 150, unique = true)
     private String name;
 
-    @NotBlank(message = "Содержимое урока не может быть пустым")
     @Size(max = 5000, message = "Содержимое урока должно содержать до 5000 символов")
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;

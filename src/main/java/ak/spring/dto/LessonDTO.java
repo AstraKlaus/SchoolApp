@@ -24,7 +24,7 @@ public class LessonDTO {
     @Size(min = 5, max = 150, message = "Название урока должно содержать от 5 до 150 символов")
     private String name;
 
-    @NotBlank(message = "Содержимое урока не может быть пустым")
+
     @Size(min = 10, max = 5000, message = "Содержимое урока должно содержать от 10 до 5000 символов")
     private String content;
 

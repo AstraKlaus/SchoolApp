@@ -20,7 +20,6 @@ public class AnswerDTO {
 
     private int id;
 
-    @NotBlank(message = "Текст ответа не может быть пустым")
     @Size(min = 10, max = 500, message = "Текст ответа должен содержать от 10 до 500 символов")
     private String text;
 

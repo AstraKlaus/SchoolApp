@@ -33,7 +33,6 @@ public class Classroom {
     @Column(name = "name", nullable = false, length = 100, unique = true)
     private String name;
 
-    @NotNull(message = "Учебный план обязателен")
     @ManyToOne
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
     private Curriculum curriculum;

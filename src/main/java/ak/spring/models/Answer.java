@@ -33,7 +33,7 @@ public class Answer {
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
-    @NotBlank(message = "Текст ответа не может быть пустым")
+
     @Size(max = 5000, message = "Текст ответа должен содержать до 5000 символов")
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
