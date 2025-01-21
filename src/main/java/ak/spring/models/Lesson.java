@@ -36,7 +36,7 @@ public class Lesson {
     private String name;
 
     @Size(max = 5000, message = "Содержимое урока должно содержать до 5000 символов")
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Size(max = 10, message = "Максимальное количество вложений — 10")

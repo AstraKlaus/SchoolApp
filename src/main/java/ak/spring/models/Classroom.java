@@ -34,7 +34,7 @@ public class Classroom {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
 
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")

@@ -37,18 +37,18 @@ public class Person implements UserDetails {
     @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
     @Column(name = "first_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Имя может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\s-]+$", message = "Имя может содержать только буквы, пробел и дефис")
     private String firstName;
 
     @NotBlank(message = "Фамилия не должна быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
     @Column(name = "last_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\s-]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
     private String lastName;
 
     @Size(max = 50, message = "Отчество должно быть до 50 символов длиной")
     @Column(name = "patronymic", length = 50)
-    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Отчество может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\s-]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
     @Column(name = "password", nullable = false)
