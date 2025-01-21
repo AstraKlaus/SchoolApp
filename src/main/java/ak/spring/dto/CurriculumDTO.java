@@ -21,7 +21,7 @@ public class CurriculumDTO {
     private int id;
 
     @NotBlank(message = "Название учебного плана не может быть пустым")
-    @Size(min = 5, max = 150, message = "Название учебного плана должно содержать от 5 до 150 символов")
+    @Size(min = 2, max = 150, message = "Название учебного плана должно содержать от 2 до 150 символов")
     private String name;
 
     @Size(max = 500, message = "Описание учебного плана не должно превышать 500 символов")

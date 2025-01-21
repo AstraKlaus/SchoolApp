@@ -20,7 +20,7 @@ public class AnswerDTO {
 
     private int id;
 
-    @Size(min = 10, max = 500, message = "Текст ответа должен содержать от 10 до 500 символов")
+    @Size(min = 2, max = 500, message = "Текст ответа должен содержать от 2 до 500 символов")
     private String text;
 
     @Size(max = 300, message = "Комментарий не должен превышать 300 символов")

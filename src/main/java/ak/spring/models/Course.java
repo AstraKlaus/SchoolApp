@@ -22,7 +22,7 @@ public class Course {
     private int id;
 
     @NotBlank(message = "Название курса не может быть пустым")
-    @Size(min = 5, max = 150, message = "Название курса должно содержать от 5 до 150 символов")
+    @Size(min = 2, max = 150, message = "Название курса должно содержать от 2 до 150 символов")
     @Column(name = "name", nullable = false, length = 150, unique = true)
     private String name;
 

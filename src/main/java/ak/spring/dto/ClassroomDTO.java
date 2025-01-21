@@ -20,7 +20,7 @@ public class ClassroomDTO {
     private int id;
 
     @NotBlank(message = "Название класса не может быть пустым")
-    @Size(min = 3, max = 100, message = "Название класса должно содержать от 3 до 100 символов")
+    @Size(min = 2, max = 100, message = "Название класса должно содержать от 2 до 100 символов")
     private String name;
 
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
