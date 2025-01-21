@@ -60,15 +60,15 @@ public class LessonService {
         lessonRepository.delete(existingLesson);
     }
 
-    public LessonDTO saveLesson(Lesson lesson) {
+    public LessonDTO saveLesson(LessonDTO lesson) {
         Lesson newLesson = Lesson.builder()
                 .name(lesson.getName())
-                .course(lesson.getCourse())
+                .course(courseRepository.findById(lesson.getCourseId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Course", "id", lesson.getCourseId())))
                 .content(lesson.getContent())
                 .attachments(lesson.getAttachments())
                 .access(lesson.getAccess())
                 .description(lesson.getDescription())
-                .course(lesson.getCourse())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
         lessonRepository.save(newLesson);

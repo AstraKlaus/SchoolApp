@@ -59,7 +59,7 @@ public class LessonController {
     }
 
     @PostMapping
-    public ResponseEntity<LessonDTO> saveLesson(@Valid @RequestBody Lesson lesson) {
+    public ResponseEntity<LessonDTO> saveLesson(@Valid @RequestBody LessonDTO lesson) {
         LessonDTO savedLesson = lessonService.saveLesson(lesson);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedLesson);
     }
