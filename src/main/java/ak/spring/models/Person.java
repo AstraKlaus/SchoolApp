@@ -14,19 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
@@ -44,24 +31,26 @@ public class Person implements UserDetails {
     @NotBlank(message = "Имя пользователя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя пользователя должно быть от 2 до 50 символов длиной")
     @Column(name = "username", nullable = false, unique = true, length = 50)
+    @Pattern(regexp = "^[a-zA-Z0-9_ ]+$", message = "Имя пользователя может содержать только латинские буквы, цифры и символ подчеркивания")
     private String username;
 
     @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
     @Column(name = "first_name", nullable = false, length = 50)
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Имя может содержать только буквы, пробел и дефис")
     private String firstName;
 
     @NotBlank(message = "Фамилия не должна быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
     @Column(name = "last_name", nullable = false, length = 50)
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
     private String lastName;
 
     @Size(max = 50, message = "Отчество должно быть до 50 символов длиной")
     @Column(name = "patronymic", length = 50)
+    @Pattern(regexp = "^[А-Яа-яA-Za-z\\p{Zs}-]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
-    @NotBlank(message = "Пароль не должен быть пустым")
-    @Size(min = 6, message = "Пароль должен содержать минимум 6 символов")
     @Column(name = "password", nullable = false)
     private String password;
 

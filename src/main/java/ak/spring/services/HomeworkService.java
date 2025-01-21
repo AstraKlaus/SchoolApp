@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-@Transactional
 public class HomeworkService {
 
     private final HomeworkRepository homeworkRepository;

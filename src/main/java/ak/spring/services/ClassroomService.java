@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
     private final ClassroomDTOMapper classroomDTOMapper;
@@ -101,21 +100,7 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
 
-//
-//    @Transactional
-//    public ClassroomDTO addStudentToClassroom(int classroomId, int studentId) {
-//        return classroomRepository.findById(classroomId)
-//                .map(classroom -> {
-//                    Person person = personRepository.findById(studentId)
-//                            .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
-//                    classroom.getPersons().add(person);
-//
-//                    classroomRepository.save(classroom);
-//                    personRepository.save(person);
-//                    return classroomDTOMapper.apply(classroom);
-//                })
-//                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
-//    }
+
 
     @Transactional
     public ClassroomDTO addStudentToClassroom(int classroomId, int studentId) {
