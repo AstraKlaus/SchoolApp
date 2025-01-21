@@ -37,6 +37,10 @@ public class LessonDTO {
     @Size(max = 500, message = "Описание урока не должно превышать 500 символов")
     private String description;
 
+    @Positive(message = "Идентификатор домашнего задания должен быть положительным числом")
+    @NotNull(message = "Идентификатор домашнего задания обязателен для заполнения")
+    private Integer courseId;
+
     @NotNull(message = "Поле 'доступ' не может быть пустым")
     private Boolean access;
 

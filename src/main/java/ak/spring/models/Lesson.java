@@ -37,7 +37,7 @@ public class Lesson {
     private String name;
 
     @NotBlank(message = "Содержимое урока не может быть пустым")
-    @Size(min = 10, max = 5000, message = "Содержимое урока должно содержать от 10 до 5000 символов")
+    @Size(max = 5000, message = "Содержимое урока должно содержать до 5000 символов")
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -48,8 +48,8 @@ public class Lesson {
                     message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
                     String> attachments;
 
-    @Size(max = 500, message = "Описание урока не должно превышать 500 символов")
-    @Column(name = "description", length = 500)
+    @Size(max = 5000, message = "Описание урока не должно превышать 5000 символов")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @NotNull(message = "Поле 'доступ' не может быть пустым")

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("v1/api/homeworks")
 @CrossOrigin(origins = "http://localhost:5173")
+@Validated
 public class HomeworkController {
 
     private final HomeworkService homeworkService;
@@ -57,7 +59,7 @@ public class HomeworkController {
     }
 
     @PostMapping
-    public ResponseEntity<HomeworkDTO> saveHomework(@Valid @RequestBody Homework homework) {
+    public ResponseEntity<HomeworkDTO> saveHomework(@Valid @RequestBody HomeworkDTO homework) {
         HomeworkDTO savedHomework = homeworkService.saveHomework(homework);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHomework);
     }

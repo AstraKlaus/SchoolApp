@@ -37,18 +37,16 @@ public class Homework {
     @Column(name = "name", nullable = false, length = 150, unique = true)
     private String name;
 
-    @Size(max = 2000, message = "Описание домашнего задания не должно превышать 2000 символов")
+    @Size(max = 5000, message = "Описание домашнего задания не должно превышать 5000 символов")
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Size(max = 10, message = "Максимальное количество вложений — 10")
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
-    private List<
-            @Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
+    private List<@Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
                     message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
-                    String
-            > attachments;
+                    String> attachments;
 
     @NotNull(message = "Поле 'доступ' не может быть пустым")
     @Column(name = "access", nullable = false)

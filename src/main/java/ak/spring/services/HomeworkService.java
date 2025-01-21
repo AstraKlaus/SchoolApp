@@ -67,14 +67,14 @@ public class HomeworkService {
         homeworkRepository.delete(existingHomework);
     }
 
-    public HomeworkDTO saveHomework(Homework homework) {
+    public HomeworkDTO saveHomework(HomeworkDTO homework) {
         Homework newHomework = Homework.builder()
                 .name(homework.getName())
                 .description(homework.getDescription())
                 .attachments(homework.getAttachments())
                 .access(homework.getAccess())
-                .course(homework.getCourse())
-                .answers(homework.getAnswers())
+                .course(courseRepository.findById(homework.getCourseId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Course", "id", homework.getCourseId())))
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
         homeworkRepository.save(newHomework);

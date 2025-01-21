@@ -68,6 +68,7 @@ public class LessonService {
                 .attachments(lesson.getAttachments())
                 .access(lesson.getAccess())
                 .description(lesson.getDescription())
+                .course(lesson.getCourse())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
         lessonRepository.save(newLesson);

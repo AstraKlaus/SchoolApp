@@ -16,6 +16,7 @@ public class LessonDTOMapper implements Function<Lesson, LessonDTO> {
                 lesson.getContent(),
                 lesson.getAttachments(),
                 lesson.getDescription(),
+                lesson.getCourse().getId(),
                 lesson.getAccess(),
                 lesson.getCreatedAt(),
                 new Timestamp(System.currentTimeMillis()));

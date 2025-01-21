@@ -27,7 +27,7 @@ public class Course {
     @Column(name = "name", nullable = false, length = 150, unique = true)
     private String name;
 
-    @Size(max = 1000, message = "Описание курса не должно превышать 1000 символов")
+    @Size(max = 5000, message = "Описание курса не должно превышать 5000 символов")
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

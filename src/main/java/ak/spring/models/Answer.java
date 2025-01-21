@@ -29,12 +29,12 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Size(max = 300, message = "Комментарий не должен превышать 300 символов")
+    @Size(max = 5000, message = "Комментарий не должен превышать 5000 символов")
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
     @NotBlank(message = "Текст ответа не может быть пустым")
-    @Size(min = 10, max = 5000, message = "Текст ответа должен содержать от 10 до 5000 символов")
+    @Size(max = 5000, message = "Текст ответа должен содержать до 5000 символов")
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
 

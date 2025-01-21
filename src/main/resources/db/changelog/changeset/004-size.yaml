@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: andrew
+      changes:
+        - modifyDataType:
+            tableName: curriculum
+            columnName: description
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: course
+            columnName: description
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: lesson
+            columnName: content
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: lesson
+            columnName: description
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: homework
+            columnName: description
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: answer
+            columnName: text
+            newDataType: varchar(5000)
+
+        - modifyDataType:
+            tableName: answer
+            columnName: comment
+            newDataType: varchar(5000)
