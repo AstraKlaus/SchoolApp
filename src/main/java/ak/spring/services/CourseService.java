@@ -97,7 +97,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
         existingCourse.setName(updatedCourse.getName());
         existingCourse.setDescription(updatedCourse.getDescription());
-        existingCourse.setAccess(updatedCourse.isAccess());
+        existingCourse.setAccess(updatedCourse.getAccess());
 
         courseRepository.save(existingCourse);
         return courseDTOMapper.apply(existingCourse);

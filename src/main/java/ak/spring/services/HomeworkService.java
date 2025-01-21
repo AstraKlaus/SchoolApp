@@ -88,6 +88,9 @@ public class HomeworkService {
         existingHomework.setDescription(updatedHomework.getDescription());
         existingHomework.setAttachments(updatedHomework.getAttachments());
         existingHomework.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        existingHomework.setAccess(updatedHomework.getAccess());
+        existingHomework.setCourse(courseRepository.findById(updatedHomework.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", updatedHomework.getCourseId())));
 
         homeworkRepository.save(existingHomework);
         return homeworkDTOMapper.apply(existingHomework);

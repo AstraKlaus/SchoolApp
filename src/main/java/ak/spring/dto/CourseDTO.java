@@ -25,6 +25,6 @@ public class CourseDTO {
     @Size(max = 500, message = "Описание курса не должно превышать 500 символов")
     private String description;
 
-    private boolean access;
+    private Boolean access;
 }
 
