@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/changeset/003-attachment.yaml
   - include:
       file: db/changelog/changeset/004-size.yaml
+  - include:
+      file: db/changelog/changeset/005-admin.yaml
