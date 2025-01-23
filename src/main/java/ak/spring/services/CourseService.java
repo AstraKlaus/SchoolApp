@@ -10,6 +10,7 @@ import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
+import ak.spring.models.Curriculum;
 import ak.spring.repositories.CourseRepository;
 import ak.spring.repositories.CurriculumRepository;
 import ak.spring.repositories.HomeworkRepository;
@@ -68,17 +69,16 @@ public class CourseService {
                 .toList();
     }
 
-    public CourseDTO uploadCourse(CourseDTO course){
-        Course newCourse = Course.builder()
-                .description(course.getDescription())
-                .name(course.getName())
-                .access(course.getAccess())
-                .curriculum(curriculumRepository.findById(course.getCurriculumId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", course.getCurriculumId())))
+    public CourseDTO uploadCourse(CourseDTO courseDTO) {
+        Course course = Course.builder()
+                .name(courseDTO.getName())
+                .description(courseDTO.getDescription())
+                .access(courseDTO.getAccess())
+                .curriculum(curriculumRepository.findById(courseDTO.getCurriculumId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", courseDTO.getCurriculumId())))
                 .build();
 
-        courseRepository.save(newCourse);
-        return courseDTOMapper.apply(newCourse);
+        return courseDTOMapper.apply(courseRepository.save(course));
     }
 
     public CourseDTO findById(int id){
@@ -161,12 +161,14 @@ public class CourseService {
     }
 
     public void deleteCurriculumFromCourse(int courseId, int curriculumId) {
-        courseRepository.findById(courseId)
-                .map(course -> {
-                    course.setCurriculum(null);
-                    courseRepository.save(course);
-                    return course;
-                })
+        Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
+
+        if (course.getCurriculum().getId() != curriculumId) {
+            throw new ResourceNotFoundException("Curriculum", "id", curriculumId);
+        }
+
+        course.setCurriculum(null);
+        courseRepository.save(course);
     }
 }

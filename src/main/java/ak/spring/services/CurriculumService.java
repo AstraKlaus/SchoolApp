@@ -7,6 +7,7 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
+import ak.spring.models.Classroom;
 import ak.spring.models.Curriculum;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
@@ -110,13 +111,13 @@ public class CurriculumService {
     }
 
     public void deleteClassroomFromCurriculum(int curriculumId, int classroomId) {
-        curriculumRepository.findById(curriculumId)
-                .map(curriculum -> {
-                    curriculum.getClassrooms().remove(classroomRepository.findById(classroomId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId)));
-                    curriculumRepository.save(curriculum);
-                    return curriculumDTOMapper.apply(curriculum);
-                })
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
+
+        Classroom classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
+
+        curriculum.getClassrooms().remove(classroom);
+        curriculumRepository.save(curriculum);
     }
 }

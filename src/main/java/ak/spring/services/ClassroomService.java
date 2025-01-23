@@ -7,12 +7,14 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.models.Classroom;
+import ak.spring.models.Curriculum;
 import ak.spring.models.Person;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
 import ak.spring.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -99,7 +101,7 @@ public class ClassroomService {
         return classroomRepository.findById(id)
                 .map(Classroom::getCurriculum)
                 .map(curriculumDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
     }
 
 
@@ -112,11 +114,13 @@ public class ClassroomService {
         Person student = personRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
 
-        student.setClassroom(classroom);
+        // Проверка на максимальное количество студентов
+        if (classroom.getPersons().size() >= 50) {
+            throw new DataIntegrityViolationException("Максимальное количество студентов в классе — 50");
+        }
 
-        List<Person> persons = classroom.getPersons();
-        persons.add(student);
-        classroom.setPersons(persons);
+        student.setClassroom(classroom);
+        classroom.getPersons().add(student);
 
         classroomRepository.save(classroom);
         personRepository.save(student);
@@ -142,14 +146,16 @@ public class ClassroomService {
     }
 
     public ClassroomDTO addClassroomToCurriculum(int classroomId, int curriculumId) {
-        return classroomRepository.findById(classroomId)
-                .map(classroom -> {
-                    classroom.setCurriculum(curriculumRepository.findById(curriculumId)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId)));
-                    classroomRepository.save(classroom);
-                    return classroomDTOMapper.apply(classroom);
-                })
+        Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
+
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
+
+        classroom.setCurriculum(curriculum);
+        classroomRepository.save(classroom);
+
+        return classroomDTOMapper.apply(classroom);
     }
 
     public void deleteClassroomFromCurriculum(int classroomId, int curriculumId) {

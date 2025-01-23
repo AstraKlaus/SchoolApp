@@ -39,6 +39,7 @@ public class Classroom {
 
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
     @OneToMany(mappedBy = "classroom", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<@Valid Person> persons = new ArrayList<>();
 }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -20,10 +21,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Table(name = "homework")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Homework {
 
     @Id
@@ -58,7 +59,8 @@ public class Homework {
 
     @OneToMany(mappedBy = "homework", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 300, message = "Максимальное количество ответов — 300")
-    private List<@Valid Answer> answers;
+    @Builder.Default
+    private List<@Valid Answer> answers = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;

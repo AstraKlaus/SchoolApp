@@ -36,10 +36,12 @@ public class Course {
 
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 50, message = "Максимальное количество уроков — 50")
+    @Builder.Default
     private List<@Valid Lesson> lessons = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество домашних заданий — 100")
+    @Builder.Default
     private List<@Valid Homework> homeworks = new ArrayList<>();
 
     @NotNull(message = "Учебный план обязателен")

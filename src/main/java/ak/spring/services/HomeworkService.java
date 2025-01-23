@@ -6,18 +6,22 @@ import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.AnswerDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
+import ak.spring.models.Course;
 import ak.spring.models.Homework;
 import ak.spring.repositories.*;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Validated
 @Transactional
 public class HomeworkService {
 
@@ -67,7 +71,7 @@ public class HomeworkService {
         homeworkRepository.delete(existingHomework);
     }
 
-    public HomeworkDTO saveHomework(HomeworkDTO homework) {
+    public HomeworkDTO saveHomework(@Valid HomeworkDTO homework) {
         Homework newHomework = Homework.builder()
                 .name(homework.getName())
                 .description(homework.getDescription())
@@ -114,19 +118,23 @@ public class HomeworkService {
 
     public CurriculumDTO getCurriculum(int id) {
         return homeworkRepository.findById(id)
-                .map(homework -> homework.getCourse().getCurriculum())
+                .map(homework -> {
+                    Course course = homework.getCourse();
+                    if (course == null) {
+                        throw new ResourceNotFoundException("Course", "homeworkId", id);
+                    }
+                    return course.getCurriculum();
+                })
                 .map(curriculumDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
     }
 
     public void deleteAnswer(int id, int answerId) {
-        homeworkRepository.findById(id)
-                .map(homework -> {
-                    homework.getAnswers()
-                            .removeIf(answer -> answer.getId() == answerId);
-                    return homeworkRepository.save(homework);
-                })
+        Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", id));
+
+        homework.getAnswers().removeIf(answer -> answer.getId() == answerId);
+        homeworkRepository.save(homework);
     }
 
     public HomeworkDTO addCourseToHomework(int id, int courseId) {

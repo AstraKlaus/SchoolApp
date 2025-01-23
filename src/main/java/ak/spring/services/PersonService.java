@@ -100,10 +100,15 @@ public class PersonService {
 
     public ClassroomDTO findClassroomForPerson(int personId) {
         return personRepository.findById(personId)
-                .map(Person::getClassroom)
-                .map(classroomDTOMapper)
+                .map(person -> {
+                    if (person.getClassroom() == null) {
+                        throw new ResourceNotFoundException("Classroom", "personId", personId);
+                    }
+                    return classroomDTOMapper.apply(person.getClassroom());
+                })
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
     }
+
 
     public void assignRoleToUser(int personId, Role role) {
         Person person = personRepository.findById(personId)

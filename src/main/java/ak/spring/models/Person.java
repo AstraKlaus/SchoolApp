@@ -61,6 +61,7 @@ public class Person implements UserDetails {
 
     @OneToMany(mappedBy = "student", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество ответов — 100")
+    @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne
@@ -73,6 +74,7 @@ public class Person implements UserDetails {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Token> tokens = new ArrayList<>();
 
     @Override
