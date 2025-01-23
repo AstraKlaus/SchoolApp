@@ -56,7 +56,7 @@ public class Homework {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homework", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 300, message = "Максимальное количество ответов — 300")
     private List<@Valid Answer> answers;
 

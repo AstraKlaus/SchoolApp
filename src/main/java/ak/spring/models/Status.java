@@ -14,7 +14,8 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "homework_status")
-public class Status {
+public class
+Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -38,7 +38,7 @@ public class Classroom {
     private Curriculum curriculum;
 
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classroom", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<@Valid Person> persons = new ArrayList<>();
 }
 

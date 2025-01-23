@@ -22,16 +22,16 @@ public class PersonDTO {
 
     @NotBlank(message = "Имя не может быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно содержать от 2 до 50 символов")
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Имя может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Имя может содержать только буквы, пробел и дефис")
     private String firstName;
 
     @NotBlank(message = "Фамилия не может быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна содержать от 2 до 50 символов")
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
     private String lastName;
 
     @Size(max = 50, message = "Отчество не должно превышать 50 символов")
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
     @NotNull(message = "Роль пользователя обязательна")

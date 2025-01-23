@@ -72,6 +72,7 @@ public class ClassroomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
         classroomRepository.delete(existingClassroom);
     }
+
     public ClassroomDTO uploadGroup(Classroom classroom){
         Classroom newClassroom = Classroom.builder()
                 .name(classroom.getName())
@@ -117,21 +118,10 @@ public class ClassroomService {
         persons.add(student);
         classroom.setPersons(persons);
 
-        // Логирование для проверки содержимого списка persons
-        System.out.println("Persons in classroom before save: " + classroom.getPersons());
-
         classroomRepository.save(classroom);
         personRepository.save(student);
 
-        // Логирование для проверки успешного сохранения
-        System.out.println("Classroom saved successfully");
-
-        ClassroomDTO classroomDTO = classroomDTOMapper.apply(classroom);
-
-        // Логирование для проверки содержимого classroomDTO
-        System.out.println("ClassroomDTO: " + classroomDTO);
-
-        return classroomDTO;
+        return classroomDTOMapper.apply(classroom);
     }
 
 

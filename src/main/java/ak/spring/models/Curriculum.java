@@ -41,11 +41,11 @@ public class Curriculum {
     @Column(name = "access", nullable = false)
     private Boolean access;
 
-    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "curriculum", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 50, message = "Максимальное количество курсов — 50")
     private List<@Valid Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "curriculum", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 30, message = "Максимальное количество классов — 30")
     private List<@Valid Classroom> classrooms = new ArrayList<>();
 }

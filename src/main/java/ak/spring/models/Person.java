@@ -37,18 +37,18 @@ public class Person implements UserDetails {
     @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
     @Column(name = "first_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Имя может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Имя может содержать только буквы, пробел и дефис")
     private String firstName;
 
     @NotBlank(message = "Фамилия не должна быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
     @Column(name = "last_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
     private String lastName;
 
     @Size(max = 50, message = "Отчество должно быть до 50 символов длиной")
     @Column(name = "patronymic", length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
     @Column(name = "password", nullable = false)
@@ -59,7 +59,7 @@ public class Person implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество ответов — 100")
     private List<Answer> answers = new ArrayList<>();
 
@@ -67,12 +67,12 @@ public class Person implements UserDetails {
     @JoinColumn(name = "settings_id", referencedColumnName = "id")
     private Settings settings;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "classroom_id", referencedColumnName = "id")
     private Classroom classroom;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Token> tokens = new ArrayList<>();
 
     @Override

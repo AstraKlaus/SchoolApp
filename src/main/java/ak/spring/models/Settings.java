@@ -40,7 +40,7 @@ public class Settings {
     @Column(name = "is_serif", nullable = false)
     private Boolean isSerif;
 
-    @OneToMany(mappedBy = "settings", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "settings", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество пользователей — 100")
     private List<Person> person;
 }
