@@ -1,10 +1,13 @@
 package ak.spring.repositories;
 
 import ak.spring.models.AttachableEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface AttachableRepository<T extends AttachableEntity> {
-    Optional<T> findById(int id);
-    T save(T entity);
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AttachableRepository<T extends AttachableEntity, ID>
+        extends JpaRepository<T, ID> {
+    Optional<T> findById(ID id);
 }

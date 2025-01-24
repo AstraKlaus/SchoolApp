@@ -107,6 +107,6 @@ public class LessonController {
                                             @PathVariable String fileName) {
         LessonDTO lesson = lessonService.findById(lessonId);
 
-        return minioService.getResourceResponseEntity(fileName, lesson.getAttachments(), minioService);
+        return minioService.getResourceResponseEntity(fileName, lesson.getAttachments());
     }
 }

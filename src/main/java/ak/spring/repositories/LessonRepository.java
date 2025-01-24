@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LessonRepository extends JpaRepository<Lesson, Integer>, AttachableRepository<Lesson> {
+public interface LessonRepository extends  AttachableRepository<Lesson, Integer> {
 
     Optional<List<Lesson>> findByNameContainingIgnoreCase(String name);
 

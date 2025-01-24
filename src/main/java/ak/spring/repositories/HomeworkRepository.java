@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface HomeworkRepository extends JpaRepository<Homework, Integer>, AttachableRepository<Homework> {
+public interface HomeworkRepository extends AttachableRepository<Homework, Integer> {
     Optional<List<Homework>> findByNameContainingIgnoreCase(String name);
 }

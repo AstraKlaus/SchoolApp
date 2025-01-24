@@ -105,7 +105,7 @@ public class AnswerController {
                                             @PathVariable String fileName) {
         AnswerDTO answer = answerService.findById(answerId);
 
-        return  minioService.getResourceResponseEntity(fileName, answer.getAttachments(), minioService);
+        return  minioService.getResourceResponseEntity(fileName, answer.getAttachments());
     }
 
 }

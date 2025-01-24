@@ -4,7 +4,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 public class ResourceNotFoundException extends RuntimeException {

@@ -39,10 +39,12 @@ public class MinioService {
         this.homeworkRepository = homeworkRepository;
     }
 
-    public <T extends AttachableEntity> String uploadFile(AttachableRepository<T> repository,
-                                                          int entityId,
-                                                          MultipartFile file,
-                                                          String notFoundMessage) {
+    public <T extends AttachableEntity> String uploadFile(
+            AttachableRepository<T, Integer> repository,
+            int entityId,
+            MultipartFile file,
+            String notFoundMessage
+    ) {
         T entity = repository.findById(entityId)
                 .orElseThrow(() -> new ResourceNotFoundException(notFoundMessage));
 
@@ -55,10 +57,12 @@ public class MinioService {
         return fileName;
     }
 
-    public <T extends AttachableEntity> void removeFile(AttachableRepository<T> repository,
-                                                        int entityId,
-                                                        String fileName,
-                                                        String notFoundMessage) {
+    public <T extends AttachableEntity> void removeFile(
+            AttachableRepository<T, Integer> repository,
+            int entityId,
+            String fileName,
+            String notFoundMessage
+    ) {
         T entity = repository.findById(entityId)
                 .orElseThrow(() -> new ResourceNotFoundException(notFoundMessage));
 

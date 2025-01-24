@@ -122,7 +122,7 @@ public class HomeworkController {
                                             @PathVariable String fileName) {
         HomeworkDTO homework = homeworkService.findById(homeworkId);
 
-        return minioService.getResourceResponseEntity(fileName, homework.getAttachments(), minioService);
+        return minioService.getResourceResponseEntity(fileName, homework.getAttachments());
     }
 }
 
