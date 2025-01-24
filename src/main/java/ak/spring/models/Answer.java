@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "answer")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer {
+public class Answer implements AttachableEntity {
 
     @Id
     @Column(name = "id")
@@ -67,5 +67,11 @@ public class Answer {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Override
+    public List<String> getAttachments() { return this.attachments; }
+
+    @Override
+    public void setAttachments(List<String> attachments) { this.attachments = attachments; }
 }
 

@@ -1,10 +1,9 @@
 package ak.spring.services;
 
 import ak.spring.exceptions.ResourceNotFoundException;
-import ak.spring.models.Answer;
-import ak.spring.models.Homework;
-import ak.spring.models.Lesson;
+import ak.spring.models.AttachableEntity;
 import ak.spring.repositories.AnswerRepository;
+import ak.spring.repositories.AttachableRepository;
 import ak.spring.repositories.HomeworkRepository;
 import ak.spring.repositories.LessonRepository;
 import io.minio.*;
@@ -14,21 +13,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class MinioService {
-
     private final MinioClient minioClient;
     private final String bucketName;
-
-    // Репозитории конкретных сущностей, в зависимости от того, с чем вы работаете.
     private final AnswerRepository answerRepository;
     private final LessonRepository lessonRepository;
     private final HomeworkRepository homeworkRepository;
@@ -45,14 +39,68 @@ public class MinioService {
         this.homeworkRepository = homeworkRepository;
     }
 
-    public ResponseEntity<Resource> getResourceResponseEntity(@PathVariable String fileName,
-                                                                     List<String> attachments,
-                                                                     MinioService minioService) {
+    public <T extends AttachableEntity> String uploadFile(AttachableRepository<T> repository,
+                                                          int entityId,
+                                                          MultipartFile file,
+                                                          String notFoundMessage) {
+        T entity = repository.findById(entityId)
+                .orElseThrow(() -> new ResourceNotFoundException(notFoundMessage));
+
+        String fileName = generateFileName(file.getOriginalFilename());
+        uploadToMinIO(file, fileName);
+
+        entity.getAttachments().add(fileName);
+        repository.save(entity);
+
+        return fileName;
+    }
+
+    public <T extends AttachableEntity> void removeFile(AttachableRepository<T> repository,
+                                                        int entityId,
+                                                        String fileName,
+                                                        String notFoundMessage) {
+        T entity = repository.findById(entityId)
+                .orElseThrow(() -> new ResourceNotFoundException(notFoundMessage));
+
+        if (!entity.getAttachments().contains(fileName)) {
+            throw new ResourceNotFoundException("File", "name", fileName);
+        }
+
+        removeFromMinIO(fileName);
+        entity.getAttachments().remove(fileName);
+        repository.save(entity);
+    }
+
+    public String uploadFileToAnswer(int answerId, MultipartFile file) {
+        return uploadFile(answerRepository, answerId, file, "Answer not found");
+    }
+
+    public String uploadFileToLesson(int lessonId, MultipartFile file) {
+        return uploadFile(lessonRepository, lessonId, file, "Lesson not found");
+    }
+
+    public String uploadFileToHomework(int homeworkId, MultipartFile file) {
+        return uploadFile(homeworkRepository, homeworkId, file, "Homework not found");
+    }
+
+    public void removeFileFromAnswer(int answerId, String fileName) {
+        removeFile(answerRepository, answerId, fileName, "Answer not found");
+    }
+
+    public void removeFileFromLesson(int lessonId, String fileName) {
+        removeFile(lessonRepository, lessonId, fileName, "Lesson not found");
+    }
+
+    public void removeFileFromHomework(int homeworkId, String fileName) {
+        removeFile(homeworkRepository, homeworkId, fileName, "Homework not found");
+    }
+
+    public ResponseEntity<Resource> getResourceResponseEntity(String fileName, List<String> attachments) {
         if (!attachments.contains(fileName)) {
             throw new ResourceNotFoundException("File", "name", fileName);
         }
 
-        InputStream fileStream = minioService.getFile(fileName);
+        InputStream fileStream = getFile(fileName);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(getContentType(fileName)))
@@ -60,65 +108,7 @@ public class MinioService {
                 .body(new InputStreamResource(fileStream));
     }
 
-    /**
-     * Пример загрузки файла для конкретного ответа (Answer).
-     */
-    public String uploadFileToAnswer(int answerId, MultipartFile file) {
-        Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new RuntimeException("Answer not found"));
 
-        String fileName = generateFileName(file.getOriginalFilename());
-        uploadToMinIO(file, fileName);
-
-        // Обновляем список attachments
-        List<String> attachments = answer.getAttachments();
-        attachments.add(fileName);
-        answer.setAttachments(attachments);
-        answerRepository.save(answer);
-
-        return fileName;
-    }
-
-    /**
-     * Пример загрузки файла для урока (Lesson).
-     */
-    public String uploadFileToLesson(int lessonId, MultipartFile file) {
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Lesson not found"));
-
-        String fileName = generateFileName(file.getOriginalFilename());
-        uploadToMinIO(file, fileName);
-
-        List<String> attachments = lesson.getAttachments();
-        attachments.add(fileName);
-        lesson.setAttachments(attachments);
-        lessonRepository.save(lesson);
-
-        return fileName;
-    }
-
-    /**
-     * Пример загрузки файла для домашнего задания (Homework).
-     */
-    public String  uploadFileToHomework(int homeworkId, MultipartFile file) {
-        Homework homework = homeworkRepository.findById(homeworkId)
-                .orElseThrow(() -> new RuntimeException("Homework not found"));
-
-        String fileName = generateFileName(file.getOriginalFilename());
-        uploadToMinIO(file, fileName);
-
-        List<String> attachments = homework.getAttachments();
-        attachments.add(fileName);
-        homework.setAttachments(attachments);
-        homeworkRepository.save(homework);
-
-        return fileName;
-    }
-
-    /**
-     * Получение файла из MinIO по имени.
-     * Можно возвращать InputStream, чтобы далее переслать пользователю.
-     */
     public InputStream getFile(String fileName) {
         try {
             return minioClient.getObject(
@@ -147,45 +137,6 @@ public class MinioService {
     }
 
 
-    /**
-     * Удаление файла из MinIO и из списка вложений.
-     */
-    public void removeFileFromAnswer(int answerId, String fileName) {
-        Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new RuntimeException("Answer not found"));
-
-        removeFromMinIO(fileName);
-
-        List<String> attachments = answer.getAttachments();
-        attachments.remove(fileName);
-        answer.setAttachments(attachments);
-        answerRepository.save(answer);
-    }
-
-    public void removeFileFromHomework(int homeworkId, String fileName) {
-        Homework homework = homeworkRepository.findById(homeworkId)
-                .orElseThrow(() -> new RuntimeException("Answer not found"));
-
-        removeFromMinIO(fileName);
-
-        List<String> attachments = homework.getAttachments();
-        attachments.remove(fileName);
-        homework.setAttachments(attachments);
-        homeworkRepository.save(homework);
-    }
-
-    public void removeFileFromLesson(int lessonId, String fileName) {
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Answer not found"));
-
-        removeFromMinIO(fileName);
-
-        List<String> attachments = lesson.getAttachments();
-        attachments.remove(fileName);
-        lesson.setAttachments(attachments);
-        lessonRepository.save(lesson);
-    }
-
     // Генерация уникального имени файла
     private String generateFileName(String originalName) {
         String extension = "";
@@ -211,7 +162,6 @@ public class MinioService {
         }
     }
 
-    // Метод удаления из MinIO
     private void removeFromMinIO(String fileName) {
         try {
             minioClient.removeObject(

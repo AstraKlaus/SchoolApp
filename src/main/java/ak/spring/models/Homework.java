@@ -25,7 +25,7 @@ import java.util.List;
 @Table(name = "homework")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Homework {
+public class Homework implements AttachableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,6 +67,12 @@ public class Homework {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Override
+    public List<String> getAttachments() { return this.attachments; }
+
+    @Override
+    public void setAttachments(List<String> attachments) { this.attachments = attachments; }
 }
 
 

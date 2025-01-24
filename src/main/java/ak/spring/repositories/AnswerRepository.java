@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<Answer, Integer> {
+public interface AnswerRepository extends JpaRepository<Answer, Integer>, AttachableRepository<Answer> {
 }
