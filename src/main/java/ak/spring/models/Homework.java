@@ -57,7 +57,7 @@ public class Homework implements AttachableEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @OneToMany(mappedBy = "homework", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 300, message = "Максимальное количество ответов — 300")
     @Builder.Default
     private List<@Valid Answer> answers = new ArrayList<>();
