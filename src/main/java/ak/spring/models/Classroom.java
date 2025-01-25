@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table(name = "classroom")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,10 +34,12 @@ public class Classroom {
     @Column(name = "name", nullable = false, length = 100, unique = true)
     private String name;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
 
+    @ToString.Exclude
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
     @OneToMany(mappedBy = "classroom", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

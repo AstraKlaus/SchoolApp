@@ -51,6 +51,7 @@ public class Person implements UserDetails {
     @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
+    @ToString.Exclude
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -59,6 +60,7 @@ public class Person implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "student", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество ответов — 100")
     @Builder.Default
@@ -68,10 +70,12 @@ public class Person implements UserDetails {
     @JoinColumn(name = "settings_id", referencedColumnName = "id")
     private Settings settings;
 
+    @ToString.Exclude
     @ManyToOne()
     @JoinColumn(name = "classroom_id", referencedColumnName = "id")
     private Classroom classroom;
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

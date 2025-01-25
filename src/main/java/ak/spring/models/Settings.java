@@ -40,6 +40,7 @@ public class Settings {
     @Column(name = "is_serif", nullable = false)
     private Boolean isSerif;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "settings", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество пользователей — 100")
     private List<Person> person;

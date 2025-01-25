@@ -22,6 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "homework")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,11 +53,13 @@ public class Homework implements AttachableEntity {
     @Column(name = "access", nullable = false)
     private Boolean access;
 
+    @ToString.Exclude
     @NotNull(message = "Курс обязателен")
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 300, message = "Максимальное количество ответов — 300")
     @Builder.Default

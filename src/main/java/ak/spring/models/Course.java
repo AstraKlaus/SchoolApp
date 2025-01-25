@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "course")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,16 +35,19 @@ public class Course {
     @Column(name = "access", nullable = false)
     private Boolean access;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 50, message = "Максимальное количество уроков — 50")
     @Builder.Default
     private List<@Valid Lesson> lessons = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество домашних заданий — 100")
     @Builder.Default
     private List<@Valid Homework> homeworks = new ArrayList<>();
 
+    @ToString.Exclude
     @NotNull(message = "Учебный план обязателен")
     @ManyToOne
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)

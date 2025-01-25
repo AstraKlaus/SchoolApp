@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "curriculum")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,11 +42,13 @@ public class Curriculum {
     @Column(name = "access", nullable = false)
     private Boolean access;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "curriculum", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 50, message = "Максимальное количество курсов — 50")
     @Builder.Default
     private List<@Valid Course> courses = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "curriculum", orphanRemoval = true, fetch = FetchType.LAZY)
     @Size(max = 30, message = "Максимальное количество классов — 30")
     @Builder.Default

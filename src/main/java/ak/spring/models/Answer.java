@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "answer")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,11 +48,13 @@ public class Answer implements AttachableEntity {
                     String
             > attachments;
 
+    @ToString.Exclude
     @NotNull(message = "Домашнее задание обязательно")
     @ManyToOne
     @JoinColumn(name = "homework_id", nullable = false)
     private Homework homework;
 
+    @ToString.Exclude
     @NotNull(message = "Студент обязателен")
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)

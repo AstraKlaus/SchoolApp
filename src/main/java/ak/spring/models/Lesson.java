@@ -20,6 +20,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "lesson")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,6 +55,7 @@ public class Lesson implements AttachableEntity {
     @Column(name = "access", nullable = false)
     private Boolean access;
 
+    @ToString.Exclude
     @NotNull(message = "Курс обязателен")
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
