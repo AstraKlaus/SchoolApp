@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -99,16 +100,18 @@ public class MinioService {
         removeFile(homeworkRepository, homeworkId, fileName, "Homework not found");
     }
 
-    public ResponseEntity<Resource> getResourceResponseEntity(String fileName, List<String> attachments) {
-        if (!attachments.contains(fileName)) {
-            throw new ResourceNotFoundException("File", "name", fileName);
+    public ResponseEntity<Resource> getResourceResponseEntity(String storedFileName, List<String> attachments) {
+        if (!attachments.contains(storedFileName)) {
+            throw new ResourceNotFoundException("Файл не найден");
         }
 
-        InputStream fileStream = getFile(fileName);
+        String originalFileName = getOriginalFileName(storedFileName);
+        InputStream fileStream = getFile(storedFileName);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(getContentType(fileName)))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.parseMediaType(getContentType(storedFileName)))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + originalFileName + "\"") // Фикс здесь
                 .body(new InputStreamResource(fileStream));
     }
 
@@ -150,19 +153,21 @@ public class MinioService {
         return UUID.randomUUID().toString() + extension;
     }
 
-    // Метод, непосредственно загружающий файл в MinIO
     private void uploadToMinIO(MultipartFile file, String fileName) {
         try (InputStream is = file.getInputStream()) {
+            String originalName = file.getOriginalFilename();
+
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
                             .object(fileName)
                             .stream(is, file.getSize(), -1)
                             .contentType(file.getContentType())
+                            .userMetadata(Map.of("original-name", originalName))
                             .build()
             );
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при загрузке файла в MinIO", e);
+            throw new RuntimeException("Ошибка загрузки в MinIO", e);
         }
     }
 
@@ -176,6 +181,20 @@ public class MinioService {
             );
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при удалении файла из MinIO", e);
+        }
+    }
+
+    public String getOriginalFileName(String storedName) {
+        try {
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(storedName)
+                            .build()
+            );
+            return stat.userMetadata().get("original-name");
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка получения метаданных", e);
         }
     }
 }

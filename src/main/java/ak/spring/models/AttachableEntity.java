@@ -1,5 +1,6 @@
 package ak.spring.models;
 
+
 import java.util.List;
 
 public interface AttachableEntity {

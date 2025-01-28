@@ -45,9 +45,7 @@ public class Homework implements AttachableEntity {
     @Size(max = 10, message = "Максимальное количество вложений — 10")
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
-    private List<@Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
-                    message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
-                    String> attachments;
+    private List<String> attachments;
 
     @NotNull(message = "Поле 'доступ' не может быть пустым")
     @Column(name = "access", nullable = false)

@@ -43,9 +43,7 @@ public class Lesson implements AttachableEntity {
     @Size(max = 10, message = "Максимальное количество вложений — 10")
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
-    private List<@Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{1,9}$",
-                    message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
-                    String> attachments;
+    private List<String> attachments;
 
     @Size(max = 5000, message = "Описание урока не должно превышать 5000 символов")
     @Column(name = "description", columnDefinition = "TEXT")

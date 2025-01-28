@@ -42,11 +42,7 @@ public class Answer implements AttachableEntity {
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
     @Size(max = 10, message = "Максимальное количество вложений — 10")
-    private List<
-            @Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
-                    message = "Недопустимый формат имени файла. Допустимы латинские буквы, цифры, дефисы и расширения 3-4 символа")
-                    String
-            > attachments;
+    private List<String> attachments;
 
     @ToString.Exclude
     @NotNull(message = "Домашнее задание обязательно")
