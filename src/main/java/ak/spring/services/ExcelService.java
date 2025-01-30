@@ -2,6 +2,8 @@ package ak.spring.services;
 
 import ak.spring.auth.AuthenticationService;
 import ak.spring.auth.RegisterRequest;
+import ak.spring.dto.GroupProgressDTO;
+import ak.spring.dto.HomeworkReportDTO;
 import ak.spring.models.Role;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -132,6 +134,76 @@ public class ExcelService {
             workbook.write(fos); // Записываем изменения в файл
         }
         workbook.close(); // Закрываем workbook для освобождения ресурсов
+    }
+
+    public ByteArrayInputStream generateGroupProgressReportExcel(List<GroupProgressDTO> reportData) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Успеваемость группы");
+
+        // Заголовки
+        String[] headers = {"Группа", "Фамилия", "Имя", "Отчество", "Всего заданий", "Выполнено", "На проверке", "Не выполнено", "% выполнения"};
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headerRow.createCell(i).setCellValue(headers[i]);
+        }
+
+        // Данные
+        int rowIdx = 1;
+        for (GroupProgressDTO data : reportData) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(data.getClassroomName());
+            row.createCell(1).setCellValue(data.getLastName());
+            row.createCell(2).setCellValue(data.getFirstName());
+            row.createCell(3).setCellValue(data.getPatronymic());
+            row.createCell(4).setCellValue(data.getTotalHomeworks());
+            row.createCell(5).setCellValue(data.getCompleted());
+            row.createCell(6).setCellValue(data.getInProgress());
+            row.createCell(7).setCellValue(data.getNotCompleted());
+            row.createCell(8).setCellValue(data.getCompletionRate());
+        }
+
+        // Авто-размер колонок
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    public ByteArrayInputStream generateHomeworkReportExcel(List<HomeworkReportDTO> reportData) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Отчет по заданию");
+
+        // Заголовки
+        String[] headers = {"Задание", "Фамилия", "Имя", "Отчество", "Статус", "Комментарий", "Дата сдачи"};
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headerRow.createCell(i).setCellValue(headers[i]);
+        }
+
+        // Данные
+        int rowIdx = 1;
+        for (HomeworkReportDTO data : reportData) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(data.getHomeworkName());
+            row.createCell(1).setCellValue(data.getLastName());
+            row.createCell(2).setCellValue(data.getFirstName());
+            row.createCell(3).setCellValue(data.getPatronymic());
+            row.createCell(4).setCellValue(data.getStatus());
+            row.createCell(5).setCellValue(data.getComment());
+            row.createCell(6).setCellValue(data.getSubmittedAt().toString());
+        }
+
+        // Авто-размер колонок
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        return new ByteArrayInputStream(out.toByteArray());
     }
 }
 

@@ -143,8 +143,6 @@ public class MinioService {
         }
     }
 
-
-    // Генерация уникального имени файла
     private String generateFileName(String originalName) {
         String extension = "";
         if (originalName != null && originalName.contains(".")) {

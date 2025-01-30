@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,4 +21,5 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Query("SELECT COUNT(p) FROM Person p WHERE p.username LIKE :yearPattern")
     int getNextUserNumber(@Param("yearPattern") String yearPattern);
 
+    List<Person> findByClassroomId(int classroomId);
 }
