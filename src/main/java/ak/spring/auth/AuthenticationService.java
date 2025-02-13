@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -139,31 +140,25 @@ public class AuthenticationService {
     tokenRepository.saveAll(validUserTokens);
   }
 
-  public void refreshToken(
-          HttpServletRequest request,
-          HttpServletResponse response
-  ) throws IOException {
-    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-    final String refreshToken;
-    final String userEmail;
-    if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-      return;
-    }
-    refreshToken = authHeader.substring(7);
-    userEmail = jwtService.extractUsername(refreshToken);
-    if (userEmail != null) {
-      var user = this.repository.findByUsername(userEmail)
-              .orElseThrow();
-      if (jwtService.isTokenValid(refreshToken, user)) {
-        var accessToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
-        var authResponse = AuthenticationResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-        new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-      }
-    }
+  public AuthenticationResponse refreshToken(HttpServletRequest request) {
+    String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+    String refreshToken = Optional.ofNullable(authHeader)
+            .filter(header -> header.startsWith("Bearer "))
+            .map(header -> header.substring(7))
+            .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+
+    Person user = repository.findByUsername(jwtService.extractUsername(refreshToken))
+            .filter(u -> jwtService.isTokenValid(refreshToken, u))
+            .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+
+    String accessToken = jwtService.generateToken(user);
+    revokeAllUserTokens(user);
+    saveUserToken(user, accessToken);
+
+    return AuthenticationResponse.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
   }
 }

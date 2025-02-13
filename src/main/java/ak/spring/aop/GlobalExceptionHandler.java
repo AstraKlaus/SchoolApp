@@ -83,6 +83,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArguments(IllegalArgumentException ex) {
+        HttpStatus status = determineHttpStatus(ex);
+        ErrorResponse response = new ErrorResponse(
+                status.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        log.warn("Validation error: {}", ex.getMessage());
+        return new ResponseEntity<>(response, status);
+    }
+
+    private HttpStatus determineHttpStatus(IllegalArgumentException ex) {
+        return switch (ex.getMessage()) {
+            case "Invalid refresh token" -> HttpStatus.BAD_REQUEST;
+            case "Invalid token" -> HttpStatus.UNAUTHORIZED;
+            default -> HttpStatus.BAD_REQUEST;
+        };
+    }
+
+
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex,
