@@ -3,7 +3,8 @@ package ak.spring.aop;
 import ak.spring.exceptions.DuplicateResourceException;
 import ak.spring.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -103,6 +104,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         };
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Неверные учетные данные",
+                LocalDateTime.now()
+        );
+        log.warn("Authentication failed: {}", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Ошибка аутентификации",
+                LocalDateTime.now()
+        );
+        log.warn("Authentication error: {}", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(

@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -49,6 +50,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                        //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        //.ignoringRequestMatchers("/v1/api/auth/login",
+                        //        "/v1/api/auth/registration",
+                        //        "/v1/api/auth/refresh"))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("v1/api/people/**", "v1/api/people/**").authenticated()
                                 //.requestMatchers(ADMIN_LIST_URL).hasAnyRole("ADMIN")
