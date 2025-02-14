@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +40,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, error.getDefaultMessage());
         });
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Ошибка валидации данных",
-                LocalDateTime.now(),
-                errors
-        );
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "Ошибка валидации данных");
+        response.put("details", errors);
+
         log.warn("Ошибки валидации: {}", errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -58,11 +55,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.METHOD_NOT_ALLOWED.value(),
-                "Неподдерживаемый HTTP-метод: " + ex.getMethod(),
-                LocalDateTime.now()
-        );
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Неподдерживаемый HTTP-метод: " + ex.getMethod());
         return new ResponseEntity<>(response, status);
     }
 
@@ -73,11 +67,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
-                "Неподдерживаемый формат данных: " + ex.getContentType(),
-                LocalDateTime.now()
-        );
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Неподдерживаемый формат данных: " + ex.getContentType());
         return new ResponseEntity<>(response, status);
     }
 
@@ -88,11 +79,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Отсутствует обязательный параметр: " + ex.getParameterName(),
-                LocalDateTime.now()
-        );
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Отсутствует обязательный параметр: " + ex.getParameterName());
         return new ResponseEntity<>(response, status);
     }
 
@@ -103,50 +91,38 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Некорректный формат запроса",
-                LocalDateTime.now()
-        );
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Некорректный формат запроса");
         log.warn("Ошибка чтения запроса: {}", ex.getMessage());
         return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
         log.warn("Ресурс не найден: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleDuplicateResource(DuplicateResourceException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
         log.warn("Конфликт данных: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.FORBIDDEN.value(),
-                "Доступ запрещен",
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleAccessDenied(AccessDeniedException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Доступ запрещен");
         log.warn("Отказ в доступе: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<Map<String, Object>> handleConstraintViolation(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations().forEach(violation ->
                 errors.put(
@@ -155,60 +131,45 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 )
         );
 
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Ошибка валидации",
-                LocalDateTime.now(),
-                errors
-        );
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "Ошибка валидации");
+        response.put("details", errors);
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        String message = extractErrorMessage(ex);
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                message,
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Нарушение целостности данных: " + extractErrorMessage(ex));
         log.warn("Нарушение целостности данных: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
-    public ResponseEntity<ErrorResponse> handleAuthExceptions(RuntimeException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.UNAUTHORIZED.value(),
-                "Ошибка аутентификации",
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleAuthExceptions(RuntimeException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Ошибка аутентификации");
         log.warn("Сбой аутентификации: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArguments(IllegalArgumentException ex) {
+    public ResponseEntity<Map<String, String>> handleIllegalArguments(IllegalArgumentException ex) {
         HttpStatus status = ex.getMessage().contains("token")
                 ? HttpStatus.UNAUTHORIZED
                 : HttpStatus.BAD_REQUEST;
 
-        ErrorResponse response = new ErrorResponse(
-                status.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
         log.warn("Некорректные данные: {}", ex.getMessage());
         return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Внутренняя ошибка сервера",
-                LocalDateTime.now()
-        );
+    public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Внутренняя ошибка сервера");
         log.error("Критическая ошибка: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -219,16 +180,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (message.contains("unique")) return "Дублирование уникальных данных";
         if (message.contains("foreign key")) return "Нарушение ссылочной целостности";
         return "Ошибка целостности данных";
-    }
-
-    public record ErrorResponse(
-            int status,
-            String message,
-            LocalDateTime timestamp,
-            Map<String, String> details
-    ) {
-        public ErrorResponse(int status, String message, LocalDateTime timestamp) {
-            this(status, message, timestamp, null);
-        }
     }
 }
