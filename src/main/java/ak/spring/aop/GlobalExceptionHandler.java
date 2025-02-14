@@ -149,7 +149,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
     public ResponseEntity<Map<String, String>> handleAuthExceptions(RuntimeException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", "Ошибка аутентификации");
+        response.put("error", "Неверный логин или пароль. Проверьте введенные данные.");
         log.warn("Сбой аутентификации: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
