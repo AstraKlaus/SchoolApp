@@ -82,6 +82,7 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:8084"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
 

@@ -111,7 +111,7 @@ public class MinioService {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(getContentType(storedFileName)))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + originalFileName + "\"") // Фикс здесь
+                        "attachment; filename=\"" + originalFileName + "\"")
                 .body(new InputStreamResource(fileStream));
     }
 
