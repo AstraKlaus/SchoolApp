@@ -28,10 +28,7 @@ public class HomeworkDTO {
     private String description;
 
     @Size(max = 10, message = "Максимальное количество вложений — 10")
-    private List<
-            @Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$",
-                    message = "Недопустимый формат имени файла") String>
-            attachments;
+    private List<String> attachments;
 
     @Positive(message = "Идентификатор домашнего задания должен быть положительным числом")
     @NotNull(message = "Идентификатор домашнего задания обязателен для заполнения")

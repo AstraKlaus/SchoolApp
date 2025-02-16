@@ -27,7 +27,7 @@ public class AnswerDTO {
     private String comment;
 
     @Size(max = 5, message = "Максимальное количество вложений — 5")
-    private List<@Pattern(regexp = "^[\\w,\\s-]+\\.[A-Za-z]{3,4}$", message = "Недопустимый формат имени файла") String> attachments;
+    private List<String> attachments;
 
     @Positive(message = "Идентификатор студента должен быть положительным числом")
     @NotNull(message = "Идентификатор студента обязателен для заполнения")
