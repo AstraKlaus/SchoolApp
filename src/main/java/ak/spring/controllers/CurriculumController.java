@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +84,18 @@ public class CurriculumController {
         curriculumService.deleteCurriculum(id);
     }
 
+    @GetMapping("/paginated")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить список учебных планов с пагинацией")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Список учебных планов получен"),
+            @ApiResponse(responseCode = "404", description = "Список учебных планов не получен")
+    })
+    public Page<CurriculumDTO> getAllCurriculaWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
+        return curriculumService.findWithPagination(page, size);
+    }
+
     @GetMapping("/{id}/courses")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить курсы учебного плана")
@@ -104,6 +117,23 @@ public class CurriculumController {
     public List<ClassroomDTO> getClassroomById(@PathVariable int curriculumId) {
         return curriculumService.getClassroomById(curriculumId);
     }
+
+    @GetMapping("/{curriculumId}/classrooms/paginated")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить список классов учебного плана с пагинацией")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Классы найдены"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены")
+    })
+    public Page<ClassroomDTO> getPaginatedClassrooms(
+            @PathVariable int curriculumId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return curriculumService.getPaginatedClassrooms(curriculumId, page, size);
+    }
+
+
 
     @PutMapping("/{curriculumId}/classrooms/{classroomId}")
     @ResponseStatus(HttpStatus.OK)

@@ -13,8 +13,12 @@ import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -120,4 +124,31 @@ public class CurriculumService {
         curriculum.getClassrooms().remove(classroom);
         curriculumRepository.save(curriculum);
     }
+
+    public Page<CurriculumDTO> findWithPagination(int page, int size) {
+        Page<Curriculum> curricula = curriculumRepository.findAll(PageRequest.of(page, size));
+        return curricula.map(curriculumDTOMapper);
+    }
+
+    public Page<ClassroomDTO> getPaginatedClassrooms(int curriculumId, int page, int size) {
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
+
+        List<Classroom> classrooms = curriculum.getClassrooms();
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min(start + pageRequest.getPageSize(), classrooms.size());
+
+        if(start > classrooms.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageRequest, classrooms.size());
+        }
+
+        return new PageImpl<>(
+                classrooms.subList(start, end),
+                pageRequest,
+                classrooms.size()
+        ).map(classroomDTOMapper);
+    }
+
 }

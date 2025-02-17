@@ -17,6 +17,8 @@ import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -165,5 +167,10 @@ public class PersonService {
                     return personDTOMapper.apply(person);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
+    }
+
+    public Page<PersonDTO> findWithPagination(int page, int size) {
+        Page<Person> people = personRepository.findAll(PageRequest.of(page, size));
+        return people.map(personDTOMapper);
     }
 }

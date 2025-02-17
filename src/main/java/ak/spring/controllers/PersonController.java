@@ -8,6 +8,7 @@ import ak.spring.models.Person;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,6 +106,17 @@ public class PersonController {
     public PersonDTO update(@PathVariable int id, @Valid @RequestBody PersonDTO updatedPerson) {
         return personService.update(id, updatedPerson);
     }
+
+    @GetMapping("/paginated")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить список пользователей с пагинацией")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Список пользователей получен"),
+            @ApiResponse(responseCode = "404", description = "Список пользователей не получен")
+    })
+    public Page<PersonDTO> getAllWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size)
+    { return personService.findWithPagination(page, size); }
 
     @GetMapping("/{personId}/classroom")
     @ResponseStatus(HttpStatus.OK)
