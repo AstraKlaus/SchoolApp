@@ -41,7 +41,7 @@ public class Settings {
     private Boolean isSerif;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "settings", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "settings", fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество пользователей — 100")
     private List<Person> person;
 }

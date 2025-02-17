@@ -114,8 +114,7 @@ public class PersonController {
             @ApiResponse(responseCode = "200", description = "Список пользователей получен"),
             @ApiResponse(responseCode = "404", description = "Список пользователей не получен")
     })
-    public Page<PersonDTO> getAllWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "10") int size)
+    public Page<PersonDTO> getAllWithPagination(@RequestParam() int page, @RequestParam() int size)
     { return personService.findWithPagination(page, size); }
 
     @GetMapping("/{personId}/classroom")

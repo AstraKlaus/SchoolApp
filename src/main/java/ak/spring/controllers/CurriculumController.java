@@ -91,8 +91,7 @@ public class CurriculumController {
             @ApiResponse(responseCode = "200", description = "Список учебных планов получен"),
             @ApiResponse(responseCode = "404", description = "Список учебных планов не получен")
     })
-    public Page<CurriculumDTO> getAllCurriculaWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "10") int size) {
+    public Page<CurriculumDTO> getAllCurriculaWithPagination(@RequestParam() int page, @RequestParam() int size) {
         return curriculumService.findWithPagination(page, size);
     }
 
@@ -127,8 +126,8 @@ public class CurriculumController {
     })
     public Page<ClassroomDTO> getPaginatedClassrooms(
             @PathVariable int curriculumId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam() int page,
+            @RequestParam() int size) {
 
         return curriculumService.getPaginatedClassrooms(curriculumId, page, size);
     }

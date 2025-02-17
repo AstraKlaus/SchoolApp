@@ -58,7 +58,7 @@ public class Homework implements AttachableEntity {
     private Course course;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Size(max = 300, message = "Максимальное количество ответов — 300")
     @Builder.Default
     private List<@Valid Answer> answers = new ArrayList<>();

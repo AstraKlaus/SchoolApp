@@ -36,13 +36,13 @@ public class Course {
     private Boolean access;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Size(max = 50, message = "Максимальное количество уроков — 50")
     @Builder.Default
     private List<@Valid Lesson> lessons = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Size(max = 100, message = "Максимальное количество домашних заданий — 100")
     @Builder.Default
     private List<@Valid Homework> homeworks = new ArrayList<>();
