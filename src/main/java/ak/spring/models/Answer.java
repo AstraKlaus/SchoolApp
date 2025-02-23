@@ -7,13 +7,7 @@ import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
-
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
@@ -39,9 +33,9 @@ public class Answer implements AttachableEntity {
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
+    @Size(max = 10, message = "Максимальное количество вложений — 10")
     @Convert(converter = StringListToJsonConverter.class)
     @Column(name = "attachments", columnDefinition = "TEXT")
-    @Size(max = 10, message = "Максимальное количество вложений — 10")
     private List<String> attachments;
 
     @ToString.Exclude

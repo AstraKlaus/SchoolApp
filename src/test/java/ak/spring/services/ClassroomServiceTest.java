@@ -19,9 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -213,29 +211,52 @@ class ClassroomServiceTest {
     }
 
     @Test
-    void getCurriculum_ClassroomHasCurriculum_ReturnsCurriculumDTO() {
+    void getCurricula_ClassroomHasCurricula_ReturnsListOfCurriculumDTOs() {
         int classroomId = 1;
-        Curriculum curriculum = Curriculum.builder()
+
+        // Создаём несколько учебных планов (Curriculum)
+        Curriculum curriculum1 = Curriculum.builder()
                 .id(1)
                 .name("Math Curriculum")
                 .build();
+
+        Curriculum curriculum2 = Curriculum.builder()
+                .id(2)
+                .name("Science Curriculum")
+                .build();
+
+        // Создаём класс (Classroom) с коллекцией curricula
         Classroom classroom = Classroom.builder()
                 .id(classroomId)
                 .name("Math")
-                .curriculum(curriculum)
+                .curricula(Arrays.asList(curriculum1, curriculum2))
                 .build();
-        CurriculumDTO dto = CurriculumDTO.builder()
+
+        // Ожидаемые DTO после маппинга
+        CurriculumDTO dto1 = CurriculumDTO.builder()
                 .id(1)
                 .name("Math Curriculum")
                 .build();
 
+        CurriculumDTO dto2 = CurriculumDTO.builder()
+                .id(2)
+                .name("Science Curriculum")
+                .build();
+
+        // Мокаем вызовы репозитория и маппера
         when(classroomRepository.findById(classroomId)).thenReturn(Optional.of(classroom));
-        when(curriculumDTOMapper.apply(curriculum)).thenReturn(dto);
+        when(curriculumDTOMapper.apply(curriculum1)).thenReturn(dto1);
+        when(curriculumDTOMapper.apply(curriculum2)).thenReturn(dto2);
 
-        CurriculumDTO result = classroomService.getCurriculum(classroomId);
+        // Вызов сервиса
+        List<CurriculumDTO> actualDTOs = classroomService.getCurricula(classroomId);
 
-        assertEquals(curriculum.getId(), result.getId());
+        // Проверяем, что возвращённый список содержит ожидаемые элементы
+        assertEquals(2, actualDTOs.size());
+        assertTrue(actualDTOs.contains(dto1));
+        assertTrue(actualDTOs.contains(dto2));
     }
+
 
     @Test
     void uploadGroup_ValidClassroom_ReturnsDTO() {
@@ -306,7 +327,7 @@ class ClassroomServiceTest {
                 .id(classroomId)
                 .name("Math Class")
                 .persons(new ArrayList<>()) // Инициализация списка
-                .curriculum(null) // Изначально учебный план не привязан
+                .curricula(new ArrayList<>()) // Изначально учебный план не привязан
                 .build();
 
         // Настройка моков репозиториев

@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,7 +51,7 @@ public class ClassroomService {
     }
 
     public Page<ClassroomDTO> findWithPagination(int offset, int pageSize) {
-        Page<Classroom> classrooms = classroomRepository.findAll(PageRequest.of(offset, pageSize));
+        Page<Classroom> classrooms = classroomRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()));
         return classrooms.map(classroomDTOMapper);
     }
 
@@ -78,7 +80,7 @@ public class ClassroomService {
     public ClassroomDTO uploadGroup(Classroom classroom){
         Classroom newClassroom = Classroom.builder()
                 .name(classroom.getName())
-                .curriculum(classroom.getCurriculum())
+                .curricula(classroom.getCurricula())
                 .persons(classroom.getPersons())
                 .build();
         classroomRepository.save(newClassroom);
@@ -97,11 +99,13 @@ public class ClassroomService {
         return findById(id).getPersons();
     }
 
-    public CurriculumDTO getCurriculum(int id) {
-        return classroomRepository.findById(id)
-                .map(Classroom::getCurriculum)
-                .map(curriculumDTOMapper)
-                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", id));
+    public List<CurriculumDTO> getCurricula(int classroomId) {
+        return classroomRepository.findById(classroomId)
+                .map(Classroom::getCurricula)
+                .map(curricula -> curricula.stream()
+                        .map(curriculumDTOMapper)
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
     }
 
 
@@ -152,19 +156,32 @@ public class ClassroomService {
         Curriculum curriculum = curriculumRepository.findById(curriculumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
 
-        classroom.setCurriculum(curriculum);
+        if (!classroom.getCurricula().contains(curriculum)) {
+            classroom.getCurricula().add(curriculum);
+        }
+        if (!curriculum.getClassrooms().contains(classroom)) {
+            curriculum.getClassrooms().add(classroom);
+        }
         classroomRepository.save(classroom);
 
         return classroomDTOMapper.apply(classroom);
     }
 
     public void deleteClassroomFromCurriculum(int classroomId, int curriculumId) {
-        classroomRepository.findById(classroomId)
-                .map(classroom -> {
-                    classroom.setCurriculum(null);
-                    classroomRepository.save(classroom);
-                    return classroom;
-                })
+        Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
+
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
+
+        boolean wasRemovedFromClassroom = classroom.getCurricula().removeIf(c -> c.getId() == curriculumId);
+
+        if (!wasRemovedFromClassroom) {
+            throw new ResourceNotFoundException("Связь между Classroom " + classroomId + " и Curriculum " + curriculumId + " не найдена");
+        }
+
+        curriculum.getClassrooms().removeIf(c -> c.getId() == classroomId);
+
+        curriculumRepository.save(curriculum);
     }
 }

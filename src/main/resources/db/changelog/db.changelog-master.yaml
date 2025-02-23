@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changeset/004-size.yaml
   - include:
       file: db/changelog/changeset/005-add-new-admin.yaml
+  - include:
+      file: db/changelog/changeset/006-new-settings-names.yaml

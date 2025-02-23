@@ -11,6 +11,7 @@ import ak.spring.models.Course;
 import ak.spring.models.Curriculum;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
+import ak.spring.repositories.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,9 @@ class CurriculumServiceTest {
 
     @Mock
     private ClassroomRepository classroomRepository;
+
+    @Mock
+    private PersonRepository personRepository;
 
     @Mock
     private CurriculumDTOMapper curriculumDTOMapper;
@@ -172,22 +177,29 @@ class CurriculumServiceTest {
         int curriculumId = 1;
         int classroomId = 1;
 
+        // Если метод внутри deleteClassroomFromCurriculum вызывает personRepository.findByClassroomId(),
+        // то необходимо задать для него поведение. Предположим, что он должен возвращать пустой список:
+        when(personRepository.findByClassroomId(classroomId))
+                .thenReturn(Collections.emptyList());
+
+        // Создаем объекты с нужными зависимостями
         Classroom classroom = Classroom.builder().id(classroomId).build();
         Curriculum curriculum = Curriculum.builder()
                 .id(curriculumId)
                 .classrooms(new ArrayList<>(List.of(classroom)))
                 .build();
 
-        // Настраиваем моки
-        when(curriculumRepository.findById(curriculumId)).thenReturn(Optional.of(curriculum));
-        when(classroomRepository.findById(classroomId)).thenReturn(Optional.of(classroom));
+        when(curriculumRepository.findById(curriculumId))
+                .thenReturn(Optional.of(curriculum));
+        when(classroomRepository.findById(classroomId))
+                .thenReturn(Optional.of(classroom));
 
         // Act
         curriculumService.deleteClassroomFromCurriculum(curriculumId, classroomId);
 
         // Assert
         assertTrue(curriculum.getClassrooms().isEmpty(), "Класс не был удален из учебного плана");
-        verify(curriculumRepository).save(curriculum); // Проверяем сохранение
+        verify(curriculumRepository).save(curriculum); // Проверяем, что учебный план сохранен с обновленной коллекцией
     }
 
     @Test

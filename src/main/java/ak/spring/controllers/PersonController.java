@@ -139,6 +139,14 @@ public class PersonController {
         return personService.updateClassroomForPerson(personId, classroomId);
     }
 
+    @GetMapping("/{personId}/answer")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить ответы пользователя")
+    @ApiResponse(responseCode = "200", description = "Ответы успешно получены")
+    public List<AnswerDTO> findAnswerForPerson(@PathVariable int personId) {
+        return personService.findAnswerForPerson(personId);
+    }
+
     @GetMapping("/{personId}/settings")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить настройки пользователя")
@@ -150,12 +158,16 @@ public class PersonController {
         return personService.findSettingsForPerson(personId);
     }
 
-    @GetMapping("/{personId}/answer")
+    @PutMapping("/{id}/settings")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Получить ответы пользователя")
-    @ApiResponse(responseCode = "200", description = "Ответы успешно получены")
-    public List<AnswerDTO> findAnswerForPerson(@PathVariable int personId) {
-        return personService.findAnswerForPerson(personId);
+    @Operation(summary = "Обновить настройки пользователя")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Настройки обновлены"),
+            @ApiResponse(responseCode = "404", description = "Пользователь или настройки не найдены"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные настроек")
+    })
+    public SettingsDTO updateSettingsForPerson(@PathVariable int id, @Valid @RequestBody SettingsDTO updatedSettings) {
+        return personService.updateSettingsForPerson(id, updatedSettings);
     }
 
     @DeleteMapping("/{personId}/settings")

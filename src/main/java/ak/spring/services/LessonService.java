@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -45,7 +46,7 @@ public class LessonService {
     }
 
     public Page<LessonDTO> findWithPagination(int offset, int pageSize) {
-        Page<Lesson> lessons = lessonRepository.findAll(PageRequest.of(offset, pageSize));
+        Page<Lesson> lessons = lessonRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()));
         return lessons.map(lessonDTOMapper);
     }
 

@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
@@ -50,7 +51,8 @@ public class AnswerService {
     }
 
     public Page<AnswerDTO> findWithPagination(int offset, int pageSize) {
-        return answerRepository.findAll(PageRequest.of(offset, pageSize)).map(answerDTOMapper);
+        return answerRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()))
+                .map(answerDTOMapper);
     }
 
     public AnswerDTO findById(int id) {

@@ -180,7 +180,7 @@ public class ClassroomController {
             @ApiResponse(responseCode = "200", description = "Учебный план найден"),
             @ApiResponse(responseCode = "404", description = "Данные не найдены")
     })
-    public CurriculumDTO getCurriculumById(@PathVariable int id) {
-        return classroomService.getCurriculum(id);
+    public List<CurriculumDTO> getCurriculumById(@PathVariable int id) {
+        return classroomService.getCurricula(id);
     }
 }

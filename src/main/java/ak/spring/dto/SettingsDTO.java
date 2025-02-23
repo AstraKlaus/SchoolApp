@@ -1,11 +1,12 @@
 package ak.spring.dto;
 
 import ak.spring.models.FontSize;
+import ak.spring.models.LetterSpacing;
+import ak.spring.models.LineHeight;
 import ak.spring.models.Theme;
 import lombok.*;
 
 import jakarta.validation.constraints.*;
-import lombok.*;
 
 @Getter
 @Setter
@@ -24,5 +25,14 @@ public class SettingsDTO {
 
     @NotNull(message = "Поле 'Использовать шрифт с засечками' не может быть пустым")
     private Boolean isSerif;
+
+    @NotNull(message = "Межстрочный интервал обязателен для выбора")
+    private LineHeight lineHeight;
+
+    @NotNull(message = "Межбуквенный интервал обязателен для выбора")
+    private LetterSpacing letterSpacing;
+
+    @NotNull(message = "Поле 'скрытие изображений' не может быть пустым")
+    private Boolean imgHiding;
 }
 

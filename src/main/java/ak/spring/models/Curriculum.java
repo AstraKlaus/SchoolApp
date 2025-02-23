@@ -6,13 +6,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -49,7 +44,10 @@ public class Curriculum {
     private List<@Valid Course> courses = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(name = "curriculum_classroom",
+            joinColumns = @JoinColumn(name = "curriculum_id"),
+            inverseJoinColumns = @JoinColumn(name = "classroom_id"))
     @Size(max = 30, message = "Максимальное количество классов — 30")
     @Builder.Default
     private List<@Valid Classroom> classrooms = new ArrayList<>();

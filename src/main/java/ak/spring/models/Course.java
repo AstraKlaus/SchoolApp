@@ -49,7 +49,7 @@ public class Course {
 
     @ToString.Exclude
     @NotNull(message = "Учебный план обязателен")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
     private Curriculum curriculum;
 }

@@ -1,0 +1,268 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: andrew
+      changes:
+        - createTable:
+            tableName: curriculum_classroom
+            columns:
+              - column:
+                  name: curriculum_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: classroom_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        # Временное сохранение данных из theme
+        - sql:
+            sql: "CREATE TABLE temp_theme AS SELECT * FROM theme;"
+
+        # Пересоздание таблицы theme с новыми ограничениями
+        - dropTable:
+            tableName: theme
+        - createTable:
+            tableName: theme
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('light', 'dark', 'blue')"
+
+        # Перенос данных с изменением значений
+        - sql:
+            sql: |
+              INSERT INTO theme (id, name)
+              SELECT id,
+                     CASE name
+                       WHEN 'Светлый' THEN 'light'
+                       WHEN 'Голубой' THEN 'blue'
+                       WHEN 'Темный' THEN 'dark'
+                       ELSE 'light' -- на случай некорректных данных
+                     END
+              FROM temp_theme;
+
+        - dropTable:
+            tableName: temp_theme
+
+        # Временное сохранение данных из font_size
+        - sql:
+            sql: "CREATE TABLE temp_font_size AS SELECT * FROM font_size;"
+
+        # Пересоздание таблицы font_size с новыми ограничениями
+        - dropTable:
+            tableName: font_size
+        - createTable:
+            tableName: font_size
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
+
+        # Перенос данных с изменением значений
+        - sql:
+            sql: |
+              INSERT INTO font_size (id, name)
+              SELECT id,
+                     CASE name
+                       WHEN 'Нормальный' THEN 'normal'
+                       WHEN 'Увеличенный' THEN 'large'
+                       WHEN 'Большой' THEN 'xlarge'
+                       ELSE 'normal' -- на случай некорректных данных
+                     END
+              FROM temp_font_size;
+
+        - dropTable:
+            tableName: temp_font_size
+
+        # Создание новых таблиц line_height и letter_spacing
+        - createTable:
+            tableName: line_height
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'normal'
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'large'
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'xlarge'
+
+        - createTable:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'normal'
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'large'
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'xlarge'
+
+        # Временное сохранение данных из settings
+        - sql:
+            sql: "CREATE TABLE temp_settings AS SELECT * FROM settings;"
+
+        # Пересоздание таблицы settings с новыми полями
+        - dropTable:
+            tableName: settings
+        - createTable:
+            tableName: settings
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: theme_id
+                  type: bigint
+              - column:
+                  name: font_size_id
+                  type: bigint
+              - column:
+                  name: line_height_id
+                  type: bigint
+              - column:
+                  name: letter_spacing_id
+                  type: bigint
+              - column:
+                  name: is_serif
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: img_hiding
+                  type: boolean
+                  defaultValueBoolean: false
+
+        # Перенос данных в settings с добавлением новых полей
+        - sql:
+            sql: |
+              INSERT INTO settings (id, theme_id, font_size_id, line_height_id, letter_spacing_id, is_serif, img_hiding)
+              SELECT id, theme_id, font_size_id, 1 AS line_height_id, 1 AS letter_spacing_id, is_serif, false AS img_hiding
+              FROM temp_settings;
+
+        - dropTable:
+            tableName: temp_settings
+
+        # Обновление внешних ключей для settings
+        - dropForeignKeyConstraint:
+            baseTableName: settings
+            constraintName: fk_settings_theme
+        - dropForeignKeyConstraint:
+            baseTableName: settings
+            constraintName: fk_settings_font_size
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: theme_id
+            referencedTableName: theme
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_theme
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: font_size_id
+            referencedTableName: font_size
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_font_size
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: line_height_id
+            referencedTableName: line_height
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_line_height
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: letter_spacing_id
+            referencedTableName: letter_spacing
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_letter_spacing
+
+        - addPrimaryKey:
+            tableName: curriculum_classroom
+            columnNames: curriculum_id, classroom_id
+            constraintName: pk_curriculum_classroom
+
+        - addForeignKeyConstraint:
+            baseTableName: curriculum_classroom
+            baseColumnNames: curriculum_id
+            referencedTableName: curriculum
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_curriculum_classroom_curriculum
+
+        - addForeignKeyConstraint:
+            baseTableName: curriculum_classroom
+            baseColumnNames: classroom_id
+            referencedTableName: classroom
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_curriculum_classroom_classroom

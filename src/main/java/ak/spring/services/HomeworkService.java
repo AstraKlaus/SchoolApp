@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -56,7 +57,7 @@ public class HomeworkService {
     }
 
     public Page<HomeworkDTO> findWithPagination(int offset, int pageSize) {
-        Page<Homework> homeworks = homeworkRepository.findAll(PageRequest.of(offset, pageSize));
+        Page<Homework> homeworks = homeworkRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()));
         return homeworks.map(homeworkDTOMapper);
     }
 

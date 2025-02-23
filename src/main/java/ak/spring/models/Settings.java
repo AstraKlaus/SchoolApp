@@ -5,12 +5,7 @@ import lombok.*;
 
 import java.util.List;
 
-
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -36,9 +31,23 @@ public class Settings {
     @JoinColumn(name = "font_size_id", nullable = false)
     private FontSize fontSize;
 
+    @NotNull(message = "Межстрочный интервал обязателен")
+    @ManyToOne
+    @JoinColumn(name = "line_height_id", nullable = false)
+    private LineHeight lineHeight;
+
+    @NotNull(message = "Межбуквенный интервал обязателен")
+    @ManyToOne
+    @JoinColumn(name = "letter_spacing_id", nullable = false)
+    private LetterSpacing letterSpacing;
+
     @NotNull(message = "Поле 'шрифт с засечками' не может быть пустым")
     @Column(name = "is_serif", nullable = false)
     private Boolean isSerif;
+
+    @NotNull(message = "Поле 'скрытие изображений' не может быть пустым")
+    @Column(name = "img_hiding", nullable = false)
+    private Boolean imgHiding;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "settings", fetch = FetchType.LAZY)

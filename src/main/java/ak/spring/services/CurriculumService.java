@@ -9,13 +9,16 @@ import ak.spring.mappers.CourseDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.models.Classroom;
 import ak.spring.models.Curriculum;
+import ak.spring.models.Person;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.CurriculumRepository;
+import ak.spring.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,18 +33,21 @@ public class CurriculumService {
     private final ClassroomDTOMapper classroomDTOMapper;
     private final  CurriculumRepository curriculumRepository;
     private final ClassroomRepository classroomRepository;
+    private final PersonRepository personRepository;
 
     @Autowired
     public CurriculumService(CurriculumDTOMapper curriculumDTOMapper,
                              CourseDTOMapper courseDTOMapper,
                              ClassroomDTOMapper classroomDTOMapper,
                              CurriculumRepository curriculumRepository,
-                             ClassroomRepository classroomRepository) {
+                             ClassroomRepository classroomRepository,
+                             PersonRepository personRepository) {
         this.curriculumDTOMapper = curriculumDTOMapper;
         this.courseDTOMapper = courseDTOMapper;
         this.classroomDTOMapper = classroomDTOMapper;
         this.curriculumRepository = curriculumRepository;
         this.classroomRepository = classroomRepository;
+        this.personRepository = personRepository;
     }
 
     public List<CurriculumDTO> getAllCurricula() {
@@ -115,18 +121,31 @@ public class CurriculumService {
     }
 
     public void deleteClassroomFromCurriculum(int curriculumId, int classroomId) {
+        // Получаем Curriculum
         Curriculum curriculum = curriculumRepository.findById(curriculumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumId));
 
+        // Получаем Classroom
         Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
 
+        // Удаляем Classroom из Curriculum
         curriculum.getClassrooms().remove(classroom);
+
+        // Обнуляем classroomId у всех студентов, связанных с этим Classroom
+        List<Person> persons = personRepository.findByClassroomId(classroomId);
+        for (Person person : persons) {
+            person.setClassroom(null); // Обнуляем связь с Classroom
+        }
+        personRepository.saveAll(persons); // Сохраняем изменения для всех студентов
+
+        // Сохраняем изменения в Curriculum
         curriculumRepository.save(curriculum);
     }
 
+
     public Page<CurriculumDTO> findWithPagination(int page, int size) {
-        Page<Curriculum> curricula = curriculumRepository.findAll(PageRequest.of(page, size));
+        Page<Curriculum> curricula = curriculumRepository.findAll(PageRequest.of(page, size, Sort.by("name").ascending()));
         return curricula.map(curriculumDTOMapper);
     }
 

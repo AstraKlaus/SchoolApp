@@ -11,6 +11,7 @@ import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
+import ak.spring.models.Settings;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.PersonRepository;
 import ak.spring.token.Token;
@@ -19,6 +20,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -170,7 +172,29 @@ public class PersonService {
     }
 
     public Page<PersonDTO> findWithPagination(int page, int size) {
-        Page<Person> people = personRepository.findAll(PageRequest.of(page, size));
+        Page<Person> people = personRepository.findAll(PageRequest.of(page, size, Sort.by("last_name").ascending()));
         return people.map(personDTOMapper);
+    }
+
+    public SettingsDTO updateSettingsForPerson(int personId, SettingsDTO updatedSettings) {
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
+
+        Settings settings = person.getSettings();
+        if (settings == null) {
+            settings = new Settings();
+        }
+
+        // Проверяем и обновляем связанные сущности
+        settings.setTheme(updatedSettings.getTheme());
+        settings.setIsSerif(updatedSettings.getIsSerif());
+        settings.setFontSize(updatedSettings.getFontSize());
+        settings.setLineHeight(updatedSettings.getLineHeight());
+        settings.setLetterSpacing(updatedSettings.getLetterSpacing());
+        settings.setImgHiding(updatedSettings.getImgHiding());
+
+        person.setSettings(settings);
+        personRepository.save(person);
+        return settingsDTOMapper.apply(settings);
     }
 }

@@ -61,7 +61,7 @@ public class Person implements UserDetails {
     private Role role;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Size(max = 100, message = "Максимальное количество ответов — 100")
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();

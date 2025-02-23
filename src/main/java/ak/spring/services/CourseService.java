@@ -10,7 +10,6 @@ import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
-import ak.spring.models.Curriculum;
 import ak.spring.repositories.CourseRepository;
 import ak.spring.repositories.CurriculumRepository;
 import ak.spring.repositories.HomeworkRepository;
@@ -19,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class CourseService {
     }
 
     public Page<CourseDTO> findWithPagination(int offset, int pageSize) {
-        Page<Course> courses = courseRepository.findAll(PageRequest.of(offset, pageSize));
+        Page<Course> courses = courseRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()));
         return courses.map(courseDTOMapper);
     }
 

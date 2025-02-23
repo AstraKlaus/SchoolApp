@@ -1,10 +1,7 @@
 package ak.spring.mappers;
 
-import ak.spring.dto.PersonDTO;
 import ak.spring.dto.SettingsDTO;
-import ak.spring.models.Person;
 import ak.spring.models.Settings;
-import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -18,6 +15,9 @@ public class SettingsDTOMapper implements Function<Settings, SettingsDTO> {
                 .theme(settings.getTheme())
                 .isSerif(settings.getIsSerif())
                 .fontSize(settings.getFontSize())
+                .lineHeight(settings.getLineHeight())
+                .letterSpacing(settings.getLetterSpacing())
+                .imgHiding(settings.getImgHiding())
                 .build();
     }
 }

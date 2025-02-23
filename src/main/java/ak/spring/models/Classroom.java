@@ -6,13 +6,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -35,9 +30,10 @@ public class Classroom {
     private String name;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToMany(mappedBy = "classrooms")
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
-    private Curriculum curriculum;
+    @Builder.Default
+    private List<Curriculum> curricula = new ArrayList<>();
 
     @ToString.Exclude
     @Size(max = 50, message = "Максимальное количество студентов в классе — 50")
