@@ -17,7 +17,7 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
-
+                    checkConstraint: "name IN ('light', 'dark', 'blue')"
 
         - createTable:
             tableName: font_size
@@ -33,6 +33,39 @@ databaseChangeLog:
                   type: varchar(25)
                   constraints:
                     nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
+
+        - createTable:
+            tableName: line_height
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
+
+        - createTable:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "name IN ('normal', 'large', 'xlarge')"
 
         - createTable:
             tableName: settings
@@ -50,8 +83,19 @@ databaseChangeLog:
                   name: font_size_id
                   type: bigint
               - column:
+                  name: line_height_id
+                  type: bigint
+              - column:
+                  name: letter_spacing_id
+                  type: bigint
+              - column:
                   name: is_serif
                   type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: img_hiding
+                  type: boolean
+                  defaultValueBoolean: false
 
 
         - createTable:
@@ -138,10 +182,24 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
                   name: access
                   type: boolean
+
+        - createTable:
+            tableName: curriculum_classroom
+            columns:
+              - column:
+                  name: curriculum_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: classroom_id
+                  type: bigint
+                  constraints:
+                    nullable: false
 
         - createTable:
             tableName: course
@@ -159,7 +217,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
                   name: access
                   type: boolean
@@ -183,13 +241,13 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: content
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
                   name: description
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
-                  name: attachment
-                  type: varchar(255)
+                  name: attachments
+                  type: text
               - column:
                   name: course_id
                   type: bigint
@@ -221,10 +279,10 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
-                  name: attachment
-                  type: varchar(255)
+                  name: attachments
+                  type: text
               - column:
                   name: course_id
                   type: bigint
@@ -266,13 +324,13 @@ databaseChangeLog:
                     primaryKey: true
               - column:
                   name: text
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
-                  name: attachment
-                  type: varchar(255)
+                  name: attachments
+                  type: text
               - column:
                   name: comment
-                  type: varchar(255)
+                  type: varchar(5000)
               - column:
                   name: student_id
                   type: bigint
@@ -309,8 +367,8 @@ databaseChangeLog:
                   name: revoked
                   type: boolean
               - column:
-                - name: expired
-                - type: boolean
+                 name: expired
+                 type: boolean
               - column:
                   name: person_id
                   type: bigint
@@ -413,3 +471,59 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: SET NULL
             constraintName: fk_token_person
+
+        - dropForeignKeyConstraint:
+            baseTableName: settings
+            constraintName: fk_settings_theme
+        - dropForeignKeyConstraint:
+            baseTableName: settings
+            constraintName: fk_settings_font_size
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: theme_id
+            referencedTableName: theme
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_theme
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: font_size_id
+            referencedTableName: font_size
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_font_size
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: line_height_id
+            referencedTableName: line_height
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_line_height
+        - addForeignKeyConstraint:
+            baseTableName: settings
+            baseColumnNames: letter_spacing_id
+            referencedTableName: letter_spacing
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_settings_letter_spacing
+
+        - addPrimaryKey:
+            tableName: curriculum_classroom
+            columnNames: curriculum_id, classroom_id
+            constraintName: pk_curriculum_classroom
+
+        - addForeignKeyConstraint:
+            baseTableName: curriculum_classroom
+            baseColumnNames: curriculum_id
+            referencedTableName: curriculum
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_curriculum_classroom_curriculum
+
+        - addForeignKeyConstraint:
+            baseTableName: curriculum_classroom
+            baseColumnNames: classroom_id
+            referencedTableName: classroom
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_curriculum_classroom_classroom

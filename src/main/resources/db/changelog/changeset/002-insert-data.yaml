@@ -45,6 +45,43 @@ databaseChangeLog:
                   name: name
                   value: 'Большой'
 
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'normal'
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'large'
+        - insert:
+            tableName: line_height
+            columns:
+              - column:
+                  name: name
+                  value: 'xlarge'
+
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'normal'
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'large'
+        - insert:
+            tableName: letter_spacing
+            columns:
+              - column:
+                  name: name
+                  value: 'xlarge'
 
         - insert:
             tableName: settings

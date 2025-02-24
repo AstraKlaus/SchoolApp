@@ -31,7 +31,6 @@ public class Classroom {
 
     @ToString.Exclude
     @ManyToMany(mappedBy = "classrooms")
-    @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     @Builder.Default
     private List<Curriculum> curricula = new ArrayList<>();
 

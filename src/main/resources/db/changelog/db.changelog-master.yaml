@@ -3,11 +3,3 @@ databaseChangeLog:
       file: db/changelog/changeset/001-create-tables.yaml
   - include:
       file: db/changelog/changeset/002-insert-data.yaml
-  - include:
-      file: db/changelog/changeset/003-attachment.yaml
-  - include:
-      file: db/changelog/changeset/004-size.yaml
-  - include:
-      file: db/changelog/changeset/005-add-new-admin.yaml
-  - include:
-      file: db/changelog/changeset/006-new-settings-names.yaml

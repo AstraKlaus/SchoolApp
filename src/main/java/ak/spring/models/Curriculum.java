@@ -45,9 +45,11 @@ public class Curriculum {
 
     @ToString.Exclude
     @ManyToMany
-    @JoinTable(name = "curriculum_classroom",
+    @JoinTable(
+            name = "curriculum_classroom",
             joinColumns = @JoinColumn(name = "curriculum_id"),
-            inverseJoinColumns = @JoinColumn(name = "classroom_id"))
+            inverseJoinColumns = @JoinColumn(name = "classroom_id")
+    )
     @Size(max = 30, message = "Максимальное количество классов — 30")
     @Builder.Default
     private List<@Valid Classroom> classrooms = new ArrayList<>();
