@@ -36,20 +36,20 @@ public class Course {
     private Boolean access;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Size(max = 50, message = "Максимальное количество уроков — 50")
     @Builder.Default
     private List<@Valid Lesson> lessons = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Size(max = 100, message = "Максимальное количество домашних заданий — 100")
     @Builder.Default
     private List<@Valid Homework> homeworks = new ArrayList<>();
 
     @ToString.Exclude
     @NotNull(message = "Учебный план обязателен")
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne()
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id", nullable = false)
     private Curriculum curriculum;
 }

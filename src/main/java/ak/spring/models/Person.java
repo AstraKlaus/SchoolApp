@@ -77,7 +77,7 @@ public class Person implements UserDetails {
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<Token> tokens = new ArrayList<>();
 

@@ -38,7 +38,7 @@ public class Curriculum {
     private Boolean access;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Size(max = 50, message = "Максимальное количество курсов — 50")
     @Builder.Default
     private List<@Valid Course> courses = new ArrayList<>();

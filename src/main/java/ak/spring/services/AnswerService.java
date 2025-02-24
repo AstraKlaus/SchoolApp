@@ -51,7 +51,7 @@ public class AnswerService {
     }
 
     public Page<AnswerDTO> findWithPagination(int offset, int pageSize) {
-        return answerRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name").ascending()))
+        return answerRepository.findAll(PageRequest.of(offset, pageSize))
                 .map(answerDTOMapper);
     }
 

@@ -172,7 +172,7 @@ public class PersonService {
     }
 
     public Page<PersonDTO> findWithPagination(int page, int size) {
-        Page<Person> people = personRepository.findAll(PageRequest.of(page, size, Sort.by("last_name").ascending()));
+        Page<Person> people = personRepository.findAll(PageRequest.of(page, size, Sort.by("lastName").ascending()));
         return people.map(personDTOMapper);
     }
 
