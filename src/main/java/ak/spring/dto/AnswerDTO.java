@@ -20,13 +20,13 @@ public class AnswerDTO {
 
     private int id;
 
-    @Size(min = 2, max = 500, message = "Текст ответа должен содержать от 2 до 500 символов")
+    @Size(max = 5000, message = "Текст ответа должен содержать до 5000 символов")
     private String text;
 
-    @Size(max = 300, message = "Комментарий не должен превышать 300 символов")
+    @Size(max = 5000, message = "Комментарий не должен превышать 5000 символов")
     private String comment;
 
-    @Size(max = 5, message = "Максимальное количество вложений — 5")
+    @Size(max = 10, message = "Максимальное количество вложений — 10")
     private List<String> attachments;
 
     @Positive(message = "Идентификатор студента должен быть положительным числом")
@@ -37,8 +37,8 @@ public class AnswerDTO {
     @NotNull(message = "Идентификатор домашнего задания обязателен для заполнения")
     private Integer homeworkId;
 
-    @Min(value = 0, message = "Недопустимый статус. Минимальное значение: 0")
-    @Max(value = 5, message = "Недопустимый статус. Максимальное значение: 5")
+    @Min(value = 1, message = "Недопустимый статус. Минимальное значение: 1")
+    @Max(value = 3, message = "Недопустимый статус. Максимальное значение: 3")
     private int statusId;
 
     private Timestamp createdAt;

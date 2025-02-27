@@ -19,10 +19,10 @@ public class CourseDTO {
     private int id;
 
     @NotBlank(message = "Название курса не может быть пустым")
-    @Size(min = 2, max = 100, message = "Название курса должно содержать от 2 до 100 символов")
+    @Size(min = 2, max = 150, message = "Название курса должно содержать от 2 до 150 символов")
     private String name;
 
-    @Size(max = 500, message = "Описание курса не должно превышать 500 символов")
+    @Size(max = 5000, message = "Описание курса не должно превышать 5000 символов")
     private String description;
 
     private Boolean access;

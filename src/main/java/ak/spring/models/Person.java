@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +47,9 @@ public class Person implements UserDetails {
     @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
     private String lastName;
 
-    @Size(max = 50, message = "Отчество должно быть до 50 символов длиной")
-    @Column(name = "patronymic", length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
+    @Nullable
+    @Size(max = 50, message = "Отчество не должно превышать 50 символов")
+    @Pattern(regexp = "^$|^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
     private String patronymic;
 
     @ToString.Exclude

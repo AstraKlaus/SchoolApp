@@ -25,13 +25,13 @@ public class LessonDTO {
     private String name;
 
 
-    @Size(min = 2, max = 5000, message = "Содержимое урока должно содержать от 2 до 5000 символов")
+    @Size(max = 5000, message = "Содержимое урока должно содержать до 5000 символов")
     private String content;
 
     @Size(max = 10, message = "Максимальное количество вложений — 10")
     private List<String> attachments;
 
-    @Size(max = 500, message = "Описание урока не должно превышать 500 символов")
+    @Size(max = 5000, message = "Описание урока не должно превышать 5000 символов")
     private String description;
 
     @Positive(message = "Идентификатор домашнего задания должен быть положительным числом")
