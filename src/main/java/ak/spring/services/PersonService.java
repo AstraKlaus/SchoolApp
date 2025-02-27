@@ -9,11 +9,10 @@ import ak.spring.mappers.AnswerDTOMapper;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.mappers.SettingsDTOMapper;
-import ak.spring.models.Person;
-import ak.spring.models.Role;
-import ak.spring.models.Settings;
+import ak.spring.models.*;
 import ak.spring.repositories.ClassroomRepository;
 import ak.spring.repositories.PersonRepository;
+import ak.spring.requests.SettingsRequest;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
 import jakarta.transaction.Transactional;
@@ -25,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -176,25 +176,58 @@ public class PersonService {
         return people.map(personDTOMapper);
     }
 
-    public SettingsDTO updateSettingsForPerson(int personId, SettingsDTO updatedSettings) {
+    public SettingsDTO updateSettingsForPerson(int personId, SettingsRequest updatedSettings) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "id", personId));
 
-        Settings settings = person.getSettings();
-        if (settings == null) {
-            settings = new Settings();
-        }
+        Settings settings = Optional.ofNullable(person.getSettings())
+                .orElseGet(Settings::new);
 
-        // Проверяем и обновляем связанные сущности
-        settings.setTheme(updatedSettings.getTheme());
+        // Установка темы
+        Theme theme = switch (updatedSettings.getTheme()) {
+            case "light" -> Theme.builder().id(0).name("light").build();
+            case "dark" -> Theme.builder().id(1).name("dark").build();
+            case "blue" -> Theme.builder().id(2).name("blue").build();
+            default -> throw new IllegalArgumentException("Недопустимое значение темы: " + updatedSettings.getTheme());
+        };
+        settings.setTheme(theme);
+
+        // Установка размера шрифта
+        FontSize fontSize = switch (updatedSettings.getFontSize()) {
+            case "normal" -> FontSize.builder().id(0).name("normal").build();
+            case "large" -> FontSize.builder().id(1).name("large").build();
+            case "xlarge" -> FontSize.builder().id(2).name("xlarge").build();
+            default -> throw new IllegalArgumentException("Недопустимый размер шрифта: " + updatedSettings.getFontSize());
+        };
+        settings.setFontSize(fontSize);
+
+        // Установка межстрочного интервала
+        LineHeight lineHeight = switch (updatedSettings.getLineHeight()) {
+            case "normal" -> LineHeight.builder().id(0).name("normal").build();
+            case "large" -> LineHeight.builder().id(1).name("large").build();
+            case "xlarge" -> LineHeight.builder().id(2).name("xlarge").build();
+            default -> throw new IllegalArgumentException("Недопустимый межстрочный интервал: " + updatedSettings.getLineHeight());
+        };
+        settings.setLineHeight(lineHeight);
+
+        // Установка межбуквенного интервала
+        LetterSpacing letterSpacing = switch (updatedSettings.getLetterSpacing()) {
+            case "normal" -> LetterSpacing.builder().id(0).name("normal").build();
+            case "large" -> LetterSpacing.builder().id(1).name("large").build();
+            case "xlarge" -> LetterSpacing.builder().id(2).name("xlarge").build();
+            default -> throw new IllegalArgumentException("Недопустимый межбуквенный интервал: " + updatedSettings.getLetterSpacing());
+        };
+        settings.setLetterSpacing(letterSpacing);
+
+        // Простые boolean значения
         settings.setIsSerif(updatedSettings.getIsSerif());
-        settings.setFontSize(updatedSettings.getFontSize());
-        settings.setLineHeight(updatedSettings.getLineHeight());
-        settings.setLetterSpacing(updatedSettings.getLetterSpacing());
         settings.setImgHiding(updatedSettings.getImgHiding());
 
+        // Сохранение изменений
         person.setSettings(settings);
         personRepository.save(person);
+
         return settingsDTOMapper.apply(settings);
     }
+
 }

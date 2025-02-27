@@ -5,6 +5,7 @@ import ak.spring.dto.ClassroomDTO;
 import ak.spring.dto.PersonDTO;
 import ak.spring.dto.SettingsDTO;
 import ak.spring.models.Person;
+import ak.spring.requests.SettingsRequest;
 import ak.spring.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +167,7 @@ public class PersonController {
             @ApiResponse(responseCode = "404", description = "Пользователь или настройки не найдены"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные настроек")
     })
-    public SettingsDTO updateSettingsForPerson(@PathVariable int id, @Valid @RequestBody SettingsDTO updatedSettings) {
+    public SettingsDTO updateSettingsForPerson(@PathVariable int id, @Valid @RequestBody SettingsRequest updatedSettings) {
         return personService.updateSettingsForPerson(id, updatedSettings);
     }
 

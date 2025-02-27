@@ -92,7 +92,7 @@ public class LessonService {
     }
 
     public List<LessonDTO> findAll() {
-        return lessonRepository.findAll()
+        return lessonRepository.findAll(Sort.by("name").ascending())
                 .stream()
                 .map(lessonDTOMapper)
                 .toList();
