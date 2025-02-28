@@ -10,8 +10,7 @@ import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.mappers.SettingsDTOMapper;
 import ak.spring.models.*;
-import ak.spring.repositories.ClassroomRepository;
-import ak.spring.repositories.PersonRepository;
+import ak.spring.repositories.*;
 import ak.spring.requests.SettingsRequest;
 import ak.spring.token.Token;
 import ak.spring.token.TokenRepository;
@@ -38,13 +37,24 @@ public class PersonService {
     private final SettingsDTOMapper settingsDTOMapper;
     private final AnswerDTOMapper answerDTOMapper;
     private final ClassroomDTOMapper classroomDTOMapper;
+    private final ThemeRepository themeRepository;
+    private final FontSizeRepository fontSizeRepository;
+    private final LineHeightRepository lineHeightRepository;
+    private final LetterSpacingRepository letterSpacingRepository;
+    private final SettingsRepository settingsRepository;
 
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
                          TokenRepository tokenRepository,
                          ClassroomRepository classroomRepository, PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
-                         SettingsDTOMapper settingsDTOMapper, AnswerDTOMapper answerDTOMapper, ClassroomDTOMapper classroomDTOMapper) {
+                         SettingsDTOMapper settingsDTOMapper,
+                         AnswerDTOMapper answerDTOMapper, ClassroomDTOMapper classroomDTOMapper,
+                         ThemeRepository themeRepository,
+                         FontSizeRepository fontSizeRepository,
+                         LineHeightRepository lineHeightRepository,
+                         LetterSpacingRepository letterSpacingRepository,
+                         SettingsRepository settingsRepository) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.classroomRepository = classroomRepository;
@@ -53,6 +63,11 @@ public class PersonService {
         this.settingsDTOMapper = settingsDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
         this.classroomDTOMapper = classroomDTOMapper;
+        this.themeRepository = themeRepository;
+        this.fontSizeRepository = fontSizeRepository;
+        this.lineHeightRepository = lineHeightRepository;
+        this.letterSpacingRepository = letterSpacingRepository;
+        this.settingsRepository = settingsRepository;
     }
 
     public List<PersonDTO> findAll() {
@@ -183,47 +198,63 @@ public class PersonService {
         Settings settings = Optional.ofNullable(person.getSettings())
                 .orElseGet(Settings::new);
 
-        // Установка темы
-        Theme theme = switch (updatedSettings.getTheme()) {
-            case "light" -> Theme.builder().id(0).name("light").build();
-            case "dark" -> Theme.builder().id(1).name("dark").build();
-            case "blue" -> Theme.builder().id(2).name("blue").build();
+        // Получение существующих объектов из базы данных
+        int themeId;
+        switch (updatedSettings.getTheme()) {
+            case "light" -> themeId = 1;
+            case "dark" -> themeId = 2;
+            case "blue" -> themeId = 3;
+            case "default" -> themeId = 4;
             default -> throw new IllegalArgumentException("Недопустимое значение темы: " + updatedSettings.getTheme());
-        };
+        }
+        Theme theme = themeRepository.findById(themeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Theme", "id", themeId));
         settings.setTheme(theme);
 
-        // Установка размера шрифта
-        FontSize fontSize = switch (updatedSettings.getFontSize()) {
-            case "normal" -> FontSize.builder().id(0).name("normal").build();
-            case "large" -> FontSize.builder().id(1).name("large").build();
-            case "xlarge" -> FontSize.builder().id(2).name("xlarge").build();
+        // Аналогично для других свойств
+        int fontSizeId;
+        switch (updatedSettings.getFontSize()) {
+            case "normal" -> fontSizeId = 1;
+            case "large" -> fontSizeId = 2;
+            case "xlarge" -> fontSizeId = 3;
             default -> throw new IllegalArgumentException("Недопустимый размер шрифта: " + updatedSettings.getFontSize());
-        };
+        }
+        FontSize fontSize = fontSizeRepository.findById(fontSizeId)
+                .orElseThrow(() -> new ResourceNotFoundException("FontSize", "id", fontSizeId));
         settings.setFontSize(fontSize);
 
-        // Установка межстрочного интервала
-        LineHeight lineHeight = switch (updatedSettings.getLineHeight()) {
-            case "normal" -> LineHeight.builder().id(0).name("normal").build();
-            case "large" -> LineHeight.builder().id(1).name("large").build();
-            case "xlarge" -> LineHeight.builder().id(2).name("xlarge").build();
+        int lineHeightId;
+        switch (updatedSettings.getLineHeight()) {
+            case "normal" -> lineHeightId = 1;
+            case "large" -> lineHeightId = 2;
+            case "xlarge" -> lineHeightId = 3;
             default -> throw new IllegalArgumentException("Недопустимый межстрочный интервал: " + updatedSettings.getLineHeight());
-        };
+        }
+        LineHeight lineHeight = lineHeightRepository.findById(lineHeightId)
+                .orElseThrow(() -> new ResourceNotFoundException("LineHeight", "id", lineHeightId));
         settings.setLineHeight(lineHeight);
 
-        // Установка межбуквенного интервала
-        LetterSpacing letterSpacing = switch (updatedSettings.getLetterSpacing()) {
-            case "normal" -> LetterSpacing.builder().id(0).name("normal").build();
-            case "large" -> LetterSpacing.builder().id(1).name("large").build();
-            case "xlarge" -> LetterSpacing.builder().id(2).name("xlarge").build();
+        int letterSpacingId;
+        switch (updatedSettings.getLetterSpacing()) {
+            case "normal" -> letterSpacingId = 1;
+            case "large" -> letterSpacingId = 2;
+            case "xlarge" -> letterSpacingId = 3;
             default -> throw new IllegalArgumentException("Недопустимый межбуквенный интервал: " + updatedSettings.getLetterSpacing());
-        };
+        }
+        LetterSpacing letterSpacing = letterSpacingRepository.findById(letterSpacingId)
+                .orElseThrow(() -> new ResourceNotFoundException("LetterSpacing", "id", letterSpacingId));
         settings.setLetterSpacing(letterSpacing);
 
         // Простые boolean значения
         settings.setIsSerif(updatedSettings.getIsSerif());
         settings.setImgHiding(updatedSettings.getImgHiding());
 
-        // Сохранение изменений
+        // Сначала сохраняем Settings, если это новый объект
+        if (settings.getId() == 0) {
+            settings = settingsRepository.save(settings);
+        }
+
+        // Затем устанавливаем настройки для пользователя и сохраняем его
         person.setSettings(settings);
         personRepository.save(person);
 

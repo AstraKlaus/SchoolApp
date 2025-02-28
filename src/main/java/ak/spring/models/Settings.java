@@ -50,9 +50,8 @@ public class Settings {
     private Boolean imgHiding;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "settings", fetch = FetchType.LAZY)
-    @Size(max = 100, message = "Максимальное количество пользователей — 100")
-    private List<Person> person;
+    @OneToOne(mappedBy = "settings", fetch = FetchType.LAZY)
+    private Person person;
 }
 
 

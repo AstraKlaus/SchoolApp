@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/answers")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @Tag(name = "Answer Management", description = "Управление ответами на задания")
 public class AnswerController {
 

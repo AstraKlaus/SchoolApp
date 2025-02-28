@@ -74,6 +74,19 @@ services:
       #- /etc/letsencrypt:/etc/letsencrypt
     restart: on-failure
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vue_frontend
+    depends_on:
+      - spring-school-app
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    restart: on-failure
+
 volumes:
   minio_data:
     driver: local

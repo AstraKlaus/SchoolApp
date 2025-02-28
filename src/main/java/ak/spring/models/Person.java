@@ -67,7 +67,7 @@ public class Person implements UserDetails {
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "settings_id", referencedColumnName = "id")
     private Settings settings;
 

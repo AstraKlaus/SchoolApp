@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/homeworks")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @Tag(name = "Homework Management", description = "Управление домашними заданиями")
 public class HomeworkController {
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/reports")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @Tag(name = "Report Management", description = "Управление отчётами и формированием отчётных файлов")
 @RequiredArgsConstructor
 public class ReportController {

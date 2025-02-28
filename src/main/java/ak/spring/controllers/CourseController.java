@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/courses")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @Tag(name = "Course Management", description = "Управление учебными курсами")
 public class CourseController {
 

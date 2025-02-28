@@ -8,42 +8,49 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: 'Светлый'
+                  value: 'light'
 
         - insert:
             tableName: theme
             columns:
               - column:
                   name: name
-                  value: 'Голубой'
+                  value: 'dark'
 
         - insert:
             tableName: theme
             columns:
               - column:
                   name: name
-                  value: 'Темный'
+                  value: 'blue'
+
+        - insert:
+            tableName: theme
+            columns:
+              - column:
+                  name: name
+                  value: 'default'
 
         - insert:
             tableName: font_size
             columns:
               - column:
                   name: name
-                  value: 'Нормальный'
+                  value: 'normal'
 
         - insert:
             tableName: font_size
             columns:
               - column:
                   name: name
-                  value: 'Увеличенный'
+                  value: 'large'
 
         - insert:
             tableName: font_size
             columns:
               - column:
                   name: name
-                  value: 'Большой'
+                  value: 'xlarge'
 
         - insert:
             tableName: line_height
@@ -95,7 +102,15 @@ databaseChangeLog:
               - column:
                   name: is_serif
                   valueBoolean: false
-
+              - column:
+                  name: letter_spacing_id
+                  valueNumeric: 1
+              - column:
+                  name: line_height_id
+                  valueNumeric: 1
+              - column:
+                  name: img_hiding
+                  valueBoolean: false
 
         - insert:
             tableName: curriculum
@@ -196,9 +211,6 @@ databaseChangeLog:
                   name: role
                   value: "STUDENT"
               - column:
-                  name: settings_id
-                  valueNumeric: 1
-              - column:
                   name: classroom_id
                   valueNumeric: 2
 
@@ -223,9 +235,6 @@ databaseChangeLog:
               - column:
                   name: role
                   value: "ADMIN"
-              - column:
-                  name: settings_id
-                  valueNumeric: 1
               - column:
                   name: classroom_id
                   valueNumeric: 1
@@ -252,9 +261,6 @@ databaseChangeLog:
               - column:
                   name: role
                   value: "TEACHER"
-              - column:
-                  name: settings_id
-                  valueNumeric: 1
               - column:
                   name: classroom_id
                   valueNumeric: 2

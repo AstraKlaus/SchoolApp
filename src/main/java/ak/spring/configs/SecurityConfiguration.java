@@ -79,7 +79,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:8084"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost", "http://localhost:8084"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
