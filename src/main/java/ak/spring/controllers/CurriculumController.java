@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("v1/api/curricula")
-@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", "https://multiznaika-education.ru"}, allowCredentials = "true")
 @Tag(name = "Curriculum Management", description = "Управление учебными планами")
 public class CurriculumController {
 

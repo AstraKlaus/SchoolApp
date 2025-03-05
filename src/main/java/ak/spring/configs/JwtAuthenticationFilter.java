@@ -1,6 +1,5 @@
 package ak.spring.configs;
 
-
 import ak.spring.token.TokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -38,13 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
     try {
-      if (request.getServletPath().contains("/api/auth/login")) {
+      // Пропускаем запросы на логин
+      if (request.getServletPath().contains("/api/auth/login") || request.getServletPath().contains("/api/auth/refresh")) {
         filterChain.doFilter(request, response);
         return;
       }
 
       final String authHeader = request.getHeader("Authorization");
 
+      // Если заголовок отсутствует или не начинается с "Bearer ", пропускаем
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
         filterChain.doFilter(request, response);
         return;
@@ -70,10 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                   new WebAuthenticationDetailsSource().buildDetails(request)
           );
           SecurityContextHolder.getContext().setAuthentication(authToken);
+          filterChain.doFilter(request, response);
+        } else {
+          // Если токен недействителен или аннулирован, возвращаем 401
+          sendError(response, "Invalid or revoked token");
+          return;
         }
+      } else {
+        filterChain.doFilter(request, response);
       }
-
-      filterChain.doFilter(request, response);
 
     } catch (ExpiredJwtException ex) {
       sendError(response, "Token expired");
@@ -84,8 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
   }
 
-  private void sendError(HttpServletResponse response, String message)
-          throws IOException {
+  private void sendError(HttpServletResponse response, String message) throws IOException {
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response.setContentType("application/json");
     response.getWriter().write("{ \"error\": \"" + message + "\" }");

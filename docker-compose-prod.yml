@@ -53,7 +53,7 @@ services:
 
   spring-school-app:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: spring-school-app
     depends_on:
@@ -83,6 +83,10 @@ services:
       - spring-school-app
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/ssl/certs
+      - ./private:/etc/ssl/private
     networks:
       - app-network
     restart: on-failure

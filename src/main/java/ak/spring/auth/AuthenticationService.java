@@ -140,25 +140,38 @@ public class AuthenticationService {
     tokenRepository.saveAll(validUserTokens);
   }
 
-  public AuthenticationResponse refreshToken(HttpServletRequest request) {
-    String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+  public AuthenticationResponse refreshToken(HttpServletRequest request) throws IOException {
+    try {
+      String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-    String refreshToken = Optional.ofNullable(authHeader)
-            .filter(header -> header.startsWith("Bearer "))
-            .map(header -> header.substring(7))
-            .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+      String refreshToken = Optional.ofNullable(authHeader)
+              .filter(header -> header.startsWith("Bearer "))
+              .map(header -> header.substring(7))
+              .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
 
-    Person user = repository.findByUsername(jwtService.extractUsername(refreshToken))
-            .filter(u -> jwtService.isTokenValid(refreshToken, u))
-            .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+      Person user = repository.findByUsername(jwtService.extractUsername(refreshToken))
+              .filter(u -> jwtService.isTokenValid(refreshToken, u))
+              .orElseThrow(() -> new IllegalArgumentException("Invalid or expired refresh token"));
 
-    String accessToken = jwtService.generateToken(user);
-    revokeAllUserTokens(user);
-    saveUserToken(user, accessToken);
+      // Проверяем, не аннулирован ли refresh token
+      boolean isRefreshTokenValid = tokenRepository.findByToken(refreshToken)
+              .map(t -> !t.isExpired() && !t.isRevoked())
+              .orElse(false);
 
-    return AuthenticationResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+      if (!isRefreshTokenValid) {
+        throw new IllegalArgumentException("Revoked refresh token");
+      }
+
+      String accessToken = jwtService.generateToken(user);
+      revokeAllUserTokens(user); // Аннулируем старые токены
+      saveUserToken(user, accessToken);
+
+      return AuthenticationResponse.builder()
+              .accessToken(accessToken)
+              .refreshToken(refreshToken)
+              .build();
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(e.getMessage());
+    }
   }
 }
