@@ -52,6 +52,22 @@ public class AnswerController {
         return answerService.findWithPagination(offset, pageSize);
     }
 
+    @GetMapping("/homework/{homeworkId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Получить ответы для домашнего задания с пагинацией")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ответы успешно получены"),
+            @ApiResponse(responseCode = "404", description = "Домашнее задание не найдено")
+    })
+    public Page<AnswerDTO> findAnswersByHomeworkId(
+            @PathVariable int homeworkId,
+            @Parameter(description = "Номер страницы") @RequestParam(defaultValue = "0") int offset,
+            @Parameter(description = "Размер страницы") @RequestParam(defaultValue = "20") int pageSize
+    ) {
+        return answerService.findAnswersByHomeworkId(homeworkId, offset, pageSize);
+    }
+
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Получить ответ по ID")

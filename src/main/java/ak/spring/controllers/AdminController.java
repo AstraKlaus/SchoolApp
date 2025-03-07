@@ -2,7 +2,6 @@ package ak.spring.controllers;
 
 import ak.spring.auth.AuthenticationResponse;
 import ak.spring.auth.AuthenticationService;
-import ak.spring.auth.RegisterRequest;
 import ak.spring.dto.PersonDTO;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -76,9 +77,7 @@ public class AdminController {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Файл пуст или не предоставлен");
         }
-
         try {
-            // Читаем пользователей из Excel
             List<AuthenticationResponse> users = authenticationService.registerUsersFromExcel(file.getInputStream());
             return ResponseEntity.ok(String.format("Пользователи успешно импортированы %s", users.toString()));
         }
@@ -93,13 +92,10 @@ public class AdminController {
     @GetMapping("/users/export")
     public ResponseEntity<Resource> exportUsersToExcel() {
         try {
-            // Получаем список пользователей
             List<PersonDTO> users = personService.findAll();
 
-            // Генерируем Excel-файл
             ByteArrayInputStream inputStream = excelService.exportUsersToExcel(users);
 
-            // Настраиваем HTTP-ответ для скачивания файла
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.xlsx");
 
@@ -108,8 +104,32 @@ public class AdminController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(new InputStreamResource(inputStream));
         } catch (IOException e) {
-            // Обрабатываем исключения (в данном случае, возвращаем 500)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/users/export-passwords")
+    public ResponseEntity<Resource> exportUsersWithPasswords() {
+        try {
+            File file = new File(ExcelService.FILE_PATH);
+
+            if (!file.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStreamResource resource = new InputStreamResource(fileInputStream);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users_passwords.xlsx");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

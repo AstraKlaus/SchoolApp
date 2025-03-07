@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
@@ -130,4 +130,15 @@ public class AnswerService {
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", id));
     }
+
+    public Page<AnswerDTO> findAnswersByHomeworkId(int homeworkId, int offset, int pageSize) {
+        homeworkRepository.findById(homeworkId)
+                .orElseThrow(() -> new ResourceNotFoundException("Homework", "id", homeworkId));
+
+        Pageable pageable = PageRequest.of(offset, pageSize);
+
+        return answerRepository.findByHomeworkId(homeworkId, pageable)
+                .map(answerDTOMapper);
+    }
+
 }

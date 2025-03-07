@@ -38,18 +38,18 @@ public class Person implements UserDetails {
     @NotBlank(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов длиной")
     @Column(name = "first_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Имя может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁ\\s]+$", message = "Имя может содержать только русские буквы и пробел")
     private String firstName;
 
     @NotBlank(message = "Фамилия не должна быть пустой")
     @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов длиной")
     @Column(name = "last_name", nullable = false, length = 50)
-    @Pattern(regexp = "^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Фамилия может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^[а-яА-ЯёЁ\\s]+$", message = "Фамилия может содержать только русские буквы и пробел")
     private String lastName;
 
     @Nullable
     @Size(max = 50, message = "Отчество не должно превышать 50 символов")
-    @Pattern(regexp = "^$|^[а-яА-ЯёЁйЙ\\-\\s]+$", message = "Отчество может содержать только буквы, пробел и дефис")
+    @Pattern(regexp = "^$|^[а-яА-ЯёЁ\\s]+$", message = "Отчество может содержать только русские буквы и пробел")
     private String patronymic;
 
     @ToString.Exclude
