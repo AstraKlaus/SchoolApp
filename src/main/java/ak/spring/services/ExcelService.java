@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -20,7 +21,8 @@ import java.util.List;
 @Service
 public class ExcelService {
 
-    public static final String FILE_PATH = "users_data.xlsx";
+    @Value("${excel.file.path:/app/excel/users.xlsx}")
+    private String FILE_PATH;
 
     public List<RegisterRequest> importUsersFromExcel(InputStream inputStream) throws IOException {
         List<RegisterRequest> users = new ArrayList<>();
@@ -224,6 +226,40 @@ public class ExcelService {
             return new ByteArrayInputStream(out.toByteArray());
         }
     }
+
+    public void removeUserFromExcel(String username) throws IOException {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return;
+        }
+
+        try (FileInputStream fis = new FileInputStream(file);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis);
+             FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+            int lastRowNum = sheet.getLastRowNum();
+
+            for (int i = 1; i <= lastRowNum; i++) {
+                Row row = sheet.getRow(i);
+                if (row != null && row.getCell(0) != null) {
+                    String cellUsername = row.getCell(0).getStringCellValue();
+                    if (username.equals(cellUsername)) {
+                        if (i < lastRowNum) {
+                            sheet.shiftRows(i + 1, lastRowNum, -1);
+                        } else {
+                            sheet.removeRow(row);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            workbook.write(fos);
+        }
+    }
+
+
 
     // Приватный метод для создания заголовков пользователей
     private void createUserHeaders(Sheet sheet, boolean includePassword) {

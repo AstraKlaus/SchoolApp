@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,19 +43,23 @@ public class PersonService {
     private final LineHeightRepository lineHeightRepository;
     private final LetterSpacingRepository letterSpacingRepository;
     private final SettingsRepository settingsRepository;
+    private final ExcelService excelService;
 
     @Autowired
     public PersonService(PasswordEncoder passwordEncoder,
                          TokenRepository tokenRepository,
-                         ClassroomRepository classroomRepository, PersonRepository personRepository,
+                         ClassroomRepository classroomRepository,
+                         PersonRepository personRepository,
                          PersonDTOMapper personDTOMapper,
                          SettingsDTOMapper settingsDTOMapper,
-                         AnswerDTOMapper answerDTOMapper, ClassroomDTOMapper classroomDTOMapper,
+                         AnswerDTOMapper answerDTOMapper,
+                         ClassroomDTOMapper classroomDTOMapper,
                          ThemeRepository themeRepository,
                          FontSizeRepository fontSizeRepository,
                          LineHeightRepository lineHeightRepository,
                          LetterSpacingRepository letterSpacingRepository,
-                         SettingsRepository settingsRepository) {
+                         SettingsRepository settingsRepository,
+                         ExcelService excelService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.classroomRepository = classroomRepository;
@@ -68,6 +73,7 @@ public class PersonService {
         this.lineHeightRepository = lineHeightRepository;
         this.letterSpacingRepository = letterSpacingRepository;
         this.settingsRepository = settingsRepository;
+        this.excelService = excelService;
     }
 
     public List<PersonDTO> findAll() {
@@ -100,9 +106,21 @@ public class PersonService {
     }
 
     public void deletePerson(int id) {
-        personRepository.delete(personRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id)));
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Person", "id", id));
+
+        String username = person.getUsername();
+
+        personRepository.delete(person);
+
+        try {
+            excelService.removeUserFromExcel(username);
+        } catch (IOException e) {
+            System.err.println("Ошибка при удалении пользователя из Excel: " + e.getMessage());
+        }
     }
+
+
 
     public PersonDTO update(int id, PersonDTO updatedPerson) {
         Person existingPerson = personRepository.findById(id)
@@ -260,5 +278,8 @@ public class PersonService {
 
         return settingsDTOMapper.apply(settings);
     }
+
+
+
 
 }

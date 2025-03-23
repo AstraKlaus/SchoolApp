@@ -4,12 +4,7 @@ import ak.spring.dto.ClassroomDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.models.Classroom;
-import ak.spring.dto.ClassroomDTO;
-import ak.spring.exceptions.ResourceNotFoundException;
-import ak.spring.mappers.ClassroomDTOMapper;
-import ak.spring.models.Classroom;
 import ak.spring.dto.PersonDTO;
-import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Person;
 import ak.spring.models.Role;
@@ -22,6 +17,7 @@ import org.mockito.*;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +31,9 @@ class PersonServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ExcelService excelService;
 
     @Mock
     private TokenRepository tokenRepository;
@@ -147,13 +146,15 @@ class PersonServiceTest {
     }
 
     @Test
-    void testDeletePersonSuccess() {
+    void testDeletePersonSuccess() throws IOException {
         when(personRepository.findById(1)).thenReturn(Optional.of(person));
         doNothing().when(personRepository).delete(person);
+        doNothing().when(excelService).removeUserFromExcel(anyString());
 
         assertDoesNotThrow(() -> personService.deletePerson(1));
 
         verify(personRepository, times(1)).delete(person);
+        verify(excelService, times(1)).removeUserFromExcel(person.getUsername());
     }
 
     @Test
