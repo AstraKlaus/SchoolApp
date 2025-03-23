@@ -122,10 +122,10 @@ public class ExcelService {
                 // Находим последнюю строку и добавляем новую запись
                 int rowNum = sheet.getLastRowNum() + 1;
                 Row row = sheet.createRow(rowNum);
-                row.createCell(0).setCellValue(username);
+                row.createCell(0).setCellValue(lastName);
                 row.createCell(1).setCellValue(firstName);
                 row.createCell(2).setCellValue(patronymic);
-                row.createCell(3).setCellValue(lastName);
+                row.createCell(3).setCellValue(username);
                 row.createCell(4).setCellValue(password);
 
                 workbook.write(fos); // Записываем изменения в файл
@@ -140,10 +140,10 @@ public class ExcelService {
 
                 // Добавляем данные пользователя
                 Row row = sheet.createRow(1);
-                row.createCell(0).setCellValue(username);
+                row.createCell(0).setCellValue(lastName);
                 row.createCell(1).setCellValue(firstName);
                 row.createCell(2).setCellValue(patronymic);
-                row.createCell(3).setCellValue(lastName);
+                row.createCell(3).setCellValue(username);
                 row.createCell(4).setCellValue(password);
 
                 workbook.write(fos); // Записываем в файл
