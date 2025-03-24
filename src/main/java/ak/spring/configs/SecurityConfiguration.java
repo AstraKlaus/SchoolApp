@@ -39,7 +39,8 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"};
+            "/swagger-ui.html",
+            "/v1/api/admin/**"};
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -49,8 +50,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("v1/api/people/**", "v1/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers(ADMIN_LIST_URL).hasRole("ADMIN")
+                        req.requestMatchers("/v1/api/people/**").authenticated()
+                                .requestMatchers(ADMIN_LIST_URL).authenticated()
                                 .requestMatchers("/v1/api/auth/**").permitAll() // Разрешаем доступ к авторизации
                                 .anyRequest().permitAll()
                 )
@@ -87,11 +88,14 @@ public class SecurityConfiguration {
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
 
+        configuration.setExposedHeaders(Arrays.asList("Content-Disposition"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

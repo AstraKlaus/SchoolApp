@@ -10,6 +10,8 @@ import ak.spring.mappers.CurriculumDTOMapper;
 import ak.spring.mappers.HomeworkDTOMapper;
 import ak.spring.mappers.LessonDTOMapper;
 import ak.spring.models.Course;
+import ak.spring.models.Homework;
+import ak.spring.models.Lesson;
 import ak.spring.repositories.CourseRepository;
 import ak.spring.repositories.CurriculumRepository;
 import ak.spring.repositories.HomeworkRepository;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -50,7 +53,7 @@ public class CourseService {
     }
 
     public List<CourseDTO> findAll() {
-        return courseRepository.findAll()
+        return courseRepository.findAll(Sort.by("id").ascending())
                 .stream()
                 .map(courseDTOMapper)
                 .toList();
@@ -111,8 +114,9 @@ public class CourseService {
 
     public List<LessonDTO> getLessons(int id) {
         return courseRepository.findById(id)
-                .map(lesson -> lesson.getLessons()
+                .map(course -> course.getLessons()
                         .stream()
+                        .sorted(Comparator.comparing(Lesson::getId))
                         .map(lessonDTOMapper)
                         .toList())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
@@ -120,12 +124,14 @@ public class CourseService {
 
     public List<HomeworkDTO> getHomeworks(int id) {
         return courseRepository.findById(id)
-                .map(homework -> homework.getHomeworks()
+                .map(course -> course.getHomeworks()
                         .stream()
+                        .sorted(Comparator.comparing(Homework::getId))
                         .map(homeworkDTOMapper)
                         .toList())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", id));
     }
+
 
     public CourseDTO addLessonToCourse(int id, int lessonId) {
         return courseRepository.findById(id)

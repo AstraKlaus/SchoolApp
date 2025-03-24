@@ -9,6 +9,7 @@ import ak.spring.repositories.LessonRepository;
 import io.minio.*;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -108,13 +111,16 @@ public class MinioService {
         String originalFileName = getOriginalFileName(storedFileName);
         InputStream fileStream = getFile(storedFileName);
 
+        // Кодируем имя файла для использования в заголовке
+        String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(getContentType(storedFileName)))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + originalFileName + "\"")
+                        "attachment; filename*=UTF-8''" + encodedFileName)
                 .body(new InputStreamResource(fileStream));
     }
-
 
     public InputStream getFile(String fileName) {
         try {

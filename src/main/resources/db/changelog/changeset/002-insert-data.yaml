@@ -139,131 +139,27 @@ databaseChangeLog:
                   name: access
                   valueBoolean: true
 
-
-
-        - insert:
-            tableName: classroom
-            columns:
-              - column:
-                  name: name
-                  value: 'Группа 1'
-              - column:
-                  name: curriculum_id
-                  valueNumeric: 1
-
-        - insert:
-            tableName: classroom
-            columns:
-              - column:
-                  name: name
-                  value: 'Группа 2'
-              - column:
-                  name: curriculum_id
-                  valueNumeric: 2
-
         - insert:
             tableName: person
             columns:
               - column:
                   name: first_name
-                  value: 'Иван'
+                  value: 'Администратор'
               - column:
                   name: last_name
-                  value: 'Иванов'
+                  value: 'Администратор'
               - column:
                   name: patronymic
-                  value: 'Иванович'
+                  value: 'Администратор'
               - column:
                   name: username
-                  value: 'IvanIvanov'
-              - column:
-                  name: password
-                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
-              - column:
-                  name: role
-                  value: "STUDENT"
-              - column:
-                  name: settings_id
-                  valueNumeric: 1
-              - column:
-                  name: classroom_id
-                  valueNumeric: 1
-
-        - insert:
-            tableName: person
-            columns:
-              - column:
-                  name: first_name
-                  value: 'Алексей'
-              - column:
-                  name: last_name
-                  value: 'Алексеев'
-              - column:
-                  name: patronymic
-                  value: 'Алексеевич'
-              - column:
-                  name: username
-                  value: 'AlexeyAlexeev'
-              - column:
-                  name: password
-                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
-              - column:
-                  name: role
-                  value: "STUDENT"
-              - column:
-                  name: classroom_id
-                  valueNumeric: 2
-
-        - insert:
-            tableName: person
-            columns:
-              - column:
-                  name: first_name
-                  value: 'Петр'
-              - column:
-                  name: last_name
-                  value: 'Петров'
-              - column:
-                  name: patronymic
-                  value: 'Петрович'
-              - column:
-                  name: username
-                  value: 'PetrPetrov'
+                  value: 'admin'
               - column:
                   name: password
                   value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
               - column:
                   name: role
                   value: "ADMIN"
-              - column:
-                  name: classroom_id
-                  valueNumeric: 1
-
-
-        - insert:
-            tableName: person
-            columns:
-              - column:
-                  name: first_name
-                  value: 'Александр'
-              - column:
-                  name: last_name
-                  value: 'Александров'
-              - column:
-                  name: patronymic
-                  value: 'Александрович'
-              - column:
-                  name: username
-                  value: 'AlexAlex'
-              - column:
-                  name: password
-                  value: '$2a$12$ONpJZ2p4RK6XE6uPq.MgBeMGQFwOE45yW7ZglVztg2FDrlQA2snya'
-              - column:
-                  name: role
-                  value: "TEACHER"
-              - column:
-                  name: classroom_id
-                  valueNumeric: 2
 
         - insert:
             tableName: course
@@ -453,20 +349,3 @@ databaseChangeLog:
               - column:
                   name: name
                   value: 'Не выполнено'
-
-        - insert:
-            tableName: answer
-            columns:
-              - column:
-                  name: text
-                  value: 'Прикрепляю ответ'
-              - column:
-                  name: student_id
-                  valueNumeric: 1
-              - column:
-                  name: homework_id
-                  valueNumeric: 1
-              - column:
-                  name: status_id
-                  valueNumeric: 1
-

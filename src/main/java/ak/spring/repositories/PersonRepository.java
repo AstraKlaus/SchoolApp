@@ -18,8 +18,8 @@ import java.util.UUID;
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByUsername(String c);
 
-    @Query("SELECT COUNT(p) FROM Person p WHERE p.username LIKE :yearPattern")
-    int getNextUserNumber(@Param("yearPattern") String yearPattern);
+    @Query("SELECT MAX(CAST(SUBSTRING(p.username, 5) AS int)) FROM Person p WHERE p.username LIKE :yearPattern")
+    Integer getMaxUserNumber(@Param("yearPattern") String yearPattern);
 
     List<Person> findByClassroomId(int classroomId);
 }

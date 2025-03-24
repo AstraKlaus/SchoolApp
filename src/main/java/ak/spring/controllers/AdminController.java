@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "https://multiznaika-education.ru"}, allowCredentials = "true")
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("v1/api/admin")
 public class AdminController {
 
@@ -111,7 +112,7 @@ public class AdminController {
     @GetMapping("/users/export-passwords")
     public ResponseEntity<Resource> exportUsersWithPasswords() {
         try {
-            File file = new File(ExcelService.FILE_PATH);
+            File file = new File(excelService.getFilePath());
 
             if (!file.exists()) {
                 return ResponseEntity.notFound().build();

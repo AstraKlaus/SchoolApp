@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ class CourseServiceTest {
     void findAll_ReturnsAllCourses() {
         // Arrange
         Course course = Course.builder().id(1).build();
-        when(courseRepository.findAll()).thenReturn(List.of(course));
+        when(courseRepository.findAll(any(Sort.class))).thenReturn(List.of(course));
         when(courseDTOMapper.apply(any())).thenReturn(new CourseDTO());
 
         // Act
@@ -72,8 +73,9 @@ class CourseServiceTest {
 
         // Assert
         assertEquals(1, result.size());
-        verify(courseRepository).findAll();
+        verify(courseRepository).findAll(Sort.by("id").ascending());
     }
+
 
     @Test
     void findById_ExistingId_ReturnsCourseDTO() {

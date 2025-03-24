@@ -74,7 +74,8 @@ public class AuthenticationService {
   private String generateUsername() {
     int year = LocalDate.now().getYear();
     String yearPattern = year + "%";
-    int nextNumber = repository.getNextUserNumber(yearPattern) + 1;
+    Integer maxNumber = repository.getMaxUserNumber(yearPattern);
+    int nextNumber = (maxNumber != null) ? maxNumber + 1 : 1;
     return String.format("%d%04d", year, nextNumber);
   }
 

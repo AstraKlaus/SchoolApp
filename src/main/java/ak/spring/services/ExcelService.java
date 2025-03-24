@@ -22,7 +22,7 @@ import java.util.List;
 public class ExcelService {
 
     @Value("${excel.file.path:/app/excel/users.xlsx}")
-    private String FILE_PATH;
+    private String filePath;
 
     public List<RegisterRequest> importUsersFromExcel(InputStream inputStream) throws IOException {
         List<RegisterRequest> users = new ArrayList<>();
@@ -109,13 +109,13 @@ public class ExcelService {
 
     // Метод для добавления пользователя в файл Excel
     public void addUserToExcel(String username, String firstName, String patronymic, String lastName, String password) throws IOException {
-        File file = new File(FILE_PATH);
+        File file = new File(filePath);
 
         // Если файл существует, открываем его, иначе создаем новый
         if (file.exists()) {
             try (FileInputStream fis = new FileInputStream(file);
                  XSSFWorkbook workbook = new XSSFWorkbook(fis);
-                 FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+                 FileOutputStream fos = new FileOutputStream(filePath)) {
 
                 Sheet sheet = workbook.getSheetAt(0); // Получаем первый лист
 
@@ -132,7 +132,7 @@ public class ExcelService {
             }
         } else {
             try (XSSFWorkbook workbook = new XSSFWorkbook();
-                 FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+                 FileOutputStream fos = new FileOutputStream(filePath)) {
 
                 Sheet sheet = workbook.createSheet("Users"); // Создаем новый лист
 
@@ -228,14 +228,14 @@ public class ExcelService {
     }
 
     public void removeUserFromExcel(String username) throws IOException {
-        File file = new File(FILE_PATH);
+        File file = new File(filePath);
         if (!file.exists()) {
             return;
         }
 
         try (FileInputStream fis = new FileInputStream(file);
              XSSFWorkbook workbook = new XSSFWorkbook(fis);
-             FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+             FileOutputStream fos = new FileOutputStream(filePath)) {
 
             Sheet sheet = workbook.getSheetAt(0);
             int lastRowNum = sheet.getLastRowNum();
@@ -243,7 +243,7 @@ public class ExcelService {
             for (int i = 1; i <= lastRowNum; i++) {
                 Row row = sheet.getRow(i);
                 if (row != null && row.getCell(0) != null) {
-                    String cellUsername = row.getCell(0).getStringCellValue();
+                    String cellUsername = row.getCell(3).getStringCellValue();
                     if (username.equals(cellUsername)) {
                         if (i < lastRowNum) {
                             sheet.shiftRows(i + 1, lastRowNum, -1);
@@ -277,5 +277,8 @@ public class ExcelService {
         }
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
 }
 

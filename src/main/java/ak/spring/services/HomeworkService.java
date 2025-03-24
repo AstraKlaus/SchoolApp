@@ -102,7 +102,7 @@ public class HomeworkService {
     }
 
     public List<HomeworkDTO> findAll() {
-        return homeworkRepository.findAll(Sort.by("name").ascending())
+        return homeworkRepository.findAll(Sort.by("id").ascending())
                 .stream()
                 .map(homeworkDTOMapper)
                 .toList();
