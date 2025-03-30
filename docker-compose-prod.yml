@@ -21,7 +21,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
-
     restart: always
 
   createBuckets:
@@ -71,7 +70,7 @@ services:
     volumes:
       - ./db/changelog:/app/db/changelog
       - ./logs:/app/logs
-      #- /etc/letsencrypt:/etc/letsencrypt
+      - ./excel_data:/app/excel
     restart: on-failure
 
   frontend:
@@ -85,19 +84,40 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./certs:/etc/ssl/certs
-      - ./private:/etc/ssl/private
+      - ./ssl/certs:/etc/ssl/certs
+      - ./ssl/private:/etc/ssl/private
     networks:
       - app-network
     restart: on-failure
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml # Конфигурация Prometheus (описана ниже)
+    ports:
+      - "9090:9090" # Порт для доступа к Prometheus UI (http://localhost:9090)
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000" # Порт для доступа к Grafana UI (http://localhost:3000)
+    depends_on:
+      - prometheus # Grafana зависит от Prometheus для получения данных метрик.
+    networks:
+      - app-network
 
 volumes:
   minio_data:
     driver: local
   postgres_data:
     driver: local
+  excel_data:
+    driver: local
 
 networks:
   app-network:
     driver: bridge
-

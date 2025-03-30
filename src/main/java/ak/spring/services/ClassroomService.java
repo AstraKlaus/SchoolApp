@@ -6,6 +6,7 @@ import ak.spring.dto.PersonDTO;
 import ak.spring.exceptions.ResourceNotFoundException;
 import ak.spring.mappers.ClassroomDTOMapper;
 import ak.spring.mappers.CurriculumDTOMapper;
+import ak.spring.mappers.PersonDTOMapper;
 import ak.spring.models.Classroom;
 import ak.spring.models.Curriculum;
 import ak.spring.models.Person;
@@ -31,15 +32,21 @@ public class ClassroomService {
     private final CurriculumDTOMapper curriculumDTOMapper;
     private final PersonRepository personRepository;
     private final CurriculumRepository curriculumRepository;
+    private final PersonDTOMapper personDTOMapper;
 
     @Autowired
     public ClassroomService(ClassroomRepository classroomRepository,
-                            ClassroomDTOMapper classroomDTOMapper, CurriculumDTOMapper curriculumDTOMapper, PersonRepository personRepository, CurriculumRepository curriculumRepository) {
+                            ClassroomDTOMapper classroomDTOMapper,
+                            CurriculumDTOMapper curriculumDTOMapper,
+                            PersonRepository personRepository,
+                            CurriculumRepository curriculumRepository,
+                            PersonDTOMapper personDTOMapper) {
         this.classroomRepository = classroomRepository;
         this.classroomDTOMapper = classroomDTOMapper;
         this.curriculumDTOMapper = curriculumDTOMapper;
         this.personRepository = personRepository;
         this.curriculumRepository = curriculumRepository;
+        this.personDTOMapper = personDTOMapper;
     }
 
     public List<ClassroomDTO> findByName(String name) {
@@ -64,11 +71,14 @@ public class ClassroomService {
     public ClassroomDTO updateGroup(int id, ClassroomDTO updatedClassroom) {
         Classroom existingClassroom = classroomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", id));
+
         existingClassroom.setName(updatedClassroom.getName());
 
         classroomRepository.save(existingClassroom);
+
         return classroomDTOMapper.apply(existingClassroom);
     }
+
 
 
     public void deleteGroup(int id) {

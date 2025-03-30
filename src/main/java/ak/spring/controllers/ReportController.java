@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("v1/api/reports")
 @CrossOrigin(origins = {"http://localhost:5173", "https://multiznaika-education.ru"}, allowCredentials = "true")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('TEACHER')")
 @Tag(name = "Report Management", description = "Управление отчётами и формированием отчётных файлов")
 @RequiredArgsConstructor
 public class ReportController {

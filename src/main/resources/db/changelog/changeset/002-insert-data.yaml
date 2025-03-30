@@ -334,7 +334,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: 'Выполнено'
+                  value: 'Не выполнено'
 
         - insert:
             tableName: homework_status
@@ -348,4 +348,4 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: 'Не выполнено'
+                  value: 'Выполнено'

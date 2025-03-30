@@ -15,6 +15,9 @@ import java.io.*;
 
 import ak.spring.dto.PersonDTO;
 
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -214,7 +217,8 @@ public class ExcelService {
                 row.createCell(3).setCellValue(data.getPatronymic());
                 row.createCell(4).setCellValue(data.getStatus());
                 row.createCell(5).setCellValue(data.getComment());
-                row.createCell(6).setCellValue(data.getSubmittedAt().toString());
+                String formattedDate = formatTimestampToTimeZone(data.getSubmittedAt(), "Asia/Dubai");
+                row.createCell(6).setCellValue(formattedDate);
             }
 
             // Авто-размер колонок
@@ -279,6 +283,14 @@ public class ExcelService {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    private String formatTimestampToTimeZone(Timestamp timestamp, String timeZone) {
+        if (timestamp == null) return "";
+        return timestamp.toInstant()
+                .atZone(ZoneId.of(timeZone)) // Преобразование в указанный часовой пояс
+                .toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // Форматирование даты
     }
 }
 

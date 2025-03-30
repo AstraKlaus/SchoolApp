@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s # Интервал сбора метрик
+
+scrape_configs:
+  - job_name: 'spring-school-app'
+    basic_auth:
+      username: '20250002'
+      password: 'vxrrgrJP'
+    static_configs:
+      - targets: ['spring-school-app:8084'] # Адрес вашего Spring Boot приложения с Actuator Prometheus endpoint
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['school-db'] # Мониторинг PostgreSQL (если настроен экспорт метрик)
+
+  - job_name: 'minio'
+    static_configs:
+      - targets: ['minio'] # Мониторинг MinIO (если настроен экспорт метрик)

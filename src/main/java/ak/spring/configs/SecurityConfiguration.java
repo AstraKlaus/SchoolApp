@@ -39,8 +39,8 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html",
-            "/v1/api/admin/**"};
+            "/swagger-ui.html"
+            };
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -50,9 +50,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/v1/api/people/**").authenticated()
-                                .requestMatchers(ADMIN_LIST_URL).authenticated()
-                                .requestMatchers("/v1/api/auth/**").permitAll() // Разрешаем доступ к авторизации
+                        req.requestMatchers(ADMIN_LIST_URL).hasRole("ADMIN")
+                                .requestMatchers("/v1/api/admin/**").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

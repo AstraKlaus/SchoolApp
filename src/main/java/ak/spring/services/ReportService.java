@@ -29,35 +29,37 @@ public class ReportService {
         Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom", "id", classroomId));
 
-        // Получаем всех студентов группы
-        List<Person> students = personRepository.findByClassroomId(classroomId);
+        List<Person> students = classroom.getPersons();
+        long totalHomeworks = homeworkRepository.countByClassroomId(classroomId);
 
         return students.stream().map(student -> {
             List<Answer> answers = answerRepository.findByStudentId(student.getId());
 
             long completed = answers.stream()
-                    .filter(a -> a.getStatus().getName().equals("Выполнено"))
+                    .filter(a -> "Выполнено".equals(a.getStatus().getName()))
                     .count();
+
             long inProgress = answers.stream()
-                    .filter(a -> a.getStatus().getName().equals("На проверке"))
+                    .filter(a -> "На проверке".equals(a.getStatus().getName()))
                     .count();
-            long notCompleted = answers.stream()
-                    .filter(a -> a.getStatus().getName().equals("Не выполнено"))
-                    .count();
+
+            long notCompleted = totalHomeworks - completed - inProgress;
 
             return GroupProgressDTO.builder()
                     .classroomName(classroom.getName())
                     .firstName(student.getFirstName())
                     .lastName(student.getLastName())
                     .patronymic(student.getPatronymic())
-                    .totalHomeworks(answers.size())
+                    .totalHomeworks((int) totalHomeworks)
                     .completed((int) completed)
                     .inProgress((int) inProgress)
                     .notCompleted((int) notCompleted)
-                    .completionRate(answers.isEmpty() ? 0 : (completed * 100.0) / answers.size())
+                    .completionRate(totalHomeworks == 0 ? 0 : (completed * 100.0) / totalHomeworks)
                     .build();
         }).toList();
     }
+
+
 
     // Отчет по конкретному домашнему заданию
     public List<HomeworkReportDTO> generateHomeworkReport(int homeworkId) {
